@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "stage": "4",
+  "name": "Self-Financing Ledger, Daily MTM, Transaction Costs & Metrics",
+  "timestamp": "2026-09-23T07:00:31.338890+00:00",
+  "base_checkpoint": {
+    "tag": "research-v2-stage3-ready",
+    "checkpoint_commit": "61e7c20a799447f34f8a7c5b40ac9c36cf894d6f",
+    "stage3_implementation_commit": "ca8943080d48328cb8bc524baaa37c9fd7322c2d"
+  },
+  "tags": {
+    "research-v1": "d35840148354105cb4d719ba828e0ff7b4a44782",
+    "paper-v1-ready": "34039df69c16b2c63439556b5762c06b50785384",
+    "research-v2-stage3-ready": "61e7c20a799447f34f8a7c5b40ac9c36cf894d6f"
+  },
+  "protocol_sha256": "a35fe1e50f90b537bd543e9d41a78eff3d9ae9991c362adc603f42432a23e9fb",
+  "dataset_sha256": "65aa99046a92ae9b5fd80155cea26065d80ebcc78a740883452d2106e4000aa3",
+  "canary_run": {
+    "model_id": "W_M12_T40",
+    "partition": "train",
+    "cost_bps": 5.0,
+    "initial_wealth": 100000.0,
+    "execution_price_field": "adj_open",
+    "valuation_price_field": "adj_close",
+    "solver_tolerance": "1e-10 * max(1, V_pre)",
+    "max_solver_residual": 2.9103830456733704e-11,
+    "number_of_nav_rows": 2497,
+    "number_of_rebalances_executed": 517,
+    "number_pending_outside_segment": 1,
+    "pending_count": 1,
+    "pending_events_artifact": "pending_events.csv",
+    "pending_statuses": [
+      "PENDING_OUTSIDE_SEGMENT"
+    ],
+    "total_trades": 1653,
+    "total_fees": 8919.921314822896,
+    "final_nav": 223818.82924756774,
+    "total_return": 1.2381882924756775,
+    "cagr": 0.08467880653648985,
+    "annualized_volatility": 0.1478187469559093,
+    "sharpe_ratio": 0.6241853219635967,
+    "max_drawdown": 0.207625748572791,
+    "annualized_one_way_turnover": 5.793764630274545,
+    "annualized_gross_traded_ratio": 11.484830903622557,
+    "mean_cash_weight": 0.0012014417300760913,
+    "max_cash_weight": 1.0
+  },
+  "turnover_definitions": {
+    "one_way_turnover": "0.5 * sum(|w_target - w_pretrade|) across 8 ETFs and CASH",
+    "gross_traded_ratio": "sum(|trade_notional|) across 8 ETFs / V_pre"
+  },
+  "pytest_summary": {
+    "total": 177,
+    "passed": 177,
+    "failed": 0,
+    "warnings": 1,
+    "status": "PASS"
+  },
+  "ledger_invariant_result": "PASS",
+  "holdout_gate": "NOT_ACCESSED",
+  "production_state_invariance": {
+    "app_log_sha256": "015a85822e8d7951034d86aad70188f76d463e7665524964c042a87a126c3393",
+    "rebalance_state_sha256": "59a9e800d56c6bbb8d486033d33aa5a10bc868115643982501154b0c79caacd4",
+    "status": "PASS"
+  },
+  "verdict": "STAGE_4_PASS",
+  "receipt_sha256": "4c3430c96ce63071c76f207975e6d806c2c1601e81cbc91ac8b5d42d4c57d335"
+}

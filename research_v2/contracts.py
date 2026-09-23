@@ -107,3 +107,65 @@ class ResearchInterfaces(Protocol):
     def build_schedule(self, periods: PeriodTable, cadence: str, as_of: str) -> list[PeriodEvent]: ...
     def simulate(self, dataset_view: DatasetView, targets: Any, schedule: Sequence[PeriodEvent], run_spec: RunSpec) -> RunResult: ...
     def evaluate(self, daily_nav: Any, trades: Any, initial_nav: float, interval: tuple[str, str]) -> Mapping: ...
+
+
+@dataclass(frozen=True)
+class TradeRecord:
+    execution_date: str
+    symbol: str
+    old_shares: float
+    new_shares: float
+    open_price: float
+    old_notional: float
+    new_notional: float
+    trade_notional: float
+    abs_trade_notional: float
+    fee_component: float
+
+
+@dataclass(frozen=True)
+class RebalanceRecord:
+    signal_session: str
+    execution_session: str
+    model_id: str
+    cost_bps: float
+    V_pre: float
+    V_post: float
+    fee: float
+    solver_residual: float
+    one_way_turnover: float
+    gross_traded_notional: float
+    gross_traded_ratio: float
+    cash_before: float
+    cash_after: float
+
+
+@dataclass(frozen=True)
+class DailyNavRecord:
+    date: str
+    nav: float
+    daily_return: float
+    cash: float
+    gross_exposure: float
+    rebalance_flag: bool
+    fee: float
+
+
+@dataclass(frozen=True)
+class PositionRecord:
+    date: str
+    symbol: str
+    shares: float
+    close: float
+    market_value: float
+    weight: float
+
+
+@dataclass(frozen=True)
+class PendingExecutionRecord:
+    signal_session: str
+    execution_session: str
+    model_id: str
+    partition: str
+    status: str
+    reason: str

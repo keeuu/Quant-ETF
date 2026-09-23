@@ -9,7 +9,7 @@
 | **Stage 1** | 冻结边界、独立骨架与研究协议 | **COMPLETED** | `research_v2/artifacts/phase_01/phase_receipt.json` |
 | **Stage 2** | 冻结数据、交易日历与分区权限 | **COMPLETED** | `research_v2/artifacts/phase_02/phase_receipt.json` |
 | **Stage 3** | 周信号、选择器与防未来执行日程 | **PASS_AFTER_DST_FIX** | `research_v2/artifacts/phase_03_fix/phase_receipt.json` |
-| **Stage 4** | 自融资账本、交易成本与统一日线度量 | PENDING | `research_v2/artifacts/phase_04/phase_receipt.json` |
+| **Stage 4** | 自融资账本、交易成本与统一日线度量 | **COMPLETED** | `research_v2/artifacts/phase_04/phase_receipt.json` |
 | **Stage 5** | 固定对照、SPY 基准与隔离 V1 Oracle 桥接 | PENDING | `research_v2/artifacts/phase_05/phase_receipt.json` |
 | **Stage 6** | 验证集选择、Walk-Forward 与稳定性审计 | PENDING | `research_v2/artifacts/phase_06/phase_receipt.json` |
 | **Stage 7** | 统计推断、多重检验调整与机制表现 | PENDING | `research_v2/artifacts/phase_07/phase_receipt.json` |
@@ -51,13 +51,24 @@
 - **Holdout Gate**: LOCKED (零策略收益计算)
 - **Fix Receipt**: `research_v2/artifacts/phase_03_fix/phase_receipt.json`
 
+### Stage 4
+- **完成日期**: 2026-09-23
+- **状态**: `COMPLETED`
+- **Self-Financing Solver**: Piecewise-linear bounded Brent, 最大残差 $2.91 \times 10^{-11}$
+- **Accounting Invariants**: 守恒定理严格验证，0 issues，无人工 cash clamp
+- **Canary Model**: `W_M12_T40` (Train, 5 bps): 2,497 trading days, 517 rebalances, 1,653 trades, CAGR 8.47%, Sharpe 0.624, MaxDD 20.76%
+- **测试结果**: 177 passed, 0 failed, 1 warning
+- **Holdout Gate**: NOT_ACCESSED
+- **Receipt**: `research_v2/artifacts/phase_04/phase_receipt.json` (SHA256: `4c3430c96ce63071c76f207975e6d806c2c1601e81cbc91ac8b5d42d4c57d335`)
+
 ---
 
-## 3. 下一阶段入口 (Stage 4)
+## 3. 下一阶段入口 (Stage 5)
 
-进入 Stage 4 时，仅需读取以下文件：
-1. `CODEX_EXECUTION_PLAN.md` (Stage 4 小节)
+进入 Stage 5 时，仅需读取以下文件：
+1. `CODEX_EXECUTION_PLAN.md` (Stage 5 小节)
 2. `docs/research_v2/STATUS.md`
-3. `docs/research_v2/REPO_MAP.md`
-4. `docs/research_v2/dataset_manifest.json`
-5. `research_v2/artifacts/phase_03_fix/phase_receipt.json`
+3. `research_v2/artifacts/phase_04/phase_receipt.json`
+4. `docs/research_v2/REPO_MAP.md`
+5. `docs/research_v2/dataset_manifest.json`
+

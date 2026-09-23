@@ -8,6 +8,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
+import pandas as pd
 
 from .calendar import build_complete_weeks, market_as_of_after_close, parse_as_of
 from .contracts import EXPECTED_PLAN_SHA256, validate_protocol
@@ -23,6 +24,7 @@ from .provenance import (
     utc_now,
     write_json_new,
 )
+from .engine import run_backtest
 from .schedule import build_monthly_matched_schedule, build_weekly_schedule
 from .signals import compute_model_signals_for_events
 from .splits import PARTITIONS, audit_splits
@@ -109,6 +111,18 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--all-models", action="store_true", default=False, help="Audit all 9 models")
     p.add_argument("--run-id", required=True, help="Execution run identifier")
 
+    # --- Stage 4 Subcommands ---
+    p = subs.add_parser("canary", help="Run Stage 4 single-model Train canary backtest")
+    p.add_argument("--partition", default="train", help="Partition to run backtest on (train only)")
+    p.add_argument("--model", default="W_M12_T40", help="Model ID (W_M12_T40 only)")
+    p.add_argument("--cost-bps", type=float, default=5.0, help="Transaction cost in bps (e.g. 5)")
+    p.add_argument("--initial-nav", type=float, default=100000.0, help="Initial cash capital")
+    p.add_argument("--run-id", default="phase_04", help="Execution run identifier")
+
+    p = subs.add_parser("audit-ledger", help="Audit Stage 4 ledger invariants, conservation, and outputs")
+    p.add_argument("--run-id", default="phase_04", help="Execution run identifier")
+
+
     args = parser.parse_args(argv)
     root = _root()
 
@@ -184,7 +198,6 @@ def main(argv: list[str] | None = None) -> int:
             manifest = read_json(_input(root, args.manifest))
             snapshot_dir = root / "research_v2" / "data" / manifest["dataset_id"]
 
-            import pandas as pd
             session_table_path = snapshot_dir / "session_table.csv"
             session_df = pd.read_csv(session_table_path)
             expected_sessions = session_df["session_date"].tolist()
@@ -223,7 +236,6 @@ def main(argv: list[str] | None = None) -> int:
             manifest = read_json(_input(root, args.manifest))
             snapshot_dir = root / "research_v2" / "data" / manifest["dataset_id"]
 
-            import pandas as pd
             session_df = pd.read_csv(snapshot_dir / "session_table.csv")
             session_dates = session_df["session_date"].tolist()
 
@@ -241,7 +253,6 @@ def main(argv: list[str] | None = None) -> int:
             protocol = read_json(_input(root, "research_v2/protocol.json"))
             snapshot_dir = root / "research_v2" / "data" / manifest["dataset_id"]
 
-            import pandas as pd
             session_df = pd.read_csv(snapshot_dir / "session_table.csv")
             session_dates = session_df["session_date"].tolist()
 
@@ -335,8 +346,179 @@ def main(argv: list[str] | None = None) -> int:
 
             result = audit_summary
 
+        elif args.command == "canary":
+            if args.partition != "train":
+                raise GuardError(f"Stage 4 canary strictly permits train partition only, got: {args.partition}")
+            if args.model != "W_M12_T40":
+                raise GuardError(f"Stage 4 canary strictly permits model W_M12_T40 only, got: {args.model}")
+
+            dataset_manifest_path = root / "docs/research_v2/dataset_manifest.json"
+            if not dataset_manifest_path.is_file():
+                raise GuardError("dataset_manifest.json missing; snapshot required")
+
+            manifest_data = read_json(dataset_manifest_path)
+            snapshot_dir = root / "research_v2" / "data" / manifest_data["dataset_id"]
+            protocol = read_json(_input(root, "research_v2/protocol.json"))
+
+            # Load partition scoped view
+            dataset_view = load_dataset(
+                snapshot_dir=snapshot_dir,
+                partition=args.partition,
+                as_of=manifest_data["as_of"],
+                splits=protocol["splits"],
+            )
+
+            # Build trading calendar and weekly schedule
+            session_table_path = snapshot_dir / "session_table.csv"
+            session_df = pd.read_csv(session_table_path)
+            session_dates = session_df["session_date"].tolist()
+
+            train_end = PARTITIONS["train"]["end"]
+            train_start = PARTITIONS["train"]["start"]
+            as_of_train = market_as_of_after_close(train_end)
+
+            all_weekly = build_weekly_schedule(
+                [s for s in session_dates if s <= train_end],
+                as_of=as_of_train,
+            )
+
+            # Find model spec
+            model_spec = next(m for m in protocol["model_grid"]["models"] if m["model_id"] == args.model)
+
+            # Compute signals
+            sig_frame = compute_model_signals_for_events(
+                bars=dataset_view.bars,
+                session_dates=session_dates,
+                weekly_events=all_weekly,
+                model_id=args.model,
+                momentum_months=model_spec["momentum_months"],
+                trend_weeks=model_spec["trend_weeks"],
+            )
+
+            # Run backtest simulation
+            daily_nav_df, positions_df, trades_df, rebalance_df, pending_df, metrics_dict = run_backtest(
+                dataset_view=dataset_view,
+                signals=sig_frame,
+                cost_bps=args.cost_bps,
+                initial_nav=args.initial_nav,
+            )
+
+            # Save artifacts
+            out_artifact_dir = root / "research_v2" / "artifacts" / args.run_id
+            out_artifact_dir.mkdir(parents=True, exist_ok=True)
+
+            daily_nav_df.to_csv(out_artifact_dir / "daily_nav.csv", index=False)
+            positions_df.to_csv(out_artifact_dir / "positions.csv", index=False)
+            trades_df.to_csv(out_artifact_dir / "trades.csv", index=False)
+            rebalance_df.to_csv(out_artifact_dir / "rebalance.csv", index=False)
+            pending_df.to_csv(out_artifact_dir / "pending_events.csv", index=False)
+            (out_artifact_dir / "metrics.json").write_bytes(canonical_json(metrics_dict) + b"\n")
+
+            canary_summary = {
+                "status": "PASS",
+                "model_id": args.model,
+                "partition": args.partition,
+                "cost_bps": args.cost_bps,
+                "initial_nav": args.initial_nav,
+                "trading_days": metrics_dict["trading_days"],
+                "rebalance_count": metrics_dict["rebalance_count"],
+                "total_trades": len(trades_df),
+                "total_fees": metrics_dict["total_fees"],
+                "final_nav": metrics_dict["final_nav"],
+                "total_return": metrics_dict["total_return"],
+                "cagr": metrics_dict["cagr"],
+                "annualized_volatility": metrics_dict["annualized_volatility"],
+                "sharpe_ratio": metrics_dict["sharpe_ratio"],
+                "max_drawdown": metrics_dict["max_drawdown"],
+                "annualized_one_way_turnover": metrics_dict["annualized_one_way_turnover"],
+                "annualized_gross_traded_ratio": metrics_dict["annualized_gross_traded_ratio"],
+                "number_pending_outside_segment": len(pending_df),
+                "pending_events_artifact": "pending_events.csv",
+                "pending_statuses": pending_df["status"].unique().tolist() if not pending_df.empty else [],
+                "holdout_gate": "NOT_ACCESSED",
+            }
+            result = canary_summary
+
+        elif args.command == "audit-ledger":
+            out_artifact_dir = root / "research_v2" / "artifacts" / args.run_id
+            if not out_artifact_dir.is_dir():
+                raise GuardError(f"Artifact directory missing: {out_artifact_dir}")
+
+            daily_nav_path = out_artifact_dir / "daily_nav.csv"
+            positions_path = out_artifact_dir / "positions.csv"
+            trades_path = out_artifact_dir / "trades.csv"
+            rebalance_path = out_artifact_dir / "rebalance.csv"
+            metrics_path = out_artifact_dir / "metrics.json"
+
+            for p_req in [daily_nav_path, positions_path, trades_path, rebalance_path, metrics_path]:
+                if not p_req.is_file():
+                    raise GuardError(f"Required artifact missing: {p_req.name}")
+
+            daily_nav_df = pd.read_csv(daily_nav_path)
+            positions_df = pd.read_csv(positions_path)
+            trades_df = pd.read_csv(trades_path)
+            rebalance_df = pd.read_csv(rebalance_path)
+            metrics_dict = read_json(metrics_path)
+
+            audit_issues = []
+
+            # 1. NAV positivity and cash non-negativity
+            if (daily_nav_df["nav"] <= 0).any():
+                audit_issues.append("Non-positive NAV detected")
+            if (daily_nav_df["cash"] < -1e-8).any():
+                audit_issues.append("Substantial negative cash detected in daily_nav")
+            if (daily_nav_df["gross_exposure"] > 1.0 + 1e-6).any():
+                audit_issues.append("Gross exposure exceeds 1.0")
+
+            # 2. Rebalance self-financing invariants
+            max_solver_residual = 0.0
+            for _, reb in rebalance_df.iterrows():
+                v_pre = reb["V_pre"]
+                v_post = reb["V_post"]
+                fee = reb["fee"]
+                res = reb["solver_residual"]
+                tol = 1e-8 * max(1.0, v_pre)
+
+                if abs(v_post + fee - v_pre) > tol:
+                    audit_issues.append(f"Conservation mismatch on {reb['execution_session']}: V_post+fee != V_pre")
+                if res > max_solver_residual:
+                    max_solver_residual = res
+                if res > 1e-10 * max(1.0, v_pre):
+                    audit_issues.append(f"Solver residual {res} exceeded tolerance on {reb['execution_session']}")
+
+            # 3. Trades fee reconciliation
+            if not rebalance_df.empty:
+                total_reb_fee = rebalance_df["fee"].sum()
+                total_trade_fee = trades_df["fee_component"].sum() if not trades_df.empty else 0.0
+                if abs(total_reb_fee - total_trade_fee) > 1e-6:
+                    audit_issues.append(f"Total fee mismatch between rebalances ({total_reb_fee}) and trades ({total_trade_fee})")
+
+            # 4. Positions valuation reconciliation on daily_nav
+            if not positions_df.empty:
+                pos_grouped = positions_df.groupby("date")["market_value"].sum()
+                for d, mv in pos_grouped.items():
+                    nav_row = daily_nav_df[daily_nav_df["date"] == d].iloc[0]
+                    calc_nav = nav_row["cash"] + mv
+                    if abs(calc_nav - nav_row["nav"]) > 1e-6:
+                        audit_issues.append(f"Daily valuation mismatch on {d}: cash+mv={calc_nav} vs nav={nav_row['nav']}")
+
+            audit_result = {
+                "status": "PASS" if not audit_issues else "FAIL",
+                "run_id": args.run_id,
+                "issues": audit_issues,
+                "trading_days_audited": len(daily_nav_df),
+                "rebalances_audited": len(rebalance_df),
+                "trades_audited": len(trades_df),
+                "max_solver_residual": max_solver_residual,
+                "total_fees_audited": float(rebalance_df["fee"].sum()) if not rebalance_df.empty else 0.0,
+                "holdout_gate": "NOT_ACCESSED",
+            }
+            (out_artifact_dir / "ledger_audit.json").write_bytes(canonical_json(audit_result) + b"\n")
+            result = audit_result
+
         else:
             raise GuardError(f"Unknown command: {args.command}")
+
 
         print(json.dumps(result, ensure_ascii=False, sort_keys=True, allow_nan=False))
         return 1 if result.get("status") == "FAIL" else 0
