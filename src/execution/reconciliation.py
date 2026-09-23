@@ -2,6 +2,7 @@
 调仓对账与券商权威状态同步模块 (Broker-Authoritative Reconciliation)。
 """
 
+from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
 from src.broker.alpaca_client import AlpacaPaperClient
 from src.execution.order_lifecycle import (
@@ -17,11 +18,19 @@ from src.utils.logger import logger
 
 def reconcile_with_broker(
     client: AlpacaPaperClient,
-    state: Dict[str, Any]
+    state: Dict[str, Any],
+    state_file: Optional[Path] = None
 ) -> Dict[str, Any]:
     """
     针对调仓状态执行经纪商端权威状态对账 (Order & Position Reconciliation)。
     
+    Args:
+        client: 已认证的 Alpaca 客户端。
+        state: 当前调仓状态字典（内存中），对账过程中会就地修改 status 字段。
+        state_file: 状态持久化文件路径。
+            - 传入有效 Path 时，每次状态跃迁后立即写入该文件（生产路径传 REBALANCE_STATE_FILE）。
+            - 传入 None（默认）时，仅做内存状态更新，不写入任何文件（测试隔离场景）。
+
     【核心保证与 Broker Source of Truth】：
     1. Broker Orders + Broker Positions 优先级绝对高于本地 State 文件；
     2. 如果本地 State 文件丢失或存在遗漏，自动根据 stable namespace 扫描并汇聚券商端已有订单；
@@ -162,19 +171,23 @@ def reconcile_with_broker(
     # 7. 更新并持久化状态
     if reconciled:
         state["status"] = RebalanceStatus.COMPLETED
-        save_rebalance_state(state)
+        if state_file is not None:
+            save_rebalance_state(state, file_path=state_file)
         logger.info("状态对账完成：所有订单已全部安全结清，状态跃迁至 COMPLETED。")
     elif has_failures:
         state["status"] = RebalanceStatus.FAILED
-        save_rebalance_state(state)
+        if state_file is not None:
+            save_rebalance_state(state, file_path=state_file)
         logger.error(f"状态对账告警：存在 {len(failed_orders)} 笔失败/被拒/取消订单，状态跃迁至 FAILED。")
     elif unconfirmed_orders:
         state["status"] = RebalanceStatus.SUBMISSION_UNKNOWN
-        save_rebalance_state(state)
+        if state_file is not None:
+            save_rebalance_state(state, file_path=state_file)
         logger.warning(f"状态对账告警：存在 {len(unconfirmed_orders)} 笔未知失联订单，状态保持 SUBMISSION_UNKNOWN。")
     else:
         state["status"] = RebalanceStatus.RECONCILING
-        save_rebalance_state(state)
+        if state_file is not None:
+            save_rebalance_state(state, file_path=state_file)
         logger.info("状态对账进行中：订单尚未全部完成，状态保持 RECONCILING。")
 
     return report
