@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "stage": "4",
+  "name": "Stage 4 Checkpoint & Provenance Finalization",
+  "timestamp": "2026-09-23T07:02:41.271814+00:00",
+  "commits": {
+    "stage_03_base_commit": "61e7c20a799447f34f8a7c5b40ac9c36cf894d6f",
+    "stage_04_implementation_commit": "dc9f721629e4f8d117fdd023bfa7ec8ae26d4d7d"
+  },
+  "tags": {
+    "research-v1": {
+      "tag_object": "d35840148354105cb4d719ba828e0ff7b4a44782",
+      "peeled_commit": "d35840148354105cb4d719ba828e0ff7b4a44782"
+    },
+    "paper-v1-ready": {
+      "tag_object": "34039df69c16b2c63439556b5762c06b50785384",
+      "peeled_commit": "3f708f888277a6564ea6db204dafde95c2a548c7"
+    },
+    "research-v2-stage3-ready": {
+      "tag_object": "61e7c20a799447f34f8a7c5b40ac9c36cf894d6f",
+      "peeled_commit": "61e7c20a799447f34f8a7c5b40ac9c36cf894d6f"
+    }
+  },
+  "hashes": {
+    "protocol_sha256": "a35fe1e50f90b537bd543e9d41a78eff3d9ae9991c362adc603f42432a23e9fb",
+    "dataset_sha256": "65aa99046a92ae9b5fd80155cea26065d80ebcc78a740883452d2106e4000aa3",
+    "phase_receipt_file_sha256": "059a35a4bd8e27521adfcb1d7d158bcd421f5723bf65e2f834800ff96cfd9f32",
+    "phase_receipt_canonical_sha256": "4c3430c96ce63071c76f207975e6d806c2c1601e81cbc91ac8b5d42d4c57d335",
+    "pending_events_sha256": "46e68759431a4afa5f61dc2ef1483074087c29f2e6b1d27a476005f313599071"
+  },
+  "canary_metrics": {
+    "model_id": "W_M12_T40",
+    "partition": "train",
+    "cost_bps": 5.0,
+    "initial_wealth": 100000.0,
+    "trading_days": 2497,
+    "executed_rebalances": 517,
+    "pending_events": 1,
+    "total_trades": 1653,
+    "total_fees": 8919.921314822896,
+    "final_nav": 223818.82924756774,
+    "cagr": 0.08467880653648985,
+    "annualized_volatility": 0.1478187469559093,
+    "sharpe_ratio": 0.6241853219635967,
+    "max_drawdown": 0.207625748572791,
+    "annualized_one_way_turnover": 5.793764630274545,
+    "annualized_gross_traded_ratio": 11.484830903622557
+  },
+  "pytest_result": {
+    "total": 177,
+    "passed": 177,
+    "failed": 0,
+    "warnings": 1,
+    "status": "PASS"
+  },
+  "holdout_gate": "NOT_ACCESSED",
+  "production_state_invariance": {
+    "app_log": {
+      "path": "logs/app.log",
+      "sha256": "015a85822e8d7951034d86aad70188f76d463e7665524964c042a87a126c3393",
+      "size": 235196,
+      "mtime_ns": 1789981503109788558,
+      "status": "IDENTICAL"
+    },
+    "rebalance_state_json": {
+      "path": "logs/rebalance_state.json",
+      "sha256": "59a9e800d56c6bbb8d486033d33aa5a10bc868115643982501154b0c79caacd4",
+      "size": 431,
+      "mtime_ns": 1789981503057542820,
+      "status": "IDENTICAL"
+    },
+    "status": "PASS"
+  },
+  "verdict": "STAGE_4_CHECKPOINT_PASS",
+  "checkpoint_sha256": "04cb347565120a39c8a4c53acfa3d6105243e6a4c8d0a323cc0ad86eb5756340"
+}
