@@ -171,11 +171,12 @@ class PendingExecutionRecord:
     status: str
     reason: str
 
+_STAGE9_CAPABILITY = object()
+
 @dataclass(frozen=True)
 class Stage9HoldoutAuthorization:
-    """Narrow authorization token specifically for unlocking Holdout."""
-    lock_v3_hash: str
+    lock_v4_hash: str
     dataset_hash: str
     protocol_hash: str
     execution_manifest_hash: str
-    signature: str
+    _capability: object = None

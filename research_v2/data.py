@@ -269,12 +269,9 @@ def load_dataset(
         if manifest["data_sha256"] != authorization.dataset_hash:
             raise ValueError("Holdout partition blocked: dataset hash mismatch in authorization.")
         
-        # Verify cryptographic signature
-        expected_sig = hashlib.sha256(
-            f"{authorization.lock_v3_hash}:{authorization.dataset_hash}:{authorization.protocol_hash}:{authorization.execution_manifest_hash}:STAGE9_SEAL".encode()
-        ).hexdigest()
-        if authorization.signature != expected_sig:
-            raise ValueError("Holdout partition blocked: invalid authorization signature.")
+        from research_v2.contracts import _STAGE9_CAPABILITY
+        if authorization._capability is not _STAGE9_CAPABILITY:
+            raise ValueError("Holdout partition blocked: invalid authorization capability.")
         
     part_info = splits[partition]
     score_start = part_info["start"]
