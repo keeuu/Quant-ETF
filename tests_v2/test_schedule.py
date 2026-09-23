@@ -70,6 +70,7 @@ def test_monthly_matched_schedule_no_midweek_lookahead():
     assert ev.execution_session == "2026-05-01"  # Next session
     # Feature cutoff must be the completed week of 2026-04-24 close, NOT 2026-04-30!
     assert "2026-04-24" in ev.feature_cutoff
+    assert ev.source_signal_session == "2026-04-24"
 
 
 def test_train_partition_event_counts_regression():

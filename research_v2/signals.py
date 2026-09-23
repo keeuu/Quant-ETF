@@ -260,3 +260,52 @@ def compute_model_signals_for_events(
         rows=rows,
         lineage=lineages,
     )
+
+
+def compute_matched_monthly_signals(
+    weekly_signals: SignalFrame,
+    monthly_events: Sequence[PeriodEvent],
+    monthly_model_id: str,
+) -> SignalFrame:
+    """Map the matched monthly cadence onto previously computed weekly signals.
+
+    Must NOT recalculate momentum or trend. It must sample from the already computed
+    weekly signals according to the source_signal_session linkage.
+    """
+    # Index weekly signals by signal_session
+    weekly_rows_by_session = {row["signal_session"]: row for row in weekly_signals.rows}
+    weekly_lineage_by_session = {lin["signal_session"]: lin for lin in weekly_signals.lineage}
+
+    rows = []
+    lineages = []
+
+    for event in monthly_events:
+        source_session = event.source_signal_session
+        if not source_session or source_session not in weekly_rows_by_session:
+            continue
+
+        w_row = weekly_rows_by_session[source_session]
+        w_lin = weekly_lineage_by_session[source_session]
+
+        # Copy the exact weekly decision but assign it to the monthly event scheduling
+        m_row = dict(w_row)
+        m_row["period_id"] = event.period_id
+        m_row["signal_session"] = event.signal_session  # The month-end date
+        m_row["execution_session"] = event.execution_session
+        m_row["execution_open_ts"] = event.execution_open_ts
+        m_row["status"] = event.status
+        # We explicitly retain the original 'weights', 'selected_symbols', 'momentum_scores', etc.
+        rows.append(m_row)
+
+        m_lin = dict(w_lin)
+        m_lin["period_id"] = event.period_id
+        m_lin["signal_session"] = event.signal_session
+        m_lin["feature_cutoff"] = event.feature_cutoff
+        # We also keep the original 'latest_input_ts' and 'symbols' from the weekly signal
+        lineages.append(m_lin)
+
+    return SignalFrame(
+        model_id=monthly_model_id,
+        rows=rows,
+        lineage=lineages,
+    )

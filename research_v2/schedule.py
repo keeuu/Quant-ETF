@@ -121,6 +121,7 @@ def build_monthly_matched_schedule(
             execution_open_ts=next_open_utc.isoformat(),
             feature_cutoff=latest_weekly.feature_cutoff,
             status=status,
+            source_signal_session=latest_weekly.signal_session,
         ))
 
     return monthly_events

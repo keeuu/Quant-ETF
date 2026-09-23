@@ -63,6 +63,7 @@ class PeriodEvent:
     execution_open_ts: str
     feature_cutoff: str
     status: str
+    source_signal_session: str | None = None
 
 
 @dataclass(frozen=True)

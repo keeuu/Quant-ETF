@@ -122,6 +122,14 @@ def main(argv: list[str] | None = None) -> int:
     p = subs.add_parser("audit-ledger", help="Audit Stage 4 ledger invariants, conservation, and outputs")
     p.add_argument("--run-id", default="phase_04", help="Execution run identifier")
 
+    # --- Stage 5 Subcommands ---
+    p = subs.add_parser("stage5-comparator", help="Run Matched Monthly comparator backtest")
+    p.add_argument("--partition", default="train", help="Partition to run backtest on (train only)")
+    p.add_argument("--weekly-model", default="W_M12_T40", help="Weekly Source Model ID")
+    p.add_argument("--monthly-model", default="M_M12_T40", help="Monthly Target Model ID")
+    p.add_argument("--cost-bps", type=float, default=5.0, help="Transaction cost in bps (e.g. 5)")
+    p.add_argument("--initial-nav", type=float, default=100000.0, help="Initial cash capital")
+    p.add_argument("--run-id", default="phase_05", help="Execution run identifier")
 
     args = parser.parse_args(argv)
     root = _root()
@@ -515,6 +523,125 @@ def main(argv: list[str] | None = None) -> int:
             }
             (out_artifact_dir / "ledger_audit.json").write_bytes(canonical_json(audit_result) + b"\n")
             result = audit_result
+
+        elif args.command == "stage5-comparator":
+            if args.partition != "train":
+                raise ValueError("Stage 5 comparator only supported for train partition")
+
+            dataset_manifest_path = root / "docs/research_v2/dataset_manifest.json"
+            if not dataset_manifest_path.is_file():
+                raise GuardError("dataset_manifest.json missing; snapshot required")
+
+            manifest_data = read_json(dataset_manifest_path)
+            snapshot_dir = root / "research_v2" / "data" / manifest_data["dataset_id"]
+            
+            protocol = read_json(_input(root, "docs/research_v2/protocol_lock.json"))
+            if "protocol_path" in protocol:
+                protocol = read_json(_input(root, protocol["protocol_path"]))
+                
+            dataset_view = load_dataset(
+                snapshot_dir=snapshot_dir,
+                partition=args.partition,
+                as_of=manifest_data["as_of"],
+                splits=protocol["splits"],
+            )
+
+            session_table_path = snapshot_dir / "session_table.csv"
+            session_df = pd.read_csv(session_table_path)
+            session_dates = session_df["session_date"].tolist()
+            as_of_train = "2015-12-31T16:00:00-05:00"
+
+            all_weekly = build_weekly_schedule(session_dates, as_of=as_of_train)
+            all_monthly = build_monthly_matched_schedule(session_dates, as_of=as_of_train, weekly_events=all_weekly)
+
+            protocol = read_json(_input(root, "docs/research_v2/protocol_lock.json"))
+            if "protocol_path" in protocol:
+                protocol = read_json(_input(root, protocol["protocol_path"]))
+            model_spec = next(m for m in protocol["model_grid"]["models"] if m["model_id"] == args.weekly_model)
+
+            # Compute weekly signals
+            weekly_sig_frame = compute_model_signals_for_events(
+                bars=dataset_view.bars,
+                session_dates=session_dates,
+                weekly_events=all_weekly,
+                model_id=args.weekly_model,
+                momentum_months=model_spec["momentum_months"],
+                trend_weeks=model_spec["trend_weeks"],
+            )
+
+            # Map to monthly
+            from .signals import compute_matched_monthly_signals
+            monthly_sig_frame = compute_matched_monthly_signals(
+                weekly_sig_frame, all_monthly, args.monthly_model
+            )
+
+            # Run weekly backtest (for comparison)
+            w_nav, w_pos, w_trd, w_reb, w_pend, w_met = run_backtest(
+                dataset_view=dataset_view, signals=weekly_sig_frame, cost_bps=args.cost_bps, initial_nav=args.initial_nav
+            )
+
+            # Run monthly backtest
+            m_nav, m_pos, m_trd, m_reb, m_pend, m_met = run_backtest(
+                dataset_view=dataset_view, signals=monthly_sig_frame, cost_bps=args.cost_bps, initial_nav=args.initial_nav
+            )
+
+            out_artifact_dir = root / "research_v2" / "artifacts" / args.run_id
+            out_artifact_dir.mkdir(parents=True, exist_ok=True)
+
+            w_nav.to_csv(out_artifact_dir / "weekly_daily_nav.csv", index=False)
+            m_nav.to_csv(out_artifact_dir / "monthly_daily_nav.csv", index=False)
+            w_reb.to_csv(out_artifact_dir / "weekly_rebalance.csv", index=False)
+            m_reb.to_csv(out_artifact_dir / "monthly_rebalance.csv", index=False)
+            w_pend.to_csv(out_artifact_dir / "weekly_pending_events.csv", index=False)
+            m_pend.to_csv(out_artifact_dir / "monthly_pending_events.csv", index=False)
+
+            monthly_schedule_rows = []
+            for ev in all_monthly:
+                monthly_schedule_rows.append({
+                    "month": ev.period_id,
+                    "source_weekly_signal_session": ev.source_signal_session,
+                    "monthly_decision_session": ev.signal_session,
+                    "execution_session": ev.execution_session,
+                    "status": ev.status
+                })
+            pd.DataFrame(monthly_schedule_rows).to_csv(out_artifact_dir / "monthly_schedule.csv", index=False)
+
+            source_mapping_rows = []
+            for m_row in monthly_sig_frame.rows:
+                source_mapping_rows.append({
+                    "monthly_period_id": m_row["period_id"],
+                    "monthly_signal_session": m_row["signal_session"],
+                    "source_weekly_signal_session": next(e.source_signal_session for e in all_monthly if e.period_id == m_row["period_id"]),
+                    "monthly_execution_session": m_row["execution_session"],
+                })
+            pd.DataFrame(source_mapping_rows).to_csv(out_artifact_dir / "source_weekly_mapping.csv", index=False)
+
+            (out_artifact_dir / "weekly_metrics.json").write_bytes(canonical_json(w_met) + b"\n")
+            (out_artifact_dir / "monthly_metrics.json").write_bytes(canonical_json(m_met) + b"\n")
+
+            comparison = {
+                "weekly_model": args.weekly_model,
+                "monthly_model": args.monthly_model,
+                "weekly_executed_rebalances": len(w_reb),
+                "monthly_executed_rebalances": len(m_reb),
+                "weekly_pending_events": len(w_pend),
+                "monthly_pending_events": len(m_pend),
+                "weekly_total_trades": len(w_trd),
+                "monthly_total_trades": len(m_trd),
+                "weekly_total_fees": w_met["total_fees"],
+                "monthly_total_fees": m_met["total_fees"],
+                "weekly_final_nav": w_met["final_nav"],
+                "monthly_final_nav": m_met["final_nav"],
+                "weekly_cagr": w_met["cagr"],
+                "monthly_cagr": m_met["cagr"],
+                "weekly_sharpe": w_met["sharpe_ratio"],
+                "monthly_sharpe": m_met["sharpe_ratio"],
+                "weekly_turnover": w_met["annualized_one_way_turnover"],
+                "monthly_turnover": m_met["annualized_one_way_turnover"],
+            }
+            (out_artifact_dir / "comparison.json").write_bytes(canonical_json(comparison) + b"\n")
+            
+            result = {"status": "PASS", "comparison": comparison}
 
         else:
             raise GuardError(f"Unknown command: {args.command}")

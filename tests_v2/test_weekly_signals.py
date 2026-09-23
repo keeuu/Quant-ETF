@@ -90,3 +90,61 @@ def test_trend_filter_strict_operator_and_window():
     closes_36_below = [100.0] * 35 + [99.0]
     passed_below, sma_below = compute_weekly_trend(99.0, closes_36_below, window_weeks=36)
     assert passed_below is False
+
+
+def test_monthly_signal_identity():
+    """Matched monthly signals must retain exactly the source weekly weights and attributes."""
+    from research_v2.contracts import SignalFrame, PeriodEvent
+    from research_v2.signals import compute_matched_monthly_signals
+
+    weekly_rows = [
+        {
+            "period_id": "W_1",
+            "signal_session": "2015-10-30",
+            "execution_session": "2015-11-02",
+            "weights": {"SPY": 1.0, "QQQ": 0.0},
+            "status": "COMPLETE",
+        },
+        {
+            "period_id": "W_2",
+            "signal_session": "2015-11-27",
+            "execution_session": "2015-11-30",
+            "weights": {"QQQ": 0.5, "IWM": 0.5},
+            "status": "COMPLETE",
+        }
+    ]
+    weekly_lineages = [
+        {"signal_session": "2015-10-30", "test": "A"},
+        {"signal_session": "2015-11-27", "test": "B"},
+    ]
+    weekly_signals = SignalFrame(model_id="W_TEST", rows=weekly_rows, lineage=weekly_lineages)
+
+    # A monthly event taking W_2 as source
+    monthly_events = [
+        PeriodEvent(
+            period_id="M_MATCH_2015_11",
+            signal_session="2015-11-30",
+            signal_close_ts="2015-11-30T16:00:00Z",
+            execution_session="2015-12-01",
+            execution_open_ts="2015-12-01T09:30:00Z",
+            feature_cutoff="2015-11-27T16:00:00Z",
+            status="COMPLETE",
+            source_signal_session="2015-11-27",
+        )
+    ]
+
+    monthly_signals = compute_matched_monthly_signals(weekly_signals, monthly_events, "M_TEST")
+
+    assert monthly_signals.model_id == "M_TEST"
+    assert len(monthly_signals.rows) == 1
+    m_row = monthly_signals.rows[0]
+    assert m_row["period_id"] == "M_MATCH_2015_11"
+    assert m_row["signal_session"] == "2015-11-30"
+    assert m_row["execution_session"] == "2015-12-01"
+    assert m_row["status"] == "COMPLETE"
+    # Identity verified: must hold exact weights from the source W_2
+    assert m_row["weights"] == {"QQQ": 0.5, "IWM": 0.5}
+
+    m_lin = monthly_signals.lineage[0]
+    assert m_lin["signal_session"] == "2015-11-30"
+    assert m_lin["test"] == "B"

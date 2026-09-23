@@ -22,8 +22,11 @@ from research_v2.signals import compute_model_signals_for_events
 
 def _build_synthetic_dataset(num_weeks: int = 50) -> tuple[dict[str, pd.DataFrame], list[str]]:
     """Build a deterministic, continuous synthetic dataset of multiple complete weeks."""
-    # Generate business day sequence (5 sessions per week)
-    sessions = pd.date_range("2024-01-08", periods=num_weeks * 5, freq="B").strftime("%Y-%m-%d").tolist()
+    # Generate business day sequence from real calendar
+    from research_v2.calendar import get_trading_calendar
+    cal = get_trading_calendar()
+    sessions = [s.strftime("%Y-%m-%d") for s in cal.sessions_in_range("2010-01-04", "2020-01-01")]
+    sessions = sessions[:num_weeks * 5]
 
     bars = {}
     for sym_idx, sym in enumerate(UNIVERSE):
@@ -286,3 +289,51 @@ def test_anchor_sensitivity():
     )
     row_den = [r for r in signals_den.rows if r["period_id"] == target_event.period_id][0]
     assert row_den["momentum_scores"]["SPY"] != orig_lineage["symbols"]["SPY"]["momentum"]
+
+
+def test_monthly_poisoning():
+    """Monthly execution must not be poisoned by partial-week or future prices."""
+    from research_v2.schedule import build_monthly_matched_schedule
+    from research_v2.signals import compute_matched_monthly_signals
+
+    bars, sessions = _build_synthetic_dataset(num_weeks=50)
+    as_of = market_as_of_after_close(sessions[-1])
+    weekly_events = build_weekly_schedule(sessions, as_of=as_of)
+    monthly_events = build_monthly_matched_schedule(sessions, as_of=as_of, weekly_events=weekly_events)
+
+    orig_weekly = compute_model_signals_for_events(
+        bars=bars, session_dates=sessions, weekly_events=weekly_events,
+        model_id="W_M06_T36", momentum_months=6, trend_weeks=36
+    )
+    orig_monthly = compute_matched_monthly_signals(orig_weekly, monthly_events, "M_M06_T36")
+
+    test_idx = -2
+    target_event = monthly_events[test_idx]
+    target_session = target_event.signal_session  # Month-end
+
+    # Poison future prices and partial week prices (after source_signal_session)
+    source_session = target_event.source_signal_session
+    poisoned_bars = copy.deepcopy(bars)
+    for sym in UNIVERSE:
+        df = poisoned_bars[sym]
+        # Any price strictly after the completed source weekly session
+        future_mask = df["Date"] > source_session
+        df.loc[future_mask, "close"] *= 10.0
+        df.loc[future_mask, "adj_close"] *= 10.0
+        df.loc[future_mask, "open"] *= 10.0
+        df.loc[future_mask, "adj_open"] *= 10.0
+
+    poisoned_weekly = compute_model_signals_for_events(
+        bars=poisoned_bars, session_dates=sessions, weekly_events=weekly_events,
+        model_id="W_M06_T36", momentum_months=6, trend_weeks=36
+    )
+    poisoned_monthly = compute_matched_monthly_signals(poisoned_weekly, monthly_events, "M_M06_T36")
+
+    orig_row = [r for r in orig_monthly.rows if r["period_id"] == target_event.period_id][0]
+    poison_row = [r for r in poisoned_monthly.rows if r["period_id"] == target_event.period_id][0]
+
+    assert orig_row["selected_symbols"] == poison_row["selected_symbols"]
+    assert orig_row["weights"] == poison_row["weights"]
+    for sym in UNIVERSE:
+        assert orig_row["momentum_scores"][sym] == poison_row["momentum_scores"][sym]
+        assert orig_row["trend_passes"][sym] == poison_row["trend_passes"][sym]
