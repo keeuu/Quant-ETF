@@ -170,3 +170,12 @@ class PendingExecutionRecord:
     partition: str
     status: str
     reason: str
+
+@dataclass(frozen=True)
+class Stage9HoldoutAuthorization:
+    """Narrow authorization token specifically for unlocking Holdout."""
+    lock_v3_hash: str
+    dataset_hash: str
+    protocol_hash: str
+    execution_manifest_hash: str
+    signature: str

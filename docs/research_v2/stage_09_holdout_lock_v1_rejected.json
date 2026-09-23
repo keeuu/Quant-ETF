@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "lock_time": "PRE_HOLDOUT_EXECUTION",
+  "stage": 9,
+  "holdout_partition": {
+    "start": "2021-01-01",
+    "end": "2026-09-18"
+  },
+  "package": {
+    "weekly_primary_models": [
+      "W_M6_T36",
+      "W_M6_T40",
+      "W_M6_T44",
+      "W_M9_T36",
+      "W_M9_T40",
+      "W_M9_T44",
+      "W_M12_T36",
+      "W_M12_T40",
+      "W_M12_T44"
+    ],
+    "monthly_cadence_controls": [
+      "M_M6_T36",
+      "M_M6_T40",
+      "M_M6_T44",
+      "M_M9_T36",
+      "M_M9_T40",
+      "M_M9_T44",
+      "M_M12_T36",
+      "M_M12_T40",
+      "M_M12_T44"
+    ]
+  },
+  "execution_policy": {
+    "primary_cost_bps": 5.0,
+    "atomic_one_shot_execution": true,
+    "no_retry_rule": "If program fails, must prove failure didn't expose strategy performance before patching code. If exposed, holdout is marked EXPOSED and cannot be rerun as unseen.",
+    "post_holdout_prohibition": "No parameter or logic changes allowed after Stage 9 executes. No additions."
+  },
+  "frozen_metrics": [
+    "CAGR",
+    "Vol",
+    "Sharpe",
+    "MaxDD",
+    "Final_NAV",
+    "Total_Fees",
+    "One-Way_Turnover",
+    "Gross_Turnover",
+    "Mean_Cash"
+  ],
+  "paired_deltas": [
+    "Delta_CAGR",
+    "Delta_Vol",
+    "Delta_Sharpe",
+    "Delta_MaxDD",
+    "Delta_Turnover",
+    "Delta_Fees"
+  ],
+  "promotion_rule": "NO_PROMOTION_DECISION / DESCRIPTIVE_HOLDOUT",
+  "lock_sha256": "84757af7d8cfd1e84e9b3d9f28e616367bc86f7f4bd57c607788319a1e4b61d7",
+  "status": "REJECTED_PRE_EXPOSURE",
+  "reason": [
+    "missing_dataset_hash",
+    "missing_protocol_hash",
+    "missing_code_identity",
+    "missing_retrospective_holdout_limitation",
+    "missing_preload_authorization_contract"
+  ],
+  "holdout_performance_accessed": false
+}

@@ -249,12 +249,33 @@ def load_dataset(
     partition: str,
     as_of: str,
     splits: Mapping[str, Any],
+    authorization: Any = None,
 ) -> DatasetView:
     """Load partition-scoped dataset view strictly preventing future lookahead."""
     as_of_dt = parse_as_of(as_of)
     as_of_date = as_of_dt.strftime("%Y-%m-%d")
 
     warmup_start = splits["warmup_start"]
+    if "holdout" in partition.lower():
+        # Validate authorization
+        from research_v2.contracts import Stage9HoldoutAuthorization
+        if not isinstance(authorization, Stage9HoldoutAuthorization):
+            raise ValueError("Holdout partition blocked: invalid or missing authorization object.")
+        # Re-verify hashes internally just to be doubly sure
+        from research_v2.provenance import read_json
+        import hashlib
+        manifest_path = snapshot_dir.parent.parent.parent / "docs/research_v2/dataset_manifest.json"
+        manifest = read_json(manifest_path)
+        if manifest["data_sha256"] != authorization.dataset_hash:
+            raise ValueError("Holdout partition blocked: dataset hash mismatch in authorization.")
+        
+        # Verify cryptographic signature
+        expected_sig = hashlib.sha256(
+            f"{authorization.lock_v3_hash}:{authorization.dataset_hash}:{authorization.protocol_hash}:{authorization.execution_manifest_hash}:STAGE9_SEAL".encode()
+        ).hexdigest()
+        if authorization.signature != expected_sig:
+            raise ValueError("Holdout partition blocked: invalid authorization signature.")
+        
     part_info = splits[partition]
     score_start = part_info["start"]
     score_end = part_info["end"]
