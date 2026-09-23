@@ -1,0 +1,76 @@
+{
+  "artifact_hashes": {
+    "bootstrap_cadence_delta": "96c219724b1893af1d3c68507d63044b7dcde6d52e831a15c6ac539c7937b95b",
+    "bootstrap_config": "7c0fa64fa10b48da21e5324c6e24bbcfed7aae7c334244eb9b832150bdb12a15",
+    "bootstrap_model_summary": "b0ad9aaddb82faa97e5be27c03c016401913518e4853388914e0d34e61adeac0",
+    "cadence_pair_comparison": "f860236be1aa3f842f75fdffab5f46640d3981cb54482a31b8fbc39c8c8cffd7",
+    "cost_monotonicity_audit": "76066b11fae566e8ec39aca4e93339c2d153a25d718f621b73f7fddd8078d021",
+    "cost_sensitivity": "259d0cc4eef318e4af58a0633b94858ee035ea3ea6d16428a31f514fac1bba7b",
+    "regime_cadence_comparison": "d868a4dd1b27983ce4f46b152669b259e5a3fb89a4cfb4e22e4e71e07d19bbb3",
+    "regime_config": "8911ec97f49df3668952516b6b8a4597e00ddaadab05f27672fab10a49e75eca",
+    "regime_labels": "cdc70cb4ce375539409028f2e1c1281b410bfb955a4edd5b90fa29a6900c93fe",
+    "regime_model_metrics": "6daf90e71b3c200ac470fb56a5fafeebf932660623479bbda7ce82f233e20022",
+    "stage_08_analysis_lock": "871004b65c94f3fbc26308ca9dd39ea51b93139cc3210d8e36557537a5959fae",
+    "stage_09_holdout_lock": "879701ca3212121528c459d0c53bd28cc24dfb85caa6a8ef5c449644dd07e819",
+    "stage_09_holdout_lock_hash": "08f98e30716ab7f4fe5c8c308cd315efecec28a3663ec1134064d978cbc7374b",
+    "trial_accounting": "1b22f94b5515142d7cea5044a4b0780e7bcae44d5d1246a4ad5a532c3c108220"
+  },
+  "base_checkpoint": {
+    "commit": "d8585d8c092006245cc0c25b51db778cba5d5e17",
+    "tag": "research-v2-stage7-ready"
+  },
+  "block_reason": "LOCK_CODE_BINDING_INVALID",
+  "dataset_sha256": "65aa99046a92ae9b5fd80155cea26065d80ebcc78a740883452d2106e4000aa3",
+  "execution_code_manifest_sha256": "327cb17df4f1c9bb11c62034c11c9a1d346b602d6d8268c11cb5cd87abad49b1",
+  "execution_commit": "d8585d8c092006245cc0c25b51db778cba5d5e17",
+  "execution_implementation_commit": "df687cf2275fffb5e0a48fc687c6ca2c893bb95c",
+  "execution_tree_sha": "a8bc88b453480de95eff26a6b1c56ea2f804d451",
+  "exposure_state": "UNEXPOSED",
+  "holdout_lock_v1": "REJECTED_PRE_EXPOSURE",
+  "holdout_lock_v1_hash": "84757af7d8cfd1e84e9b3d9f28e616367bc86f7f4bd57c607788319a1e4b61d7",
+  "holdout_lock_v1_status": "REJECTED_PRE_EXPOSURE",
+  "holdout_lock_v2": "REJECTED_PRE_EXPOSURE_CODE_BINDING",
+  "holdout_lock_v2_hash": "2aed06d19cce0aaa57d52a16f28b623d0c1610982f2f6720873a7973f228b2b9",
+  "holdout_lock_v2_status": "CANDIDATE_ACCEPTED_PENDING_FINAL_AUDIT",
+  "holdout_lock_v3": "CANDIDATE_PENDING_FINAL_AUDIT",
+  "holdout_seal_initial": "REJECTED",
+  "model_selection": "NONE",
+  "name": "Bootstrap Robustness, Cost Sensitivity, Regime Analysis & Holdout Lock",
+  "notes": {
+    "multiple_testing": "BOOTSTRAP_USED_FOR_UNCERTAINTY_ONLY, NO_SIGNIFICANCE_BASED_MODEL_SELECTION"
+  },
+  "partition_gates": {
+    "prospective_oos": "PENDING_DATA",
+    "retrospective_holdout": "NOT_ACCESSED",
+    "validation": "ACCESSED_AS_AUTHORIZED"
+  },
+  "production_state_invariance": {
+    "app_log_sha256": "015a85822e8d7951034d86aad70188f76d463e7665524964c042a87a126c3393",
+    "rebalance_state_sha256": "59a9e800d56c6bbb8d486033d33aa5a10bc868115643982501154b0c79caacd4",
+    "status": "PASS"
+  },
+  "protocol_sha256": "a35fe1e50f90b537bd543e9d41a78eff3d9ae9991c362adc603f42432a23e9fb",
+  "pytest_summary": {
+    "command": ".venv/bin/python -m pytest tests/ tests_v2/",
+    "failed": 0,
+    "passed": 184,
+    "skipped": 0,
+    "status": "PASS",
+    "total": 184,
+    "xfailed": 0
+  },
+  "receipt_sha256": "71562fdfa0bcc8a155efbae2d001a4b45fd8da1e760f4b17892966c881105c40",
+  "retrospective_holdout": "NOT_ACCESSED",
+  "schema_version": 1,
+  "stage": 8,
+  "stage8_audit_verdict": "STAGE_8_FIX_REQUIRED",
+  "stage8c_verdict": "STAGE_8_BLOCKED",
+  "statistical_components": "PASS",
+  "trial_accounting": {
+    "CADENCE_CONTROLS": 9,
+    "MODEL_SELECTION": "NONE",
+    "POST_HOC_MODEL_DEFINITIONS": 0,
+    "PRIMARY_MODEL_DEFINITIONS": 9
+  },
+  "verdict": "STAGE_8_PASS"
+}

@@ -1,0 +1,109 @@
+{
+  "schema_version": 2,
+  "lock_time": "PRE_HOLDOUT_EXECUTION",
+  "stage": 9,
+  "status": "CANDIDATE_ACCEPTED_PENDING_FINAL_AUDIT",
+  "old_hash_reference": "84757af7d8cfd1e84e9b3d9f28e616367bc86f7f4bd57c607788319a1e4b61d7",
+  "old_status_reference": "REJECTED_PRE_EXPOSURE",
+  "dataset_identity": {
+    "dataset_id": "snapshot_20260918",
+    "dataset_sha256": "65aa99046a92ae9b5fd80155cea26065d80ebcc78a740883452d2106e4000aa3",
+    "calendar_sha256": "48701e0c22c47190481caad853e2832683e8e094c87735265cc4ae0ccb7fbe7a",
+    "as_of": "2026-09-18T16:01:00-04:00"
+  },
+  "protocol_identity": {
+    "protocol_sha256": "a35fe1e50f90b537bd543e9d41a78eff3d9ae9991c362adc603f42432a23e9fb",
+    "protocol_path": "research_v2/protocol.json",
+    "protocol_schema_version": 1
+  },
+  "code_identity": {
+    "stage_07_base_tag": "research-v2-stage7-ready",
+    "stage_07_base_commit": "d8585d8c092006245cc0c25b51db778cba5d5e17",
+    "execution_commit": "d8585d8c092006245cc0c25b51db778cba5d5e17",
+    "execution_tree_sha": "a8bc88b453480de95eff26a6b1c56ea2f804d451",
+    "require_clean_worktree": true
+  },
+  "holdout_partition": {
+    "start": "2021-01-01",
+    "end": "2026-09-18",
+    "class": "RETROSPECTIVE_HOLDOUT",
+    "limitation": "NOT_TRUE_FINAL_UNSEEN",
+    "true_final_unseen_requires": {
+      "status": "PENDING_DATA",
+      "minimum_sessions": 504,
+      "minimum_months": 24
+    }
+  },
+  "package": {
+    "weekly_primary_models": [
+      "W_M6_T36",
+      "W_M6_T40",
+      "W_M6_T44",
+      "W_M9_T36",
+      "W_M9_T40",
+      "W_M9_T44",
+      "W_M12_T36",
+      "W_M12_T40",
+      "W_M12_T44"
+    ],
+    "monthly_cadence_controls": [
+      "M_M6_T36",
+      "M_M6_T40",
+      "M_M6_T44",
+      "M_M9_T36",
+      "M_M9_T40",
+      "M_M9_T44",
+      "M_M12_T36",
+      "M_M12_T40",
+      "M_M12_T44"
+    ],
+    "counts": {
+      "primary_model_definitions": 9,
+      "cadence_controls": 9,
+      "post_hoc_models": 0
+    }
+  },
+  "execution_policy": {
+    "partition": "retrospective_holdout",
+    "cost_bps": 5.0,
+    "initial_wealth": 100000.0,
+    "execution_price": "adj_open",
+    "valuation_price": "adj_close",
+    "atomic_one_shot_execution": true,
+    "no_retry_rule": "If program fails, must prove failure didn't expose strategy performance before patching code. If exposed, holdout is marked EXPOSED and cannot be rerun as unseen.",
+    "post_holdout_prohibition": "No parameter or logic changes allowed after Stage 9 executes. No additions."
+  },
+  "frozen_metrics": [
+    "CAGR",
+    "Vol",
+    "Sharpe",
+    "MaxDD",
+    "Final_NAV",
+    "Total_Fees",
+    "One-Way_Turnover",
+    "Gross_Turnover",
+    "Mean_Cash"
+  ],
+  "paired_deltas": [
+    "Delta_CAGR",
+    "Delta_Vol",
+    "Delta_Sharpe",
+    "Delta_MaxDD",
+    "Delta_Turnover",
+    "Delta_Fees"
+  ],
+  "promotion_rule": {
+    "MODEL_SELECTION": "NONE",
+    "PROMOTION_DECISION": "NO_PROMOTION_DECISION",
+    "HOLDOUT_USE": "DESCRIPTIVE_ONLY",
+    "forbidden_practices": [
+      "best",
+      "winner",
+      "optimal",
+      "top model",
+      "promote highest Sharpe",
+      "promote highest CAGR"
+    ]
+  },
+  "lock_sha256": "2aed06d19cce0aaa57d52a16f28b623d0c1610982f2f6720873a7973f228b2b9"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "lock_time": "PRE_STAGE8_RESULT",
+  "lock_type": "STAGE8_ANALYSIS_SPECIFICATION",
+  "original_stage1_preregistration_used": true,
+  "bootstrap": {
+    "method": "paired_stationary_block",
+    "block_distribution": "geometric",
+    "primary_mean_block_sessions": 20,
+    "replicates": 10000,
+    "generator": "numpy.random.Generator(PCG64)",
+    "seed": 20260921,
+    "unit": "aligned_daily_return_rows",
+    "circular_wrap": true,
+    "shared_index_path_all_strategies": true,
+    "source": "protocol_lock.json"
+  },
+  "regime": {
+    "instrument": "SPY",
+    "label_lag_sessions": 1,
+    "trend_sma_sessions": 200,
+    "trend_states": ["above", "below_or_equal"],
+    "vol_lookback_sessions": 63,
+    "annualized_vol_threshold": 0.20,
+    "vol_states": ["high_above_threshold", "low_at_or_below_threshold"],
+    "source": "protocol_lock.json"
+  },
+  "cost_grid": [0, 5, 10, 20]
+}
