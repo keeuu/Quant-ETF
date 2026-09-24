@@ -3,7 +3,7 @@
   "mode": "LOCAL_SHADOW_ONLY",
   "research_v2_source_commit": "88ed36a95f0306dc47c23142d485ccb3431e170d",
   "research_v2_dependency_manifest_hash": "ccb0bfe324f10b194c4e85b22c82f97522d37e9c7c2beb88307a42e61889065f",
-  "paper_v2_implementation_commit": "PENDING",
+  "paper_v2_implementation_commit": "4c64f0f197ecd750d085383221c42a4b169142a7",
   "model_package": 18,
   "universe": [
     "SPY",
