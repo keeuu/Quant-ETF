@@ -12,7 +12,7 @@ import shutil
 import uuid
 
 root = Path(__file__).parent.parent
-lock_path = root / "docs/research_v2/stage_09_holdout_lock_v4.json"
+lock_path = root / "docs/research_v2/stage_09_holdout_lock_v5.json"
 exposure_path = root / "docs/research_v2/holdout_exposure_state.json"
 active_path = root / "research_v2/artifacts/phase_08/stage_09_holdout_lock_active_hash.txt"
 
@@ -36,7 +36,7 @@ def clean_env(monkeypatch):
             return type('obj', (object,), {'stdout': ''})
         if args[0] == ["git", "rev-parse", "HEAD"]:
             return type('obj', (object,), {'stdout': 'MOCK_HEAD'})
-        if args[0] == ["git", "rev-parse", "research-v2-stage8-ready^{commit}"]:
+        if args[0] == ["git", "rev-parse", "research-v2-stage8-ready-v2^{commit}"]:
             return type('obj', (object,), {'stdout': 'MOCK_HEAD'})
         if args[0][:3] == ["git", "merge-base", "--is-ancestor"]:
             return type('obj', (object,), {'returncode': 0})
@@ -69,7 +69,7 @@ def test_wrong_implementation_ancestry(monkeypatch):
             return type('obj', (object,), {'stdout': ''})
         if args[0] == ["git", "rev-parse", "HEAD"]:
             return type('obj', (object,), {'stdout': 'MOCK_HEAD'})
-        if args[0] == ["git", "rev-parse", "research-v2-stage8-ready^{commit}"]:
+        if args[0] == ["git", "rev-parse", "research-v2-stage8-ready-v2^{commit}"]:
             return type('obj', (object,), {'stdout': 'MOCK_HEAD'})
         return orig_run(*args, **kwargs)
     monkeypatch.setattr(subprocess, "run", mock_run)
@@ -79,7 +79,7 @@ def test_wrong_implementation_ancestry(monkeypatch):
 def test_wrong_head_tag(monkeypatch):
     orig_run = subprocess.run
     def mock_run(*args, **kwargs):
-        if args[0] == ["git", "rev-parse", "research-v2-stage8-ready^{commit}"]:
+        if args[0] == ["git", "rev-parse", "research-v2-stage8-ready-v2^{commit}"]:
             return type('obj', (object,), {'stdout': 'WRONG_HEAD'})
         if args[0] == ["git", "status", "--porcelain"]:
             return type('obj', (object,), {'stdout': ''})

@@ -1,0 +1,87 @@
+{
+  "schema_version": 4,
+  "lock_time": "PRE_HOLDOUT_EXECUTION",
+  "stage": 9,
+  "status": "ACTIVE",
+  "old_hash_reference_v3": "1fa6527b9a95542286fcd64c4022b1404cde8d91cb93eb3760fa263803a5d4e7",
+  "old_status_reference_v3": "REJECTED_PRE_EXPOSURE_INCOMPLETE_RUNNER",
+  "old_hash_reference_v2": "2aed06d19cce0aaa57d52a16f28b623d0c1610982f2f6720873a7973f228b2b9",
+  "old_hash_reference_v1": "84757af7d8cfd1e84e9b3d9f28e616367bc86f7f4bd57c607788319a1e4b61d7",
+  "provenance": {
+    "stage7_base_tag": "research-v2-stage7-ready",
+    "stage7_base_commit": "d8585d8c092006245cc0c25b51db778cba5d5e17",
+    "execution_implementation_commit": "a77592c2e67d37ec02bc25cd3c5aeb3b340147f7",
+    "execution_code_manifest_sha256": "5a8868db689964786b05e6460e2dc80065d063b83166eccb5b7146ad3891543d",
+    "dataset_sha256": "65aa99046a92ae9b5fd80155cea26065d80ebcc78a740883452d2106e4000aa3",
+    "protocol_sha256": "a35fe1e50f90b537bd543e9d41a78eff3d9ae9991c362adc603f42432a23e9fb",
+    "calendar_sha256": "48701e0c22c47190481caad853e2832683e8e094c87735265cc4ae0ccb7fbe7a",
+    "protocol_path": "research_v2/protocol.json"
+  },
+  "experiment_identity": {
+    "HOLDOUT_CLASS": "RETROSPECTIVE_HOLDOUT",
+    "TRUE_FINAL_UNSEEN": false,
+    "LIMITATION": "NOT_TRUE_FINAL_UNSEEN",
+    "holdout_window": {
+      "start": "2021-01-01",
+      "end": "2026-09-18"
+    },
+    "prospective_oos": {
+      "status": "PENDING_DATA",
+      "minimum_sessions": 504,
+      "minimum_months": 24
+    }
+  },
+  "package": {
+    "weekly_primary_models": [
+      "W_M6_T36",
+      "W_M6_T40",
+      "W_M6_T44",
+      "W_M9_T36",
+      "W_M9_T40",
+      "W_M9_T44",
+      "W_M12_T36",
+      "W_M12_T40",
+      "W_M12_T44"
+    ],
+    "monthly_cadence_controls": [
+      "M_M6_T36",
+      "M_M6_T40",
+      "M_M6_T44",
+      "M_M9_T36",
+      "M_M9_T40",
+      "M_M9_T44",
+      "M_M12_T36",
+      "M_M12_T40",
+      "M_M12_T44"
+    ]
+  },
+  "execution_contract": {
+    "cost_bps": 5.0,
+    "initial_wealth": 100000.0,
+    "frozen_stage3_stage4": [
+      "signal timing",
+      "next-open execution",
+      "self-financing ledger",
+      "pending semantics"
+    ]
+  },
+  "formal_metrics": [
+    "CAGR",
+    "Vol",
+    "Sharpe",
+    "MaxDD",
+    "Final NAV",
+    "Total Fees",
+    "Annualized One-Way Turnover",
+    "Annualized Gross Traded Ratio",
+    "Mean Cash",
+    "Paired Cadence Deltas"
+  ],
+  "promotion_rule": {
+    "MODEL_SELECTION": "NONE",
+    "PROMOTION_DECISION": "NO_PROMOTION_DECISION",
+    "HOLDOUT_USE": "DESCRIPTIVE_ONLY"
+  },
+  "version": 5,
+  "lock_sha256": "4c24c4e65d9bb7df7c4e595bf40894eaf0fc11dd9c847094caf4b8746cd1acd9"
+}

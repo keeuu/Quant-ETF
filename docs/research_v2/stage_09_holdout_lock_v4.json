@@ -2,7 +2,7 @@
   "schema_version": 4,
   "lock_time": "PRE_HOLDOUT_EXECUTION",
   "stage": 9,
-  "status": "CANDIDATE_PENDING_FINAL_AUDIT",
+  "status": "SUPERSEDED_PRE_EXPOSURE_AFTER_FAILED_UNEXPOSED_RUN",
   "old_hash_reference_v3": "1fa6527b9a95542286fcd64c4022b1404cde8d91cb93eb3760fa263803a5d4e7",
   "old_status_reference_v3": "REJECTED_PRE_EXPOSURE_INCOMPLETE_RUNNER",
   "old_hash_reference_v2": "2aed06d19cce0aaa57d52a16f28b623d0c1610982f2f6720873a7973f228b2b9",
