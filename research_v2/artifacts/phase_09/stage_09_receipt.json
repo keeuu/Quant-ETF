@@ -1,0 +1,37 @@
+{
+  "phase": 9,
+  "status": "COMPLETED_EXPOSED",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "FAILED_UNEXPOSED",
+      "root_cause": "CASH pseudo-asset boundary mismatch",
+      "performance_metrics_exposed": "NO",
+      "metadata": {
+        "failure_structural_metadata_observed": [
+          "2022-01-28 signal",
+          "2022-01-31 execution",
+          "all-cash condition"
+        ]
+      }
+    },
+    {
+      "attempt": 2,
+      "status": "SUCCESS",
+      "exposure_state": "COMPLETED_EXPOSED"
+    }
+  ],
+  "model_selection": "NONE",
+  "promotion_decision": "NO_PROMOTION_DECISION",
+  "holdout_use": "DESCRIPTIVE_ONLY",
+  "retrospective_limitation": {
+    "HOLDOUT_CLASS": "RETROSPECTIVE_HOLDOUT",
+    "LIMITATION": "NOT_TRUE_FINAL_UNSEEN"
+  },
+  "prospective_final_oos": {
+    "status": "PENDING_DATA",
+    "minimum_sessions": 504,
+    "minimum_months": 24
+  },
+  "receipt_sha256": "13367809d2b6c119a3c82251bfd7e703f7fe603a3d02b376aa06d380d357e9f1"
+}
