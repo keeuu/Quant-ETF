@@ -120,7 +120,7 @@ def run_backtest(
         # -------------------------------------------------------------
         if current_session in execution_signals:
             sig = execution_signals[current_session]
-            target_weights = sig["weights"]
+            target_weights = {k: v for k, v in sig["weights"].items() if k != "CASH"}
 
             # On rebalance day, execution open prices are strictly required for active or target assets
             exec_opens: dict[str, float] = {}

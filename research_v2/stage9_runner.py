@@ -21,7 +21,7 @@ def verify_stage9_holdout_lock(lock_path: Path, root: Path) -> Stage9HoldoutAuth
         raise ValueError("FAIL_CLOSED_DIRTY_WORKTREE")
         
     head_commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root, capture_output=True, text=True).stdout.strip()
-    tag_commit = subprocess.run(["git", "rev-parse", "research-v2-stage8-ready^{commit}"], cwd=root, capture_output=True, text=True).stdout.strip()
+    tag_commit = subprocess.run(["git", "rev-parse", "research-v2-stage8-ready-v2^{commit}"], cwd=root, capture_output=True, text=True).stdout.strip()
     if head_commit != tag_commit or not tag_commit:
         raise ValueError("FAIL_CLOSED_HEAD_NOT_READY_TAG")
         

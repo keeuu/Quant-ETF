@@ -346,3 +346,100 @@ def test_pending_status_contract_regression():
     assert len(pending_valid) == 2
     assert set(pending_valid["status"]) == {"PENDING_OUTSIDE_SEGMENT"}
 
+
+
+
+def test_engine_cash_normalization() -> None:
+    """Engine must normalize SignalFrame weights by stripping the pseudo-asset CASH before ledger execution."""
+    from research_v2.contracts import DatasetView, SignalFrame
+    from research_v2.engine import run_backtest
+    import pandas as pd
+
+    dates = ["2018-01-01", "2018-01-02", "2018-01-03"]
+    df = pd.DataFrame({
+        "Date": dates,
+        "adj_close": [100.0, 100.0, 100.0],
+        "adj_open": [100.0, 100.0, 100.0],
+    })
+    bars = {sym: df for sym in ["SPY", "QQQ", "IWM", "EFA", "EEM", "GLD", "TLT", "IEF"]}
+    
+    class MockManifest: pass
+    
+    class MockPart:
+        start = "2018-01-01"
+        end = "2018-01-03"
+
+    ds = DatasetView(
+        manifest=MockManifest(),
+        partition="test",
+        as_of="asof",
+        feature_start="2018-01-01",
+        score_start="2018-01-01",
+        score_end="2018-01-03",
+        bars=bars
+    )
+
+    # 1. All-cash
+    sig_all_cash = SignalFrame(
+        model_id="W_TEST",
+        rows=[{
+            "signal_session": "2018-01-01",
+            "execution_session": "2018-01-02",
+            "weights": {"SPY": 0.0, "QQQ": 0.0, "CASH": 1.0},
+            "status": "COMPLETE",
+        }],
+        lineage=[],
+    )
+    nav, pos, tr, reb, pend, met = run_backtest(ds, sig_all_cash, 0.0, 100000.0)
+    assert len(reb) == 1
+    assert reb.iloc[0]["cash_after"] == 100000.0
+
+    # 2. Partially invested
+    sig_partial = SignalFrame(
+        model_id="W_TEST",
+        rows=[{
+            "signal_session": "2018-01-01",
+            "execution_session": "2018-01-02",
+            "weights": {"SPY": 0.5, "QQQ": 0.0, "CASH": 0.5},
+            "status": "COMPLETE",
+        }],
+        lineage=[],
+    )
+    nav, pos, tr, reb, pend, met = run_backtest(ds, sig_partial, 0.0, 100000.0)
+    assert len(reb) == 1
+    assert reb.iloc[0]["cash_after"] == 50000.0
+    assert len(tr) == 1
+    assert tr.iloc[0]["symbol"] == "SPY"
+    assert tr.iloc[0]["new_shares"] == 500.0
+
+    # 3. Fully invested
+    sig_full = SignalFrame(
+        model_id="W_TEST",
+        rows=[{
+            "signal_session": "2018-01-01",
+            "execution_session": "2018-01-02",
+            "weights": {"SPY": 0.5, "QQQ": 0.5, "CASH": 0.0},
+            "status": "COMPLETE",
+        }],
+        lineage=[],
+    )
+    nav, pos, tr, reb, pend, met = run_backtest(ds, sig_full, 0.0, 100000.0)
+    assert len(reb) == 1
+    assert reb.iloc[0]["cash_after"] == 0.0
+    assert len(tr) == 2
+
+    # 4. No CASH key (legacy/risky-only)
+    sig_legacy = SignalFrame(
+        model_id="W_TEST",
+        rows=[{
+            "signal_session": "2018-01-01",
+            "execution_session": "2018-01-02",
+            "weights": {"SPY": 0.25, "QQQ": 0.25},
+            "status": "COMPLETE",
+        }],
+        lineage=[],
+    )
+    nav, pos, tr, reb, pend, met = run_backtest(ds, sig_legacy, 0.0, 100000.0)
+    assert len(reb) == 1
+    assert reb.iloc[0]["cash_after"] == 50000.0
+    
