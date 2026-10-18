@@ -51,7 +51,15 @@ def main(argv=None) -> int:
     s1.add_argument("--out", default=str(ROOT / "research_v3/artifacts/step1"))
     s2 = sub.add_parser("step2", help="Pre-registered signal variants vs BASE on train+validation")
     s2.add_argument("--out", default=str(ROOT / "research_v3/artifacts/step2"))
+    s3 = sub.add_parser("step3", help="Pre-registered cash-slot / defensive / cap variants vs BASE on train+validation")
+    s3.add_argument("--out", default=str(ROOT / "research_v3/artifacts/step3"))
     args = ap.parse_args(argv)
+    if args.cmd == "step3":
+        from .step3 import run_step3, write_outputs as write3
+        out = Path(args.out)
+        write3(run_step3(), out)
+        print(f"wrote {out}")
+        return 0
     if args.cmd == "step2":
         from .step2 import run_step2, write_outputs
         out = Path(args.out)
