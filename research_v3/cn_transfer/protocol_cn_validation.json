@@ -1,0 +1,58 @@
+{
+  "protocol": "CN transfer validation: data verification and robustness checks for frozen CAP_DEF_M on the CN universe",
+  "written_at": "2026-10-19",
+  "baseline_commit": "2078682",
+  "written_before_any_validation_run": true,
+  "rule": "No parameter, rule or universe is selected or changed based on these checks. They are descriptive. The frozen CAP_DEF_M (momentum 12m, trend 40w) on the 6-ETF CN universe remains the only candidate.",
+  "inherits": ["research_v3/cn_transfer/protocol_cn_transfer.json", "research_v3/cn_transfer/protocol_cn_transfer_amendment1.json"],
+
+  "part_A_data_verification": {
+    "sources": {
+      "EM_HFQ": "Eastmoney back-adjusted ETF bars: ak.fund_etf_hist_em(symbol, period='daily', adjust='hfq'), plus unadjusted (adjust='') for the suspension check",
+      "EM_NAV": "Eastmoney ETF NAV: ak.fund_etf_fund_info_em (unit NAV, accumulated NAV, daily NAV growth incl. distributions)",
+      "EM_DIV": "Eastmoney fund distribution/split records for the 6 ETFs (any akshare endpoint that returns them; record which)"
+    },
+    "checks": {
+      "A1_price_adjustment": "Daily return of our adj_close vs EM_HFQ close, per symbol, over 2013-07-29..2026-09-30 sessions present in both. Report: mean |diff|, max |diff| with date, count of days |diff| > 5 bp, annualized return of each series and their difference.",
+      "A1_pass_if": "for every symbol: |annualized return diff| <= 0.10 pp AND no day with |diff| > 50 bp that is not explained by a documented distribution/conversion date offset of at most 3 sessions",
+      "A2_nav_tracking": "Annualized total return of our adj_close vs NAV total return (from daily NAV growth) per symbol; report difference and correlation of daily returns.",
+      "A2_pass_if": "|annualized diff| <= 0.50 pp per symbol (premium/discount drift and fees make exact equality impossible)",
+      "A3_corporate_actions": "List every distribution (ex-date, amount per share) and conversion (date, ratio) from EM_DIV and compare with the Sina hfq.js records used in the baseline. Report matches and mismatches.",
+      "A4_suspensions": "Check whether EM unadjusted bars exist for 510500 on 2015-04-13/14 and 159915 on 2021-02-08."
+    },
+    "if_A_fails": "Rerun the baseline transfer test unchanged except using EM_HFQ prices (adj_open/adj_close = hfq open/close), report it as 'data-corrected rerun' next to the baseline, and evaluate the original success criteria on both. If Eastmoney is unreachable, use any other independent source and say which.",
+    "if_A_unreachable": "Report which checks could not be done; do not substitute invented data."
+  },
+
+  "part_B_robustness": {
+    "common": "Same engine, CN universe, groups, DEF, SHIBOR cash, amendment-1 suspension handling, primary cost 5+5 bps, benchmarks CSI300_BH and CN_60_40, partitions FULL/SUB_A/SUB_B, using the baseline (Sina self-adjusted) data. If Part A triggers a data-corrected rerun, run Part B on both datasets.",
+    "B1_parameter_neighbourhood": {
+      "grid": {"momentum_months": [6, 9, 12], "trend_weeks": [36, 40, 44]},
+      "per_cell_check": "FULL xSharpe > CN_60_40 FULL xSharpe AND FULL MDD < CSI300_BH FULL MDD",
+      "holds_if": "at least 7 of 9 cells pass"
+    },
+    "B2_execution_lag": {
+      "offsets_sessions": [0, 1, 2, 3, 4],
+      "definition": "execute k sessions after the normal execution session (signal unchanged); k=0 is the baseline",
+      "holds_if": "all 5 offsets pass the per-cell check of B1"
+    },
+    "B3_etf_substitution": {
+      "substitutions": {"510300": "510330", "510500": "159922"},
+      "definition": "run once with each substitution alone and once with both; same groups and universe order positions",
+      "data": "fetched from the same source family as the baseline (Sina + self-built adjustment) using the baseline code path; if a substitute lacks history back to 2013-07-29, report NOT RUN for that variant",
+      "holds_if": "every run that can be run passes the per-cell check of B1"
+    },
+    "B4_small_account_execution": {
+      "capital_cny": [100000, 20000],
+      "lot_size_shares": 100,
+      "rule": "target shares rounded down to whole 100-share lots; leftover stays in cash (earns SHIBOR)",
+      "commission": "max(5 CNY, 2.5 bp of trade value) per trade, plus 5 bp slippage per side; no stamp duty on ETFs",
+      "report": "CAGR, xSharpe, MDD, mean cash weight vs the baseline (fractional, 5+5 bps)",
+      "holds_if": "at 100000 CNY: CAGR drop vs baseline <= 1.0 pp and still passes the per-cell check of B1 (20000 CNY is reported only)"
+    },
+    "B5_2015_drawdown_decomposition": "For the FULL-run max drawdown of CAP_DEF_M: peak date, trough date, recovery date; month-by-month holdings, weights, signal dates and each holding's contribution to the drawdown; and for each month whether the trend filter for each held asset was passing at the signal close."
+  },
+
+  "outputs": "research_v3/cn_transfer/validation/ : data_check.md + CSVs (Part A), robustness.md + CSVs (Part B), and a short VALIDATION_SUMMARY.md stating for each check PASS / FAIL / NOT RUN against the thresholds above.",
+  "freeze_rule": "This protocol is frozen at commit time; any later change is a separately labelled amendment."
+}
