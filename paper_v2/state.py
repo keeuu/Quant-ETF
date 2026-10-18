@@ -1,7 +1,7 @@
 import json
 import os
-import fcntl
 from typing import Dict, Any, Optional
+from .fsutil import atomic_write_text, file_lock
 from .config import STATE_FILE_PATH, INITIAL_CASH, MODELS
 
 class PaperState:
@@ -35,20 +35,19 @@ class PaperState:
                 "last_execution": None,
                 "pending_order": None,
                 "fees": 0.0,
-                "turnover": 0.0
+                "turnover": 0.0,
+                "dividends_total": 0.0,
+                "dividends_credited": {},
+                "last_dividend_date": None
             }
         return state
         
     def save(self):
-        with open(self.state_path, "w") as f:
-            fcntl.flock(f, fcntl.LOCK_EX)
-            try:
-                json.dump(self._state, f, indent=2)
-                f.flush()
-                os.fsync(f.fileno())
-            finally:
-                fcntl.flock(f, fcntl.LOCK_UN)
-                
+        """Atomic save: temp file in same dir + fsync + os.replace, under an exclusive lock."""
+        payload = json.dumps(self._state, indent=2)
+        with file_lock(self.state_path + ".lock"):
+            atomic_write_text(self.state_path, payload)
+
     def get_model_state(self, model_id: str) -> Dict[str, Any]:
         return self._state["models"][model_id]
         

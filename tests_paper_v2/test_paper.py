@@ -83,7 +83,7 @@ def test_idempotency(mock_fetch):
         
         sf = SignalFrame(
             model_id="mock",
-            rows={"2020-12-24": {"SPY": 0.5, "TLT": 0.5}},
+            rows=[{"signal_session": "2020-12-24", "weights": {"SPY": 0.5, "TLT": 0.5}}],
             lineage={}
         )
         mock_cs.return_value = sf
@@ -136,7 +136,7 @@ def test_all_cash(mock_fetch):
         
         sf = SignalFrame(
             model_id="mock",
-            rows={"2020-12-24": {"CASH": 1.0}},
+            rows=[{"signal_session": "2020-12-24", "weights": {"CASH": 1.0}}],
             lineage={}
         )
         mock_cs.return_value = sf
@@ -185,7 +185,7 @@ def test_missing_open_price(mock_fetch):
         )
         mock_ws.return_value = [e1]
         mock_ms.return_value = []
-        sf = SignalFrame(model_id="mock", rows={"2020-12-24": {"SPY": 1.0}}, lineage={})
+        sf = SignalFrame(model_id="mock", rows=[{"signal_session": "2020-12-24", "weights": {"SPY": 1.0}}], lineage={})
         mock_cs.return_value = sf
         
         run_signal_phase("2020-12-25")
