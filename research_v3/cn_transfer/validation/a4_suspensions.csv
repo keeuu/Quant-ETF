@@ -1,0 +1,4 @@
+symbol,session,EM_unadjusted_bar,tencent_unadjusted_bar_exists,sina_bar_exists,EM_NAV_row_exists,EM_NAV_unit,EM_NAV_status
+510500,2015-04-13,NOT RUN (EM bar endpoint unreachable),False,False,True,2.277,暂停申购/暂停赎回
+510500,2015-04-14,NOT RUN (EM bar endpoint unreachable),False,False,True,8.1198,暂停申购/暂停赎回
+159915,2021-02-08,NOT RUN (EM bar endpoint unreachable),False,False,True,3.1649,暂停交易/暂停交易

@@ -1,0 +1,813 @@
+{
+  "status": {
+    "EM_HFQ:510300": "UNREACHABLE",
+    "EM_UNADJ:510300": "UNREACHABLE",
+    "EM_HFQ:510050": "UNREACHABLE",
+    "EM_UNADJ:510050": "UNREACHABLE",
+    "EM_HFQ:510500": "UNREACHABLE",
+    "EM_UNADJ:510500": "UNREACHABLE",
+    "EM_HFQ:159915": "UNREACHABLE",
+    "EM_UNADJ:159915": "UNREACHABLE",
+    "EM_HFQ:518880": "UNREACHABLE",
+    "EM_UNADJ:518880": "UNREACHABLE",
+    "EM_HFQ:511010": "UNREACHABLE",
+    "EM_UNADJ:511010": "UNREACHABLE",
+    "EM_NAV:510300": "OK",
+    "EM_NAV:510050": "OK",
+    "EM_NAV:510500": "OK",
+    "EM_NAV:159915": "OK",
+    "EM_NAV:518880": "OK",
+    "EM_NAV:511010": "OK",
+    "EM_DIV": "OK",
+    "EM_SPLIT": "OK",
+    "TENCENT_UNADJ:510300": "OK",
+    "TENCENT_UNADJ:510050": "OK",
+    "TENCENT_UNADJ:510500": "OK",
+    "TENCENT_UNADJ:159915": "OK",
+    "TENCENT_UNADJ:518880": "OK",
+    "TENCENT_UNADJ:511010": "OK",
+    "SINA:510330": "OK first=2013-01-16 last=2026-10-16 rows=3337",
+    "SINA:159922": "OK first=2013-03-15 last=2026-10-16 rows=3300"
+  },
+  "calls": [
+    {
+      "call": "EM_HFQ 510300",
+      "status": "FAILED",
+      "tries": 3,
+      "error": "ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "call": "EM_UNADJ 510300",
+      "status": "FAILED",
+      "tries": 3,
+      "error": "ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "call": "EM_HFQ 510050",
+      "status": "FAILED",
+      "tries": 3,
+      "error": "ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "call": "EM_UNADJ 510050",
+      "status": "FAILED",
+      "tries": 3,
+      "error": "ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "call": "EM_HFQ 510500",
+      "status": "FAILED",
+      "tries": 3,
+      "error": "ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "call": "EM_UNADJ 510500",
+      "status": "FAILED",
+      "tries": 3,
+      "error": "ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "call": "EM_HFQ 159915",
+      "status": "FAILED",
+      "tries": 3,
+      "error": "ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "call": "EM_UNADJ 159915",
+      "status": "FAILED",
+      "tries": 3,
+      "error": "ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "call": "EM_HFQ 518880",
+      "status": "FAILED",
+      "tries": 3,
+      "error": "ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "call": "EM_UNADJ 518880",
+      "status": "FAILED",
+      "tries": 3,
+      "error": "ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "call": "EM_HFQ 511010",
+      "status": "FAILED",
+      "tries": 3,
+      "error": "ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "call": "EM_UNADJ 511010",
+      "status": "FAILED",
+      "tries": 3,
+      "error": "ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))"
+    },
+    {
+      "call": "EM_NAV 510300",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_NAV 510050",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_NAV 510500",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_NAV 159915",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_NAV 518880",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_NAV 511010",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2012 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2012 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2012 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2013 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2013 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2013 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2013 page=4",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2013 page=5",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2014 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2014 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2014 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2014 page=4",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2014 page=5",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2015 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2015 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2015 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2015 page=4",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2015 page=5",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2015 page=6",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2016 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2016 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2016 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2016 page=4",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2016 page=5",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2016 page=6",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2016 page=7",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2017 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2017 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2017 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2017 page=4",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2017 page=5",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2018 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2018 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2018 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2018 page=4",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2018 page=5",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2018 page=6",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2018 page=7",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2019 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2019 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2019 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2019 page=4",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2019 page=5",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2019 page=6",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2019 page=7",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2020 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2020 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2020 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2020 page=4",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2020 page=5",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2020 page=6",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2020 page=7",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2020 page=8",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2021 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2021 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2021 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2021 page=4",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2021 page=5",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2021 page=6",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2021 page=7",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2021 page=8",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2022 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2022 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2022 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2022 page=4",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2022 page=5",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2022 page=6",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2022 page=7",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2023 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2023 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2023 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2023 page=4",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2023 page=5",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2023 page=6",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2024 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2024 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2024 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2024 page=4",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2024 page=5",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2024 page=6",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2024 page=7",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2025 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2025 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2025 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2025 page=4",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2025 page=5",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2025 page=6",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2025 page=7",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2025 page=8",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2026 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2026 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2026 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2026 page=4",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2026 page=5",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2026 page=6",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_DIV year=2026 page=7",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2012 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2013 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2013 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2014 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2014 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2014 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2015 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2015 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2015 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2015 page=4",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2016 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2016 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2016 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2017 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2017 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2017 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2018 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2018 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2018 page=3",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2019 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2019 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2020 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2020 page=2",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2021 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2022 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2023 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2024 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2025 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "EM_SPLIT year=2026 page=1",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "TENCENT_UNADJ 510300",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "TENCENT_UNADJ 510050",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "TENCENT_UNADJ 510500",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "TENCENT_UNADJ 159915",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "TENCENT_UNADJ 518880",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "TENCENT_UNADJ 511010",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "SINA bars 510330",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "SINA hfq.js 510330",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "SINA bars 159922",
+      "status": "OK",
+      "tries": 1
+    },
+    {
+      "call": "SINA hfq.js 159922",
+      "status": "OK",
+      "tries": 1
+    }
+  ],
+  "akshare_version": "1.19.1",
+  "fetched_utc": "2026-10-18T19:49:06.442840+00:00"
+}

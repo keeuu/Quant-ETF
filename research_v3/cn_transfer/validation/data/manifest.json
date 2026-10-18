@@ -1,0 +1,99 @@
+{
+  "akshare_version": "1.19.1",
+  "fetched_utc": "2026-10-18T19:49:06.443444+00:00",
+  "files": {
+    "159922.csv": {
+      "sha256": "257561a411241f221163f3d948ec8e02ae575d0528da906a085d9fbd071c7e4c"
+    },
+    "159922_sina_hfqjs_raw.json": {
+      "sha256": "6733837ee857f24d77eee7a9bd74ceae18741153c2a44723d2cf5698bc1586f6"
+    },
+    "159922_sina_raw.csv": {
+      "sha256": "b48a50859196d0e0c5ee020b80dc891e3210aace944924e0098cbe688ffdca3b"
+    },
+    "510330.csv": {
+      "sha256": "ac964087230fba21e327bc9a3f04f2d8034046bb725fd6a4e5c1d5e712c1bc60"
+    },
+    "510330_sina_hfqjs_raw.json": {
+      "sha256": "8a1f3aba6083849b9b0289be07ca8fa0d59bb5498fe1346089e260d57e87c5cc"
+    },
+    "510330_sina_raw.csv": {
+      "sha256": "277eec1d92a1841b240b7528020f3de6114e1a9ded2a0aed127eb2c5be9d2fca"
+    },
+    "em_div.csv": {
+      "sha256": "596c98fa97b3d4d18113a757ea03f5c02614f1c1d6b448b7cd50a5bc57ee686b"
+    },
+    "em_nav_159915.csv": {
+      "sha256": "dae94d436914867b697d10d026ff1e092e300a2ebe8d2cecd04f1557b52ecfd6"
+    },
+    "em_nav_510050.csv": {
+      "sha256": "437ee3633f1cb33f4bd7d876e71a87123c4e8a855818458759f7eb94f40a0495"
+    },
+    "em_nav_510300.csv": {
+      "sha256": "57b14b53ab188f2798b3c0adcbeec8236fcb078e64c8ded751130b326505a850"
+    },
+    "em_nav_510500.csv": {
+      "sha256": "bcc8d8b89a12c8aa2b48f45c2c31db4aedddd9af7fdabaefda6478aa62cd2b43"
+    },
+    "em_nav_511010.csv": {
+      "sha256": "6ad6015711ea86c5803f823b66845c7b6fddb793e2891058c8069c045e3aa52a"
+    },
+    "em_nav_518880.csv": {
+      "sha256": "ac865b663685f80b2d29ce190e931377a2d9077c6e28d9c2504d8bb5675bc87b"
+    },
+    "em_split.csv": {
+      "sha256": "503cbe2907f28b83253866d226bc8a70c6193b1a191acfdda5f18cfece4bab50"
+    },
+    "fetch_log.json": {
+      "sha256": "89bbc29de57ea061c67bda44d545e0a4690919931792ec8cbd7475fed2785ce9"
+    },
+    "tencent_unadj_159915.csv": {
+      "sha256": "27c6952d215eedb358bc0b7ac242568184bc1aa9781960496321fb46a9f6a075"
+    },
+    "tencent_unadj_510050.csv": {
+      "sha256": "3996cf25a77cc52f844387790f8b26119666cb677440de237d9e0cd4eca943b6"
+    },
+    "tencent_unadj_510300.csv": {
+      "sha256": "c93784d78cbf8cbab8a27945809c3da03f31c691c7143ed8c99886d97ba45624"
+    },
+    "tencent_unadj_510500.csv": {
+      "sha256": "f5b8ec77e194ed619124e71b3fe36bd31f5ac6448320fb178d4db0bdf67720ec"
+    },
+    "tencent_unadj_511010.csv": {
+      "sha256": "0ff4d364eb2cfc1d89826a18b12e0a697a3e7015bd82311c44146428fde031b4"
+    },
+    "tencent_unadj_518880.csv": {
+      "sha256": "611e907f685eff556a88eb5aaf0ad14348c8a82c3dfa9b1e4f6977b057cbae79"
+    }
+  },
+  "status": {
+    "EM_DIV": "OK",
+    "EM_HFQ:159915": "UNREACHABLE",
+    "EM_HFQ:510050": "UNREACHABLE",
+    "EM_HFQ:510300": "UNREACHABLE",
+    "EM_HFQ:510500": "UNREACHABLE",
+    "EM_HFQ:511010": "UNREACHABLE",
+    "EM_HFQ:518880": "UNREACHABLE",
+    "EM_NAV:159915": "OK",
+    "EM_NAV:510050": "OK",
+    "EM_NAV:510300": "OK",
+    "EM_NAV:510500": "OK",
+    "EM_NAV:511010": "OK",
+    "EM_NAV:518880": "OK",
+    "EM_SPLIT": "OK",
+    "EM_UNADJ:159915": "UNREACHABLE",
+    "EM_UNADJ:510050": "UNREACHABLE",
+    "EM_UNADJ:510300": "UNREACHABLE",
+    "EM_UNADJ:510500": "UNREACHABLE",
+    "EM_UNADJ:511010": "UNREACHABLE",
+    "EM_UNADJ:518880": "UNREACHABLE",
+    "SINA:159922": "OK first=2013-03-15 last=2026-10-16 rows=3300",
+    "SINA:510330": "OK first=2013-01-16 last=2026-10-16 rows=3337",
+    "TENCENT_UNADJ:159915": "OK",
+    "TENCENT_UNADJ:510050": "OK",
+    "TENCENT_UNADJ:510300": "OK",
+    "TENCENT_UNADJ:510500": "OK",
+    "TENCENT_UNADJ:511010": "OK",
+    "TENCENT_UNADJ:518880": "OK"
+  }
+}
