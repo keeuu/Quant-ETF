@@ -49,7 +49,15 @@ def main(argv=None) -> int:
     sub.add_parser("snapshot-irx", help="Download ^IRX once (train+validation range) and freeze with sha256")
     s1 = sub.add_parser("step1", help="Run 18 models on train+validation, old vs new settings")
     s1.add_argument("--out", default=str(ROOT / "research_v3/artifacts/step1"))
+    s2 = sub.add_parser("step2", help="Pre-registered signal variants vs BASE on train+validation")
+    s2.add_argument("--out", default=str(ROOT / "research_v3/artifacts/step2"))
     args = ap.parse_args(argv)
+    if args.cmd == "step2":
+        from .step2 import run_step2, write_outputs
+        out = Path(args.out)
+        write_outputs(run_step2(), out)
+        print(f"wrote {out}")
+        return 0
     if args.cmd == "snapshot-irx":
         print(create_irx_snapshot())
         return 0

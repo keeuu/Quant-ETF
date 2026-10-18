@@ -1,0 +1,39 @@
+{
+  "protocol": "research_v3_step2",
+  "version": 1,
+  "preregistered_before_any_step2_backtest": true,
+  "partitions": ["train", "validation"],
+  "settings": "research_v3.config.V3_DEFAULT (^IRX cash yield, cost 5 bps + slippage 5 bps per side)",
+  "universe": "research_v2 UNIVERSE, unchanged",
+  "trend_filter": "price above trend SMA (research_v2 strict >), weekly K-week SMA",
+  "top_n": 3,
+  "unfilled_slots": "v2 convention: weights renormalised over selected assets; 100% CASH only if none qualifies",
+  "trend_weeks": [36, 40, 44],
+  "cadences": ["W", "M"],
+  "base_momentum_months": 12,
+  "variants": {
+    "BASE": {"description": "v2 signals unchanged", "cadences": ["W", "M"]},
+    "ENS": {
+      "description": "momentum score = mean of 3/6/12 month momentum, each computed by v2 compute_weekly_momentum (same anchors, one-week skip)",
+      "momentum_months": [3, 6, 12], "cadences": ["W", "M"]
+    },
+    "BUF": {
+      "description": "held asset stays selected if it passes trend and rank <= buffer_rank; remaining slots filled by best-ranked passing assets; v2 tie-break",
+      "buffer_rank": 4, "momentum_months": 12, "cadences": ["W", "M"]
+    },
+    "IVOL": {
+      "description": "selected assets weighted proportional to 1/sigma; sigma = sample std (ddof=1) of daily adj_close log returns over the last vol_window returns ending at signal close; total risky weight unchanged",
+      "vol_window": 63, "momentum_months": 12, "cadences": ["W", "M"]
+    },
+    "TRANCHE": {
+      "description": "monthly only; n_tranches independent sub-portfolios with equal initial capital; sub-portfolio k rebalances monthly on the k-th (0-based) weekly event of each month (last event if fewer); BASE logic; costs per sub-portfolio, no netting; total NAV is the sum",
+      "n_tranches": 4, "momentum_months": 12, "cadences": ["M"]
+    },
+    "COMBO": {
+      "description": "ENS + BUF + IVOL; monthly cadence additionally TRANCHE",
+      "components": ["ENS", "BUF", "IVOL"], "monthly_adds": ["TRANCHE"], "cadences": ["W", "M"]
+    }
+  },
+  "metrics": ["cagr", "ann_vol", "sharpe_rf0", "excess_sharpe_over_irx", "max_drawdown", "ann_one_way_turnover", "mean_cash_weight"],
+  "parameter_search": "none"
+}
