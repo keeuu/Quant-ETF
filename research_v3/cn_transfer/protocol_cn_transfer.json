@@ -1,0 +1,79 @@
+{
+  "protocol": "research_v3 CN transfer test of frozen candidate CAP_DEF_M (T40)",
+  "written_at": "2026-10-19",
+  "written_before_any_cn_data_was_downloaded_or_inspected": true,
+  "frozen_candidate_source": {
+    "file": "research_v3/candidates_frozen.json",
+    "label": "CAP_DEF_M",
+    "code_git_commit": "5ad72d716379d7bf3e788895192c572b4bf29003"
+  },
+  "purpose": "Out-of-market test: apply the frozen rule unchanged to a pre-declared China A-share ETF universe. No parameter, rule or universe changes after this file is committed. Results are recorded whatever they are.",
+  "rule_unchanged": {
+    "cadence": "monthly matched (same construction as research_v2 build_monthly_matched_schedule, on the XSHG calendar)",
+    "momentum_months": 12,
+    "momentum_definition": "identical to research_v2 compute_weekly_momentum (same anchor/skip convention)",
+    "trend_weeks": 40,
+    "trend_definition": "identical to research_v2 compute_weekly_trend",
+    "top_n": 3,
+    "cap_rule": "at most 1 selected asset per group; walk momentum ranking of trend-passing assets, skip assets whose group already has a selection; tie-break = universe order below",
+    "slots": "def: each of 3 slots = 1/3; unfilled slots go to DEFENSIVE_BOND if its 3-month total return (anchor to signal close, no skip) is strictly greater than the cash return over the same window, else CASH",
+    "execution": "next XSHG session open after the signal close",
+    "cost_bps_per_side": 5.0,
+    "slippage_bps_per_side": 5.0
+  },
+  "mapping_from_us_to_cn": {
+    "universe_order": ["510300", "510050", "510500", "159915", "518880", "511010"],
+    "groups": {
+      "CN_LARGE (maps US_EQ slot role)": ["510300", "510050"],
+      "CN_MIDSMALL_GROWTH (maps INTL_EQ slot role)": ["510500", "159915"],
+      "GOLD": ["518880"],
+      "BONDS": ["511010"]
+    },
+    "names": {
+      "510300": "华泰柏瑞沪深300ETF",
+      "510050": "华夏上证50ETF",
+      "510500": "南方中证500ETF",
+      "159915": "易方达创业板ETF",
+      "518880": "华安黄金ETF",
+      "511010": "国泰上证5年期国债ETF"
+    },
+    "DEFENSIVE_BOND": "511010 (maps IEF)",
+    "cash": "accrues 3-month SHIBOR (maps 13-week T-bill ^IRX); simple money-market convention: daily accrual = rate(previous session) * calendar_days / 365; forward-fill from earlier values only; fail if none",
+    "deviations_declared_in_advance": [
+      "US universe has 8 assets incl. TLT; CN universe has 6. No long-duration bond ETF with history from 2013 exists (511260 starts 2017-08), so BONDS has only 511010.",
+      "No QDII/cross-border ETFs, to avoid premium-to-NAV distortions.",
+      "Prices are exchange trading prices (not NAV), adjusted for distributions (hfq/back-adjusted total return) for signals and returns; execution at the adjusted open, same as v2's adj_open convention.",
+      "T+1 does not bind: signals use close, trades execute at the next session open, and no position is sold the day it was bought.",
+      "Daily price limits and suspensions are not modelled; any session where a held or target asset has no bar is handled the way research_v2 handles missing prices (fail-closed), and every such event is counted and reported.",
+      "Cost 5+5 bps kept unchanged even though A-share ETF commissions/spreads differ; a sensitivity row with 10+10 bps is reported as secondary, not used for any decision."
+    ]
+  },
+  "sample": {
+    "data_start": "earliest date when all 6 ETFs have bars (expected 2013-07/08, determined by 518880 listing)",
+    "warmup": "no scoring until momentum (12 months) and trend (40 weeks) are computable for all assets",
+    "score_end": "last complete month available at run time, not later than 2026-09-30",
+    "partitions_reported": ["FULL", "SUB_A: score_start..2020-12-31", "SUB_B: 2021-01-01..score_end"],
+    "note": "No partition is used for selection; all are evaluation."
+  },
+  "benchmarks": {
+    "CSI300_BH": "100% 510300 buy and hold from first monthly execution session",
+    "CN_60_40": "60% 510300 / 40% 511010, rebalanced on the same monthly execution sessions",
+    "BASE_M_CN": "secondary context only: research_v2 BASE monthly T40 rule (top 3, renormalised, no CAP, no DEF) on the same CN universe",
+    "costs_and_cash": "same engine, costs and cash accrual as the strategy"
+  },
+  "metrics": ["CAGR", "ann_vol", "Sharpe (rf=0)", "excess Sharpe over SHIBOR 3M", "max drawdown", "worst calendar year", "calendar-year returns table", "annualized one-way turnover", "mean cash weight", "mean defensive-bond weight", "PSR(0) on excess returns", "stationary block bootstrap 90% CI of excess Sharpe difference vs CN_60_40 and vs CSI300_BH (block 21, 2000 resamples, seed 20261019)"],
+  "success_criteria_declared_in_advance": {
+    "transfer_supported_if_all": [
+      "FULL excess Sharpe of CAP_DEF_M > CN_60_40",
+      "FULL max drawdown of CAP_DEF_M < CSI300_BH max drawdown",
+      "SUB_A and SUB_B excess Sharpe of CAP_DEF_M both > CN_60_40 (point estimates)"
+    ],
+    "statistical_note": "Point estimates only; the bootstrap CI is reported and a CI including 0 must be stated as 'not statistically distinguishable'.",
+    "outcomes": {
+      "SUPPORTED": "all criteria met",
+      "PARTIAL": "drawdown criterion met but at least one Sharpe criterion failed, or vice versa",
+      "NOT_SUPPORTED": "neither the drawdown criterion nor the FULL Sharpe criterion met"
+    }
+  },
+  "freeze_rule": "This protocol and the CN rule are frozen at commit time. Any later change is a new, separately labelled experiment."
+}
