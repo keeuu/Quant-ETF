@@ -1,0 +1,16 @@
+{
+  "amendment": 1,
+  "amends": "research_v3/cn_transfer/protocol_cn_transfer.json (sha256 1b760296dab7568af960b94e18304350934c2a5db1deccfaa4d9afbbf827584a)",
+  "written_at": "2026-10-19",
+  "written_before_any_strategy_or_benchmark_result_was_produced": true,
+  "reason": "The original protocol handles a missing bar fail-closed. With Sina data, 510500 has no bars on 2015-04-13 and 2015-04-14 (suspension around its share conversion) and 159915 has no bar on 2021-02-08 (cause unverified). Fail-closed aborts every run that holds these ETFs on those days, so the strategy cannot be evaluated at all.",
+  "status_under_original_protocol": "Strategy runs (CAP_DEF_M, BASE_M_CN) NOT RUN due to missing bars. This status is reported alongside the amended results.",
+  "rules": {
+    "verification_first": "For each missing (symbol, session), try one independent source (e.g. another akshare endpoint such as Tencent/Eastmoney, or THS) for the unadjusted open and close of that session. If both are found and are consistent with neighbouring Sina closes (no unexplained jump > 10%), use them, convert with the same adjustment factor, and record the source per bar. Otherwise treat the session as a suspension.",
+    "suspension_valuation": "On a suspended session the symbol is valued at its last available adjusted close (carry-forward). No price for a later date is ever used.",
+    "suspension_trading": "A rebalance whose execution session has any held or target symbol suspended is postponed, as a whole, to the next session on which all held and target symbols have bars. The signal (weights) is unchanged; execution is still strictly after the signal close. Postponed rebalances are counted and listed.",
+    "signals": "Signals are computed only from available closes up to the signal close; a suspended symbol's carried-forward close is not treated as a new observation for momentum or trend.",
+    "scope": "Applies identically to CAP_DEF_M, BASE_M_CN, CSI300_BH and CN_60_40 and to both cost settings.",
+    "no_other_changes": "Universe, groups, rule parameters, costs, cash, benchmarks, metrics and success criteria are unchanged."
+  }
+}
