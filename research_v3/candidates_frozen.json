@@ -1,7 +1,7 @@
 {
   "freeze_date": "2026-10-19",
-  "code_git_commit": "268525a4986ce5d88210e95bd7fa9ad01f3e6c34",
-  "commit_note": "HEAD commit at generation time; it EXCLUDES this step's uncommitted files (step 4 code, protocol_step4, REPORT)",
+  "code_git_commit": "5ad72d716379d7bf3e788895192c572b4bf29003",
+  "commit_note": "Commit containing all step 1-4 code, protocols and REPORT.md; this field was updated in a follow-up commit that changes only this file.",
   "protocol_step4_sha256": "0c21a92db7865f547fd9bfc82159011ba46320e0bf34d67f1e3a7b6d23991c7d",
   "protocol_step3_sha256": "a564ea377de866ac33898f4490f1ccd1b10beb68f1141910f11ccbf21c880b1b",
   "freeze_rule": "No further changes to any candidate; to be evaluated only on data after the freeze date.",
