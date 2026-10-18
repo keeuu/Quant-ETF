@@ -1,0 +1,53 @@
+{
+  "protocol": "research_v3_step4",
+  "version": 1,
+  "preregistered_before_any_step4_result": true,
+  "partitions": ["train", "validation"],
+  "settings": "research_v3.config.V3_DEFAULT (^IRX cash yield, cost 5 bps + slippage 5 bps per side), same engine, same schedules",
+  "benchmarks": {
+    "SPY_BH": "100% SPY. Single buy at the first COMPLETE v2 monthly execution session inside the partition, never rebalanced afterwards. Cash before that earns IRX.",
+    "60_40": "60% SPY / 40% IEF (IEF used as bond proxy), rebalanced to target weights on every v2 monthly execution session (matched monthly schedule). Reported as '60/40 using IEF as bond proxy'.",
+    "SPY_SMA10": "On each v2 monthly signal session s: 100% SPY if SPY adj_close(s) > mean of the 10 latest month-end adj_close values (last session of each calendar month strictly before the month of s, plus adj_close at s itself, i.e. 10 values ending at s; data <= s only), else 100% CASH. Fewer than 10 values -> CASH. Executed on the v2 monthly execution session.",
+    "EW8": "Equal weight 1/8 in each of the 8 research_v2 UNIVERSE ETFs, rebalanced on every v2 monthly execution session."
+  },
+  "trend_length_headline": 40,
+  "trend_lengths_all": [36, 40, 44],
+  "headline_rule": "T40 (middle value) is the pre-declared headline trend length; the mean across 36/40/44 is reported alongside. T40 is not chosen by results.",
+  "side_by_side_rows": {
+    "weekly_and_monthly": ["BASE", "DEF", "CAP_DEF"],
+    "weekly_only_post_hoc": ["CAND", "CAND_CAP_DEF"],
+    "benchmarks": ["SPY_BH", "60_40", "SPY_SMA10", "EW8"]
+  },
+  "metrics": ["cagr", "ann_vol", "sharpe_rf0", "excess_sharpe_over_irx", "max_drawdown", "worst_calendar_year", "year_2008_train_only", "ann_one_way_turnover", "mean_cash_weight"],
+  "trial_count": {
+    "definition": "Number of distinct strategy configurations evaluated across steps 1-3 (benchmarks excluded). Distinct = unique (signal variant, cadence, trend length) with the BASE of steps 2/3 identified with step-1 momentum 12 months models (W_M12_Txx / M_M12_Txx).",
+    "derivation": "step1: 18 models (momentum 6/9/12 x trend 36/40/44 x W/M); step2 excluding BASE (ENS W,M; BUF W,M; IVOL W,M; COMBO W,M; TRANCHE M; COMBO+TRANCHE M) = 10 per trend x 3 = 30; step3 excluding BASE (CASHSLOT, DEF, CAP, CAP_DEF x W,M; CAND W; CAND_CAP_DEF W) = 10 per trend x 3 = 30. Total expected 78. The runner recomputes the count from the long CSVs and asserts it equals expected_n_trials.",
+    "expected_n_trials": 78,
+    "note": "research_v2 evaluated 18 original models (same 18 as step 1, but under v2 settings: no cash yield, no slippage); they are not additional distinct configurations in v3 settings."
+  },
+  "statistics": {
+    "returns_used": "daily returns minus ^IRX daily accrual (excess returns), per partition",
+    "psr": "Probabilistic Sharpe Ratio vs 0 (Bailey & Lopez de Prado 2012): Phi( (SR - SR*) sqrt(T-1) / sqrt(1 - g3 SR + (g4-1)/4 SR^2) ), SR = daily excess mean/std (ddof=1), g3 = skewness (biased moment), g4 = raw (non-excess) kurtosis (biased moment), SR* = 0",
+    "dsr": "Deflated Sharpe Ratio (Bailey & Lopez de Prado 2014): PSR with SR* = sqrt(V) ((1-gamma) Phi^-1(1-1/N) + gamma Phi^-1(1-1/(N e))), gamma = Euler-Mascheroni, N = expected_n_trials, V = cross-sectional sample variance (ddof=1) of the DAILY-unit excess Sharpe (annualized value / sqrt(252) then squared variance, i.e. V = Var(annualized xSharpe)/252) over all N evaluated configurations in the same partition",
+    "dsr_trends": "PSR and DSR computed per trend length (36/40/44); T40 reported as headline, mean over the three alongside",
+    "config_sharpe_pool": "excess Sharpe over IRX of the N configurations in the partition: step-1 18 models recomputed with the same engine; step 2/3 values read from step2_long.csv / step3_long.csv; the recomputed step-1 M12 values are checked against BASE rows of step 2 (identity)",
+    "vs_60_40": "excess-Sharpe difference (strategy minus 60_40) per partition and trend; for T40 a stationary block bootstrap 90% percentile CI (paired resampling of dates)",
+    "bootstrap": {"method": "Politis-Romano stationary bootstrap", "mean_block_length": 21, "n_resamples": 2000, "seed": 20261019, "ci_level": 0.90, "rng": "numpy.random.default_rng(seed); start index uniform; each next index = previous+1 (mod T) with prob 1-1/21 else new uniform start; same index matrix for all pairs within a partition"}
+  },
+  "candidate_selection_rule": {
+    "declared_before_viewing_step4_results": true,
+    "pool": "non-benchmark rows of the side-by-side table other than BASE (BASE is the comparator): DEF, CAP_DEF (W and M), CAND, CAND_CAP_DEF (W)",
+    "conditions_all_required": [
+      "DSR (validation, T40, N=78) > 0.5",
+      "max_drawdown <= max_drawdown of BASE with the same cadence in ALL 6 cells (train and validation x trend 36/40/44)",
+      "T40 excess Sharpe strictly greater than 60_40 T-matched point estimate in BOTH train and validation"
+    ],
+    "max_candidates": 2,
+    "tie_rank": "if more than 2 qualify, keep the two with the largest min(train xSharpe T40, validation xSharpe T40)",
+    "post_hoc_flag": "CAND and CAND_CAP_DEF may qualify but are flagged post-hoc in the report",
+    "if_none_qualify": "candidates_frozen.json lists no candidates; this is an acceptable outcome",
+    "freeze_rule": "No further changes to any candidate; to be evaluated only on data after the freeze date.",
+    "freeze_date": "2026-10-19"
+  },
+  "parameter_search": "none"
+}

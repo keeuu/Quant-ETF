@@ -1,0 +1,47 @@
+{
+  "n_trials": 78,
+  "step1_models": 18,
+  "step2_non_base": 30,
+  "step3_non_base": 30,
+  "step2_variants": [
+    "BUF",
+    "COMBO",
+    "COMBO+TRANCHE",
+    "ENS",
+    "IVOL",
+    "TRANCHE"
+  ],
+  "step3_variants": [
+    "CAND",
+    "CAND_CAP_DEF",
+    "CAP",
+    "CAP_DEF",
+    "CASHSLOT",
+    "DEF"
+  ],
+  "overlap_step2_step3": 0,
+  "v2_original_models": 18,
+  "note": "BASE of steps 2/3 == step-1 momentum-12 models (counted once, in step 1)",
+  "pool": {
+    "train": {
+      "n_configs": 78,
+      "var_annual_xsharpe": 0.0064294089061565024,
+      "sd_annual_xsharpe": 0.08018359499396684,
+      "var_daily": 2.5513527405382948e-05,
+      "sr0_daily": 0.01233433473132209,
+      "sr0_annualised": 0.1958014937190296,
+      "pool_mean_xsharpe": 0.5095597710710584,
+      "pool_max_xsharpe": 0.7074492824940904
+    },
+    "validation": {
+      "n_configs": 78,
+      "var_annual_xsharpe": 0.011958492035504711,
+      "sd_annual_xsharpe": 0.10935489031362389,
+      "var_daily": 4.7454333474225044e-05,
+      "sr0_daily": 0.016821643152028,
+      "sr0_annualised": 0.2670353065424326,
+      "pool_mean_xsharpe": 0.7646180603222782,
+      "pool_max_xsharpe": 1.1028027188260996
+    }
+  }
+}

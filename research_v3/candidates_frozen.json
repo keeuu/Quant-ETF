@@ -1,0 +1,90 @@
+{
+  "freeze_date": "2026-10-19",
+  "code_git_commit": "268525a4986ce5d88210e95bd7fa9ad01f3e6c34",
+  "commit_note": "HEAD commit at generation time; it EXCLUDES this step's uncommitted files (step 4 code, protocol_step4, REPORT)",
+  "protocol_step4_sha256": "0c21a92db7865f547fd9bfc82159011ba46320e0bf34d67f1e3a7b6d23991c7d",
+  "protocol_step3_sha256": "a564ea377de866ac33898f4490f1ccd1b10beb68f1141910f11ccbf21c880b1b",
+  "freeze_rule": "No further changes to any candidate; to be evaluated only on data after the freeze date.",
+  "selection_rule": {
+    "declared_before_viewing_step4_results": true,
+    "pool": "non-benchmark rows of the side-by-side table other than BASE (BASE is the comparator): DEF, CAP_DEF (W and M), CAND, CAND_CAP_DEF (W)",
+    "conditions_all_required": [
+      "DSR (validation, T40, N=78) > 0.5",
+      "max_drawdown <= max_drawdown of BASE with the same cadence in ALL 6 cells (train and validation x trend 36/40/44)",
+      "T40 excess Sharpe strictly greater than 60_40 T-matched point estimate in BOTH train and validation"
+    ],
+    "max_candidates": 2,
+    "tie_rank": "if more than 2 qualify, keep the two with the largest min(train xSharpe T40, validation xSharpe T40)",
+    "post_hoc_flag": "CAND and CAND_CAP_DEF may qualify but are flagged post-hoc in the report",
+    "if_none_qualify": "candidates_frozen.json lists no candidates; this is an acceptable outcome",
+    "freeze_rule": "No further changes to any candidate; to be evaluated only on data after the freeze date.",
+    "freeze_date": "2026-10-19"
+  },
+  "candidates": [
+    {
+      "label": "CAP_DEF_M",
+      "variant": "CAP_DEF",
+      "cadence": "M",
+      "post_hoc": false,
+      "trend_weeks": 40,
+      "top_n": 3,
+      "variant_spec": {
+        "description": "asset-class cap + DEF slot filling",
+        "cadences": [
+          "W",
+          "M"
+        ],
+        "ens": false,
+        "ivol": false,
+        "cap": true,
+        "slots": "def"
+      },
+      "base_momentum_months": 12,
+      "ens_momentum_months": null,
+      "ivol_window": null,
+      "asset_class_groups": {
+        "US_EQ": [
+          "SPY",
+          "QQQ",
+          "IWM"
+        ],
+        "INTL_EQ": [
+          "EFA",
+          "EEM"
+        ],
+        "GOLD": [
+          "GLD"
+        ],
+        "BONDS": [
+          "TLT",
+          "IEF"
+        ]
+      },
+      "cap_rule": "at most 1 selected asset per group; walk the v2-ranked (momentum desc, universe tie-break) trend-passing assets in order and skip an asset whose group already has a selection",
+      "defensive_test": {
+        "symbol": "IEF",
+        "months": 3,
+        "description": "IEF adj_close total return from anchor session (latest session <= signal_close - DateOffset(months=3), as v2 find_anchor_session) to the signal close session, WITHOUT the one-week skip (window ends at signal close), strictly greater than the T-bill return over the same window (product of research_v3 CashYieldCurve.accrual_factor over consecutive sessions in (anchor, signal_close], each using the IRX value of the previous session or earlier). IEF if strictly greater, else CASH. Any missing input gives CASH."
+      },
+      "universe": [
+        "SPY",
+        "QQQ",
+        "IWM",
+        "EFA",
+        "EEM",
+        "GLD",
+        "TLT",
+        "IEF"
+      ],
+      "settings": {
+        "cost_bps": 5.0,
+        "slippage_bps": 5.0,
+        "cash_yield_source": "irx"
+      },
+      "selection_evidence": {
+        "dsr_validation_T40": 0.962934358649822,
+        "min_xsharpe_T40": 0.6056093355131892
+      }
+    }
+  ]
+}

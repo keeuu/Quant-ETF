@@ -53,7 +53,15 @@ def main(argv=None) -> int:
     s2.add_argument("--out", default=str(ROOT / "research_v3/artifacts/step2"))
     s3 = sub.add_parser("step3", help="Pre-registered cash-slot / defensive / cap variants vs BASE on train+validation")
     s3.add_argument("--out", default=str(ROOT / "research_v3/artifacts/step3"))
+    s4 = sub.add_parser("step4", help="Benchmarks, PSR/DSR, bootstrap vs 60/40, candidate selection")
+    s4.add_argument("--out", default=str(ROOT / "research_v3/artifacts/step4"))
     args = ap.parse_args(argv)
+    if args.cmd == "step4":
+        from .step4 import run_step4, write_outputs as write4
+        out = Path(args.out)
+        print(write4(run_step4(), out))
+        print(f"wrote {out}")
+        return 0
     if args.cmd == "step3":
         from .step3 import run_step3, write_outputs as write3
         out = Path(args.out)
