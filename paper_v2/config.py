@@ -19,7 +19,11 @@ BENCHMARK = "SPY"
 INITIAL_CASH = 100000.0
 COST_BPS = 5.0
 
-PAPER_V2_STATE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "paper_v2_state"))
+# State directory; override with PAPER_V2_STATE_DIR (used by tests and offline runs).
+PAPER_V2_STATE_DIR = os.path.abspath(
+    os.environ.get("PAPER_V2_STATE_DIR")
+    or os.path.join(os.path.dirname(__file__), "..", "paper_v2_state")
+)
 SIGNAL_JOURNAL_PATH = os.path.join(PAPER_V2_STATE_DIR, "signal_journal.jsonl")
 EXEC_JOURNAL_PATH = os.path.join(PAPER_V2_STATE_DIR, "execution_journal.jsonl")
 NAV_JOURNAL_PATH = os.path.join(PAPER_V2_STATE_DIR, "daily_nav.jsonl")
@@ -29,3 +33,14 @@ DATA_SNAPSHOTS_DIR = os.path.join(PAPER_V2_STATE_DIR, "snapshots")
 def setup_dirs():
     os.makedirs(PAPER_V2_STATE_DIR, exist_ok=True)
     os.makedirs(DATA_SNAPSHOTS_DIR, exist_ok=True)
+
+
+def config_dict() -> dict:
+    """The configuration actually used by the shadow run (input to config_hash)."""
+    return {
+        "models": [m._asdict() for m in MODELS],
+        "universe": list(UNIVERSE),
+        "benchmark": BENCHMARK,
+        "initial_cash": INITIAL_CASH,
+        "cost_bps": COST_BPS,
+    }
