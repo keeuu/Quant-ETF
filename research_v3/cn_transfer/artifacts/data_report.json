@@ -1,0 +1,175 @@
+{
+  "errors": [],
+  "extra_session_bars": {},
+  "per_symbol": {
+    "510300": {
+      "rows": 3205,
+      "first": "2013-07-29",
+      "last": "2026-09-30",
+      "adj_to_raw_ratio_first": 1.0139475908706679,
+      "adj_to_raw_ratio_last": 1.265759553927991,
+      "adj_ratio_jumps": 13,
+      "raw_close_first": 2.221,
+      "raw_close_last": 4.432,
+      "adj_close_first": 2.2519775993237534,
+      "adj_close_last": 5.609846343008857
+    },
+    "510050": {
+      "rows": 3205,
+      "first": "2013-07-29",
+      "last": "2026-09-30",
+      "adj_to_raw_ratio_first": 1.1389280733746339,
+      "adj_to_raw_ratio_last": 1.4427811102654946,
+      "adj_ratio_jumps": 12,
+      "raw_close_first": 1.532,
+      "raw_close_last": 2.938,
+      "adj_close_first": 1.7448378084099392,
+      "adj_close_last": 4.238890901960024
+    },
+    "510500": {
+      "rows": 3203,
+      "first": "2013-07-29",
+      "last": "2026-09-30",
+      "adj_to_raw_ratio_first": 1.0,
+      "adj_to_raw_ratio_last": 0.34010012996978184,
+      "adj_ratio_jumps": 6,
+      "raw_close_first": 0.962,
+      "raw_close_last": 7.472,
+      "adj_close_first": 0.962,
+      "adj_close_last": 2.54122817113421
+    },
+    "159915": {
+      "rows": 3204,
+      "first": "2013-07-29",
+      "last": "2026-09-30",
+      "adj_to_raw_ratio_first": 1.0,
+      "adj_to_raw_ratio_last": 1.0,
+      "adj_ratio_jumps": 0,
+      "raw_close_first": 1.124,
+      "raw_close_last": 3.154,
+      "adj_close_first": 1.124,
+      "adj_close_last": 3.154
+    },
+    "518880": {
+      "rows": 3205,
+      "first": "2013-07-29",
+      "last": "2026-09-30",
+      "adj_to_raw_ratio_first": 1.0,
+      "adj_to_raw_ratio_last": 1.0,
+      "adj_ratio_jumps": 0,
+      "raw_close_first": 2.626,
+      "raw_close_last": 8.633,
+      "adj_close_first": 2.626,
+      "adj_close_last": 8.633
+    },
+    "511010": {
+      "rows": 3205,
+      "first": "2013-07-29",
+      "last": "2026-09-30",
+      "adj_to_raw_ratio_first": 1.0027941602051713,
+      "adj_to_raw_ratio_last": 1.042084112038102,
+      "adj_ratio_jumps": 6,
+      "raw_close_first": 99.08,
+      "raw_close_last": 140.735,
+      "adj_close_first": 99.35684539312837,
+      "adj_close_last": 146.6577075076823
+    }
+  },
+  "missing_in_data_range": {
+    "510300": [],
+    "510050": [],
+    "510500": [
+      "2015-04-13",
+      "2015-04-14"
+    ],
+    "159915": [
+      "2021-02-08"
+    ],
+    "518880": [],
+    "511010": []
+  },
+  "n_sessions": 3205,
+  "missing_bar_resolution": [
+    {
+      "symbol": "510500",
+      "session": "2015-04-13",
+      "independent_source": "Tencent ak.stock_zh_a_hist_tx (unadjusted); Eastmoney unreachable",
+      "resolution": "SUSPENSION",
+      "detail": "no bar in independent source"
+    },
+    {
+      "symbol": "510500",
+      "session": "2015-04-14",
+      "independent_source": "Tencent ak.stock_zh_a_hist_tx (unadjusted); Eastmoney unreachable",
+      "resolution": "SUSPENSION",
+      "detail": "no bar in independent source"
+    },
+    {
+      "symbol": "159915",
+      "session": "2021-02-08",
+      "independent_source": "Tencent ak.stock_zh_a_hist_tx (unadjusted); Eastmoney unreachable",
+      "resolution": "SUSPENSION",
+      "detail": "no bar in independent source"
+    }
+  ],
+  "shibor_tail": {
+    "flat_value": 1.43,
+    "flat_rows": 15,
+    "flat_first": "2026-09-21",
+    "flat_last": "2026-10-16",
+    "flat_rows_on_or_before_score_end": 7,
+    "prior_90_rows_range": [
+      1.4015,
+      1.44
+    ]
+  },
+  "score_start": "2014-09-01",
+  "score_end": "2026-09-30",
+  "data_start": "2013-07-29",
+  "first_warm_signal_session": "2014-08-29",
+  "missing_in_scoring_sample": {
+    "510300": [],
+    "510050": [],
+    "510500": [
+      "2015-04-13",
+      "2015-04-14"
+    ],
+    "159915": [
+      "2021-02-08"
+    ],
+    "518880": [],
+    "511010": []
+  },
+  "original_protocol_status": {
+    "CAP_DEF_M": "NOT RUN: EngineError: Session 2015-04-13: missing or invalid close for 510500: None",
+    "CSI300_BH": "RUN",
+    "CN_60_40": "RUN",
+    "BASE_M_CN": "NOT RUN: EngineError: Session 2015-04-13: missing or invalid close for 510500: None"
+  },
+  "carried_valuation_days": {
+    "primary/CAP_DEF_M": {
+      "510500": 2,
+      "159915": 1
+    },
+    "primary/BASE_M_CN": {
+      "510500": 2,
+      "159915": 1
+    },
+    "secondary_10_10/CAP_DEF_M": {
+      "510500": 2,
+      "159915": 1
+    },
+    "secondary_10_10/BASE_M_CN": {
+      "510500": 2,
+      "159915": 1
+    }
+  },
+  "n_postponements": 0,
+  "run_manifest": {
+    "akshare_version": "1.19.1",
+    "download_date": "2026-10-18",
+    "protocol_sha256": "1b760296dab7568af960b94e18304350934c2a5db1deccfaa4d9afbbf827584a",
+    "n_weekly_events": 676,
+    "n_monthly_events": 158
+  }
+}

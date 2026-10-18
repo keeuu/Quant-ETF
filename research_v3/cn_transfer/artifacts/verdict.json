@@ -1,0 +1,8 @@
+{
+  "outcome": "SUPPORTED",
+  "C1_full_xsharpe_gt_60_40": true,
+  "C2_full_mdd_lt_csi300_bh": true,
+  "C3a_sub_a_xsharpe_gt_60_40": true,
+  "C3b_sub_b_xsharpe_gt_60_40": true,
+  "all_sharpe_criteria_met": true
+}
