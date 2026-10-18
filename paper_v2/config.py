@@ -14,6 +14,18 @@ for cadence in ["W", "M"]:
             model_id = f"{cadence}_M{m:02d}_T{t}"
             MODELS.append(ModelSpec(model_id, cadence, m, t))
 
+# Frozen research_v3 candidate shadowed alongside MODELS (paper only). It is NOT part of MODELS so the
+# existing 18 models behave exactly as before; parameters are cross-checked against
+# research_v3/candidates_frozen.json in paper_v2.candidate.
+CANDIDATE_LABEL = "CAP_DEF_M"
+CANDIDATE_MODEL = ModelSpec(CANDIDATE_LABEL, "M", 12, 40)
+CANDIDATE_MODELS = [CANDIDATE_MODEL]
+ALL_MODELS = MODELS + CANDIDATE_MODELS
+FREEZE_DATE = "2026-10-19"
+CANDIDATE_COST_BPS = 5.0
+CANDIDATE_SLIPPAGE_BPS = 5.0
+CANDIDATE_EFFECTIVE_COST_BPS = CANDIDATE_COST_BPS + CANDIDATE_SLIPPAGE_BPS
+
 UNIVERSE = ["SPY", "QQQ", "IWM", "EFA", "EEM", "GLD", "TLT", "IEF"]
 BENCHMARK = "SPY"
 INITIAL_CASH = 100000.0
@@ -37,8 +49,15 @@ def setup_dirs():
 
 def config_dict() -> dict:
     """The configuration actually used by the shadow run (input to config_hash)."""
+    from .candidate import candidates_frozen_sha256
     return {
         "models": [m._asdict() for m in MODELS],
+        "candidates": [
+            {**m._asdict(), "frozen_sha256": candidates_frozen_sha256(), "freeze_date": FREEZE_DATE,
+             "cost_bps": CANDIDATE_COST_BPS, "slippage_bps": CANDIDATE_SLIPPAGE_BPS,
+             "cash_yield_source": "irx"}
+            for m in CANDIDATE_MODELS
+        ],
         "universe": list(UNIVERSE),
         "benchmark": BENCHMARK,
         "initial_cash": INITIAL_CASH,

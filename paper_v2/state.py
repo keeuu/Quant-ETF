@@ -2,7 +2,7 @@ import json
 import os
 from typing import Dict, Any, Optional
 from .fsutil import atomic_write_text, file_lock
-from .config import STATE_FILE_PATH, INITIAL_CASH, MODELS
+from .config import STATE_FILE_PATH, INITIAL_CASH, ALL_MODELS, CANDIDATE_MODELS
 
 class PaperState:
     def __init__(self):
@@ -13,7 +13,35 @@ class PaperState:
         if not os.path.exists(self.state_path):
             return self._init_state()
         with open(self.state_path, "r") as f:
-            return json.load(f)
+            state = json.load(f)
+        # An older state file may predate shadow candidates: add missing model entries / fields.
+        candidate_ids = {m.model_id for m in CANDIDATE_MODELS}
+        for model in ALL_MODELS:
+            fresh = self._new_model_state(model.model_id in candidate_ids)
+            existing = state["models"].setdefault(model.model_id, fresh)
+            if model.model_id in candidate_ids:
+                for k, v in fresh.items():
+                    existing.setdefault(k, v)
+        return state
+
+    @staticmethod
+    def _new_model_state(candidate: bool = False) -> Dict[str, Any]:
+        ms = {
+            "cash": INITIAL_CASH,
+            "shares": {},
+            "nav": INITIAL_CASH,
+            "last_signal": None,
+            "last_execution": None,
+            "pending_order": None,
+            "fees": 0.0,
+            "turnover": 0.0,
+            "dividends_total": 0.0,
+            "dividends_credited": {},
+            "last_dividend_date": None
+        }
+        if candidate:
+            ms.update({"start_session": None, "last_accrual_session": None, "cash_interest_total": 0.0})
+        return ms
             
     def _init_state(self) -> Dict[str, Any]:
         state = {
@@ -26,20 +54,9 @@ class PaperState:
             },
             "models": {}
         }
-        for model in MODELS:
-            state["models"][model.model_id] = {
-                "cash": INITIAL_CASH,
-                "shares": {},
-                "nav": INITIAL_CASH,
-                "last_signal": None,
-                "last_execution": None,
-                "pending_order": None,
-                "fees": 0.0,
-                "turnover": 0.0,
-                "dividends_total": 0.0,
-                "dividends_credited": {},
-                "last_dividend_date": None
-            }
+        candidate_ids = {m.model_id for m in CANDIDATE_MODELS}
+        for model in ALL_MODELS:
+            state["models"][model.model_id] = self._new_model_state(model.model_id in candidate_ids)
         return state
         
     def save(self):

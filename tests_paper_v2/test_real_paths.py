@@ -11,7 +11,7 @@ from unittest.mock import patch
 from paper_v2 import config
 from paper_v2.asof import normalize_as_of
 from paper_v2.cli import main as cli_main
-from paper_v2.config import MODELS, PAPER_V2_STATE_DIR, UNIVERSE
+from paper_v2.config import ALL_MODELS, MODELS, PAPER_V2_STATE_DIR, UNIVERSE
 from paper_v2.journal import AppendOnlyJournal
 from paper_v2.market_data import BAR_COLUMNS, normalize_yf_frame
 from paper_v2.phases import credit_dividends, run_execution_phase, run_signal_phase
@@ -59,7 +59,7 @@ def test_signal_phase_real_research_code():
 
     state = PaperState()
     signals = AppendOnlyJournal(config.SIGNAL_JOURNAL_PATH).read_all()
-    assert len(signals) == len(MODELS) == 18
+    assert len(signals) == len(ALL_MODELS) == len(MODELS) + 1 == 19
     for ev in signals:
         assert abs(sum(ev["weights"].values()) + ev["cash_weight"] - 1.0) < 1e-9
         assert ev["strategy_commit"] != "HEAD"
@@ -71,7 +71,7 @@ def test_signal_phase_real_research_code():
     # idempotent rerun
     with patch("paper_v2.phases.fetch_market_data", return_value=(bars, "synthetic_hash")):
         run_signal_phase("2020-12-31")
-    assert len(AppendOnlyJournal(config.SIGNAL_JOURNAL_PATH).read_all()) == 18
+    assert len(AppendOnlyJournal(config.SIGNAL_JOURNAL_PATH).read_all()) == 19
 
 
 def test_cli_signal_offline_bars_dir(tmp_path, monkeypatch, capsys):
@@ -83,7 +83,7 @@ def test_cli_signal_offline_bars_dir(tmp_path, monkeypatch, capsys):
     monkeypatch.delenv("PAPER_V2_OFFLINE_BARS_DIR", raising=False)
     assert rc == 0
     assert "Signal phase complete" in capsys.readouterr().out
-    assert len(AppendOnlyJournal(config.SIGNAL_JOURNAL_PATH).read_all()) == 18
+    assert len(AppendOnlyJournal(config.SIGNAL_JOURNAL_PATH).read_all()) == 19
     # bars persisted (not just hashes)
     persisted = [d for d in os.listdir(config.DATA_SNAPSHOTS_DIR) if d.startswith("bars_")]
     assert len(persisted) == 1

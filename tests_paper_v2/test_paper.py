@@ -5,7 +5,7 @@ import pandas as pd
 from unittest.mock import patch, MagicMock
 from datetime import datetime, timezone
 
-from paper_v2.config import PAPER_V2_STATE_DIR, MODELS
+from paper_v2.config import PAPER_V2_STATE_DIR, MODELS, ALL_MODELS
 from paper_v2.state import PaperState
 from paper_v2.journal import AppendOnlyJournal
 from paper_v2.phases import run_signal_phase, run_execution_phase
@@ -44,9 +44,9 @@ def test_no_broker_imports():
     for mod in sys.modules.keys():
         assert "alpaca" not in mod.lower()
 
-def test_18_portfolio_isolation():
+def test_portfolio_isolation():
     state = PaperState()
-    assert len(state._state["models"]) == 18
+    assert len(state._state["models"]) == len(ALL_MODELS)  # 18 base models + CAP_DEF_M shadow
     m1 = MODELS[0].model_id
     m2 = MODELS[1].model_id
     state.update_model_state(m1, {"cash": 50000})
