@@ -53,7 +53,7 @@ def test_fully_invested(mock_fetch):
         mock_ws.return_value = [e1]
         mock_ms.return_value = []
         
-        sf = SignalFrame("mock", {"2020-12-24": {"SPY": 1.0}}, {})
+        sf = SignalFrame("mock", [{"signal_session": "2020-12-24", "weights": {"SPY": 1.0}}], {})
         mock_cs.return_value = sf
         
         run_signal_phase("2020-12-25")
@@ -82,7 +82,7 @@ def test_partial_cash(mock_fetch):
         mock_ws.return_value = [e1]
         mock_ms.return_value = []
         
-        sf = SignalFrame("mock", {"2020-12-24": {"SPY": 0.5, "CASH": 0.5}}, {})
+        sf = SignalFrame("mock", [{"signal_session": "2020-12-24", "weights": {"SPY": 0.5, "CASH": 0.5}}], {})
         mock_cs.return_value = sf
         
         run_signal_phase("2020-12-25")
@@ -111,9 +111,9 @@ def test_monthly_matched_control(mock_fetch):
         mock_ws.return_value = [e1]
         mock_ms.return_value = [e_month]
         
-        sf = SignalFrame("mock", {"2020-12-24": {"SPY": 1.0}}, {})
+        sf = SignalFrame("mock", [{"signal_session": "2020-12-24", "weights": {"SPY": 1.0}}], {})
         mock_cs.return_value = sf
-        sf_month = SignalFrame("mock", {"2020-12-31": {"SPY": 1.0}}, {})
+        sf_month = SignalFrame("mock", [{"signal_session": "2020-12-31", "weights": {"SPY": 1.0}}], {})
         mock_cms.return_value = sf_month
         
         run_signal_phase("2021-01-01")
@@ -138,7 +138,7 @@ def test_future_open_poisoning(mock_fetch):
         mock_ws.return_value = [e1]
         mock_ms.return_value = []
         
-        sf = SignalFrame("mock", {"2020-12-24": {"SPY": 1.0}}, {})
+        sf = SignalFrame("mock", [{"signal_session": "2020-12-24", "weights": {"SPY": 1.0}}], {})
         mock_cs.return_value = sf
         
         # signal phase is at "2020-12-25"
