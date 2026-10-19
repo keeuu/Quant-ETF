@@ -1,0 +1,97 @@
+{
+  "protocol": "research_v3 stock_mf: A-share individual-stock 4-factor (price/volume only) strategy for a 20,000-30,000 CNY account",
+  "written_at": "2026-10-19",
+  "written_before_any_stock_price_data_was_downloaded_or_any_factor_return_computed": true,
+  "relation": "Satellite strategy, independent of the frozen CAP_DEF_M core. Feasibility facts: research_v3/stock_mf/feasibility/FEASIBILITY.md (no factor or strategy returns were computed there).",
+
+  "data": {
+    "listed_stocks": "THS per-stock daily bars from 2005-01 (prices/historical) and THS market dumps (daily-k, adjustment factors); adjusted with the THS adjustment factors",
+    "delisted_stocks": "akshare stock_zh_a_hist_tx (Tencent, hfq) for every code in akshare stock_info_sh_delist + stock_info_sz_delist; single unofficial source, declared bias",
+    "shares": "Eastmoney share-structure history (akshare stock_zh_a_gbjg_em) for total and float shares, as-of dated; if missing for a date, last known value before it",
+    "cash": "SHIBOR 3M (research_v3/cn_transfer ShiborCurve)",
+    "benchmarks": "CSI 1000 (000852) and CSI 500 (000905) price indices from THS or akshare; price indices (no dividends), declared",
+    "excluded": "Beijing Stock Exchange; B shares",
+    "no_financial_statements": "No accounting data is used anywhere (restated values and missing original dates make it non point-in-time)."
+  },
+
+  "universe": {
+    "schedule": "rebuilt at each month-end close, used for the following month",
+    "eligibility": [
+      "A-share common stock on SSE main board, SZSE main board, ChiNext or STAR",
+      "at least 250 sessions of bars before the date",
+      "has a bar with volume > 0 on the date",
+      "not flagged as inferred-ST (see below)"
+    ],
+    "ranking": "composite rank = mean of (rank by float market cap, rank by 60-session mean turnover amount), both descending; keep the top 1000",
+    "inferred_ST": "a stock is flagged on a date if within the previous 60 sessions it has at least one session closing at a +/-5% limit (|close/prev_close - 1| between 4.85% and 5.15% with close == high for up or close == low for down) and no session with |return| > 5.5%; declared approximation because dated ST history is unavailable for Shanghai"
+  },
+
+  "factors": {
+    "REV": "minus the 20-session total return ending at the signal close",
+    "LOWVOL": "minus the standard deviation of the last 60 daily returns",
+    "LOWTURN": "minus the mean daily turnover rate (volume / float shares) over the last 20 sessions",
+    "SIZE": "minus log(float market cap) at the signal close",
+    "processing": "computed only from data dated on or before the signal close; each factor winsorised at the 1st/99th cross-sectional percentiles, then z-scored across the universe; composite = equal-weight mean of the four z-scores; a stock missing any factor is skipped",
+    "no_tuning": "Windows, weights and factor list are fixed here and never changed."
+  },
+
+  "portfolio": {
+    "rebalance": "every second weekly signal (last session of every other week, starting from the first eligible week of the development period); trades at the next session open",
+    "selection": "target = top 10 by composite; an existing holding is kept if its composite rank is <= 20 and it is still in the universe; remaining slots filled by the best-ranked non-held stocks",
+    "weights": "equal weight 1/10 of portfolio value per stock",
+    "affordability": "at the 25,000 CNY account, a stock is skipped at selection if one board lot (100 shares; 200 for STAR) costs more than 2,500 CNY at the signal close"
+  },
+
+  "execution_model": {
+    "calendar": "XSHG sessions from the bars",
+    "t_plus_1": "no sale on the day of purchase",
+    "price_limits": "10% main board; ChiNext 10% before 2020-08-24 and 20% from 2020-08-24; STAR 20%; inferred-ST 5%; first 5 sessions after listing are irrelevant (250-session rule)",
+    "blocked_orders": "cannot buy if open >= up-limit; cannot sell if open <= down-limit or no bar (suspended); blocked orders retry at each following open until the next rebalance replaces them",
+    "suspension_valuation": "last close carried forward",
+    "delisting": "a holding that stops trading permanently is valued at its last close and converted to cash at that value on the delisting date (declared optimistic simplification)"
+  },
+
+  "costs": {
+    "commission": "2.5 bp per side",
+    "min_commission_versions": {"NO_MIN": "no minimum (decision version)", "MIN5": "minimum 5 CNY per order (reported)"},
+    "stamp_duty_sell": "0.1% before 2023-08-28, 0.05% from 2023-08-28",
+    "transfer_fee": "0.001% per side",
+    "slippage": "10 bp per side; sensitivity 20 bp per side"
+  },
+
+  "accounts": {
+    "SMALL": "25,000 CNY, 100-share lots (200 for STAR), leftover cash earns SHIBOR (decision version)",
+    "LARGE": "1,000,000 CNY, fractional shares (reported, shows the strategy without lot effects)"
+  },
+
+  "periods": {
+    "data_start": "2008-01-01 (warm-up)",
+    "development": "2010-01-01 to 2024-03-31",
+    "development_halves": "DEV_A 2010-01-01..2016-12-31, DEV_B 2017-01-01..2024-03-31",
+    "holdout": "2024-04-01 to 2026-09-30; must not be loaded, scored, plotted or summarised before a one-time run authorised by the user in chat after the development verdict; enforced by a code guard with an authorisation file and a one-time state file"
+  },
+
+  "benchmarks": {
+    "EW_UNIVERSE": "equal weight across the whole 1000-stock universe, rebalanced on the same biweekly sessions, same costs, LARGE account",
+    "CSI1000": "price index buy and hold",
+    "CSI500": "price index buy and hold"
+  },
+
+  "metrics": ["CAGR", "ann_vol", "excess Sharpe over SHIBOR", "max drawdown and dates", "calendar-year returns", "annualised one-way turnover", "cost drag", "number of trades", "mean holdings count", "mean cash weight", "blocked orders", "count of delisted holdings", "stationary block bootstrap (block 21, 2000 resamples, seed 20261019) 90% CI of excess Sharpe difference vs EW_UNIVERSE and vs CSI1000", "PSR(0)"],
+
+  "decision_on_development": {
+    "version": "SMALL account, NO_MIN commission, 10 bp slippage",
+    "PASS_if_all": [
+      "DEV excess Sharpe > EW_UNIVERSE and > CSI1000",
+      "excess Sharpe > EW_UNIVERSE in DEV_A and in DEV_B",
+      "DEV max drawdown < EW_UNIVERSE DEV max drawdown",
+      "first condition still holds at 20 bp slippage"
+    ],
+    "user_tolerance_note": "The user accepts a 30-40% drawdown; report whether DEV max drawdown is within 40%, but it is not a pass condition (a long-only small-cap A-share portfolio is expected to exceed it in 2015).",
+    "if_PASS": "ask the user in chat for the one-time holdout run",
+    "if_FAIL": "report; holdout not run unless the user asks for information only"
+  },
+
+  "declared_biases": ["delisted prices from a single unofficial source", "inferred ST flag", "suspension inferred from missing bars", "reconstructed universe (not the official index)", "float-share history gaps filled with last known value", "benchmarks are price indices", "delisting converted at last close"],
+  "freeze_rule": "Frozen at commit time; any change is a separately labelled amendment written before the affected run."
+}
