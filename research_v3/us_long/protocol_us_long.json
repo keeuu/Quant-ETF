@@ -1,0 +1,63 @@
+{
+  "protocol": "research_v3 us_long: out-of-period test of the frozen CAP_DEF_M rule on US data 1973-2005 using index/rate proxies",
+  "written_at": "2026-10-19",
+  "written_before_any_pre_2006_data_was_downloaded_or_inspected": true,
+  "purpose": "Validation, not optimisation. The rule is applied unchanged to a period never used in this project (high inflation 1970s, 1987 crash, 2000-02 bear). Results are recorded whatever they are.",
+  "prior_knowledge_disclosure": "Published research (e.g. 10-month SMA timing and relative momentum studies starting in 1973) has documented trend-following behaviour in this period in general terms; no result of this specific rule on this period has been computed or viewed in this project.",
+
+  "rule_unchanged": "Frozen CAP_DEF_M as in research_v3/candidates_frozen.json: weekly-anchored 12-month momentum (research_v2 compute_weekly_momentum), 40-week trend SMA (compute_weekly_trend), matched-monthly schedule, top 3, at most one asset per group, DEF slots (IEF proxy vs cash by 3-month return vs cash return), cost 5 bp + slippage 5 bp per side.",
+
+  "universe_proxies": {
+    "US_EQ": {
+      "SPY_proxy": "US total market daily total return: Kenneth French data library, daily Fama/French 3 factors, Mkt-RF + RF (CRSP value-weighted)",
+      "IWM_proxy": "US small caps daily total return: Kenneth French 'Portfolios Formed on Size' daily, value-weighted bottom 30% (Lo 30)",
+      "QQQ_proxy": "Nasdaq Composite (^IXIC, yfinance) daily price return; price-only (no dividends), declared deviation"
+    },
+    "INTL_EQ": {
+      "EFA_proxy": "Kenneth French 'Developed ex US 3 Factors' daily, Mkt-RF + RF; available from 1990-07 only",
+      "EEM_proxy": "Kenneth French 'Emerging Markets 3 Factors' daily if available for the period, else unavailable",
+      "note": "Before an asset's first date it is simply not in the universe (no backfill)."
+    },
+    "GOLD": {"GLD_proxy": "London gold price daily in USD (FRED or LBMA via any public source); first source that covers 1971 onward, recorded"},
+    "BONDS": {
+      "IEF_proxy": "synthetic 10-year constant-maturity par bond daily total return from FRED DGS10",
+      "TLT_proxy": "synthetic 30-year constant-maturity par bond daily total return from FRED DGS30 (available from 1977-02; before that not in the universe)",
+      "synthetic_formula": "r_t = y_{t-1}/252 + price change of a par bond with coupon y_{t-1} and maturity M repriced at y_t (exact bond pricing, semi-annual coupons); no roll-down"
+    },
+    "cash": "FRED DTB3 3-month T-bill (discount basis converted to bond-equivalent yield as in research_v3 cash_yield), previous-session rate, accrued per calendar day",
+    "group_mapping": "Groups and universe order as in the US frozen rule: SPY, QQQ, IWM, EFA, EEM, GLD, TLT, IEF proxies in that order."
+  },
+
+  "price_construction": "Each proxy is turned into a total-return index (base 100). Signals and returns use that index. Proxies have closes only: signals at close t, trades executed at close t+1 (one-session lag instead of next open), declared deviation.",
+  "calendar": "Sessions = dates on which the SPY proxy has a return; other proxies aligned to these dates, missing values forward-filled for valuation only (no new observation for signals); every fill is counted and reported.",
+
+  "sample": {
+    "data_start": "1971-01-01 (or first available date of the SPY proxy and gold proxy, whichever is later)",
+    "score_start": "first monthly execution with all then-available assets warmed up (12-month momentum and 40-week trend computable), expected 1972-1973",
+    "score_end": "2005-12-31 (research_v3 already used 2006 onward)",
+    "partitions": ["FULL", "SUB_A: score_start..1989-12-31", "SUB_B: 1990-01-01..2005-12-31"]
+  },
+
+  "benchmarks": {
+    "SPY_BH": "SPY proxy buy and hold",
+    "US_60_40": "60% SPY proxy / 40% IEF proxy, rebalanced on the same monthly execution sessions",
+    "SPY_SMA10": "SPY proxy if its month-end level is above its 10-month SMA of month-end levels, else cash (as in research_v3 step 4)"
+  },
+
+  "metrics": ["CAGR", "ann_vol", "excess Sharpe over T-bill", "max drawdown and dates", "calendar-year returns", "worst year", "turnover", "mean cash and bond weights", "stationary block bootstrap (block 21, 2000 resamples, seed 20261019) 90% CI of excess Sharpe difference vs US_60_40 and vs SPY_BH", "count of forward-filled values per proxy"],
+
+  "success_criteria": {
+    "SUPPORTED_if_all": [
+      "FULL excess Sharpe > US_60_40",
+      "FULL max drawdown < SPY_BH max drawdown",
+      "SUB_A and SUB_B excess Sharpe > US_60_40 (point estimates)"
+    ],
+    "PARTIAL": "drawdown criterion met but at least one Sharpe criterion failed, or vice versa",
+    "NOT_SUPPORTED": "neither the drawdown criterion nor the FULL Sharpe criterion met",
+    "statistical_note": "Bootstrap CI reported; a CI including 0 is described as not statistically distinguishable."
+  },
+
+  "also_report_unchanged_reference": "research_v3 BASE monthly T40 (v2 rule without CAP/DEF) on the same proxies, for context only.",
+  "reserved_for_later_challengers": "This dataset may later serve as the evaluation set for pre-registered challengers (e.g. a crash overlay). Any challenger must be registered before its run; the frozen-rule results from this protocol will be visible by then and must be disclosed as such.",
+  "freeze_rule": "Frozen at commit time; changes only via separately labelled amendments written before the affected run."
+}
