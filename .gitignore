@@ -54,3 +54,6 @@ research_v3/stock_mf/data/
 
 # cb_rotation: raw third-party data kept local (sha256 manifest generated locally in data/)
 research_v3/cb_rotation/data/
+
+# paper_exec execution journal (local state)
+paper_exec/journal.jsonl

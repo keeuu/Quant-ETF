@@ -486,6 +486,35 @@ def _source_body(v: dict, alerts_html: str) -> str:
     return "".join(out)
 
 
+def _paper_body(v: dict) -> str:
+    """Presentation only: the Alpaca PAPER account's actual holdings next to the shadow's target weights."""
+    pa = v["paper_account"]
+    if pa.get("error"):
+        return f'<div class="banner warn">模拟账户读取失败（不影响信号与净值）：{e(pa["error"])}</div>'
+    shadow = {}
+    h = v.get("holdings")
+    if h:
+        shadow = {r["symbol"]: r["weight"] for r in h["rows"]}
+        shadow["SGOV"] = h["cash_weight"]
+    rows = []
+    for r in pa["positions"]:
+        tag = "" if r["strategy"] else ' <span class="badge b-mute">非策略持仓</span>'
+        sh = shadow.get(r["symbol"])
+        rows.append(f'<tr><td>{e(r["symbol"])}{tag}</td><td>{r["qty"]:,.4f}</td><td>{money(r["market_value"])}</td>'
+                    f'<td>{pct(r["weight"], 1, False)}</td><td>{"—" if sh is None else pct(sh, 1, False)}</td></tr>')
+    held = {r["symbol"] for r in pa["positions"]}
+    for s, w in shadow.items():
+        if s not in held and w > 1e-9:
+            rows.append(f'<tr><td>{e(s)}</td><td>0</td><td>{money(0)}</td><td>{pct(0, 1, False)}</td><td>{pct(w, 1, False)}</td></tr>')
+    le = pa.get("last_execution")
+    last = f"最近一次自动调仓信号日：{e(le['signal_date'])}。" if le else "尚无自动调仓记录。"
+    return (f'<p class="note" style="margin-top:0">Alpaca 模拟账户（模拟资金）净值 {money(pa["equity"])}，现金 {money(pa["cash"])}，'
+            f'购买力 {money(pa["buying_power"])}。{last}</p>'
+            '<div class="scroll"><table><tr><th>资产</th><th>数量</th><th>市值</th><th>实际权重</th><th>影子组合权重</th></tr>'
+            f'{"".join(rows) or "<tr><td colspan=5 class=mut>空仓</td></tr>"}</table></div>'
+            '<p class="note">仅作展示，不参与信号与净值计算。</p>')
+
+
 def _section_ok(v: dict, alerts_html: str = "") -> str:
     cls, sentence = status_line(v)
     out = [f'<div class="mhead"><h2>{e(v["title"])}</h2><span class="sub">数据截至 {cn_date(v["as_of"])}</span></div>',
@@ -501,6 +530,8 @@ def _section_ok(v: dict, alerts_html: str = "") -> str:
         out.append(_details(title, _orders_card(v), open_=_pending(v)))
     out.append(_details("各资产离趋势线多远", _trend_body(v)))
     out.append(_details("月末预览与防守仓位说明", _preview_body(v)))
+    if v.get("paper_account"):
+        out.append(_details("模拟账户实际持仓", _paper_body(v)))
     out.append(_details("数据来源与说明", _source_body(v, alerts_html)))
     return "".join(out)
 

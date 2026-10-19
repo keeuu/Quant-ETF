@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.quant-etf.paper-exec</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/zhangzeyuan/Projects/quant-ETF/.venv/bin/python</string>
+        <string>-m</string>
+        <string>paper_exec</string>
+        <string>run</string>
+        <string>--submit</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/zhangzeyuan/Projects/quant-ETF</string>
+    <!-- Mac local time = Asia/Shanghai, weekdays 21:40 and 22:40: US open is 21:30 (DST) or 22:30 (standard time).
+         The second run is a no-op once the signal is journaled as complete. Real orders still need enabled=true
+         in paper_exec/config.json. -->
+    <key>StartCalendarInterval</key>
+    <array>
+        <dict>
+            <key>Weekday</key><integer>1</integer>
+            <key>Hour</key><integer>21</integer>
+            <key>Minute</key><integer>40</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key><integer>1</integer>
+            <key>Hour</key><integer>22</integer>
+            <key>Minute</key><integer>40</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key><integer>2</integer>
+            <key>Hour</key><integer>21</integer>
+            <key>Minute</key><integer>40</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key><integer>2</integer>
+            <key>Hour</key><integer>22</integer>
+            <key>Minute</key><integer>40</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key><integer>3</integer>
+            <key>Hour</key><integer>21</integer>
+            <key>Minute</key><integer>40</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key><integer>3</integer>
+            <key>Hour</key><integer>22</integer>
+            <key>Minute</key><integer>40</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key><integer>4</integer>
+            <key>Hour</key><integer>21</integer>
+            <key>Minute</key><integer>40</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key><integer>4</integer>
+            <key>Hour</key><integer>22</integer>
+            <key>Minute</key><integer>40</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key><integer>5</integer>
+            <key>Hour</key><integer>21</integer>
+            <key>Minute</key><integer>40</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key><integer>5</integer>
+            <key>Hour</key><integer>22</integer>
+            <key>Minute</key><integer>40</integer>
+        </dict>
+    </array>
+    <key>StandardOutPath</key>
+    <string>/Users/zhangzeyuan/Projects/quant-ETF/logs/paper_exec.launchd.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/zhangzeyuan/Projects/quant-ETF/logs/paper_exec.launchd.err.log</string>
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

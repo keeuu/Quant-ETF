@@ -41,7 +41,8 @@ def default_markets():
 def run(*, now_utc: datetime | None = None, output_dir: Path | None = None, data_root: Path | None = None,
         snapshot_dir: Path | None = None, markets: dict | None = None, freeze_date: str | None = None,
         last_success_path: Path | None = None, write_snapshots: bool = True, notify: bool = False,
-        notifier=None, alerts_path: Path | None = None, alert_state_path: Path | None = None) -> int:
+        notifier=None, alerts_path: Path | None = None, alert_state_path: Path | None = None,
+        paper_provider=None) -> int:
     """Returns the process exit code: 1 only if every market failed."""
     from . import fetch
     from .render import render_page
@@ -84,6 +85,11 @@ def run(*, now_utc: datetime | None = None, output_dir: Path | None = None, data
             views[key] = {"key": key, "title": title, "status": "error", "message": msg,
                           "last_success": last_success.get(key)}
 
+    if paper_provider is not None and views.get("US", {}).get("status") == "ok" and not snapshot_dir:
+        try:                              # presentation only: never touches signals/NAV, never stops the page
+            views["US"]["paper_account"] = paper_provider(views["US"])
+        except Exception as e:  # noqa: BLE001
+            log.warning("paper account snapshot failed: %s", sanitize(f"{type(e).__name__}: {e}"))
     ok = [k for k, v in views.items() if v["status"] == "ok"]
     alert_info = None
     try:                                  # alerts are read-only and must never stop the page from rendering
@@ -103,6 +109,15 @@ def run(*, now_utc: datetime | None = None, output_dir: Path | None = None, data
     return 0 if ok else 1
 
 
+def _paper_provider():
+    """Read-only paper-account snapshot for the 'simulated holdings' section (None if paper_exec is unavailable)."""
+    try:
+        from paper_exec.snapshot import fetch_snapshot
+    except Exception:  # noqa: BLE001
+        return None
+    return lambda view: fetch_snapshot(universe=view["universe"])
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="python -m dashboard")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -116,7 +131,8 @@ def main(argv=None) -> int:
     setup_logging(config.LOG_PATH)
     try:
         out = args.out or (config.OUTPUT_DIR / f"replay_{args.snapshot.name}" if args.snapshot else None)
-        return run(snapshot_dir=args.snapshot, output_dir=out, notify=not args.no_notify)
+        return run(snapshot_dir=args.snapshot, output_dir=out, notify=not args.no_notify,
+                   paper_provider=_paper_provider())
     except Exception as e:  # never leak secrets, never traceback to a terminal without sanitizing
         log.error("fatal: %s", sanitize(f"{type(e).__name__}: {e}"))
         return 1
