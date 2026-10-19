@@ -26,3 +26,13 @@ logs/
 .idea/
 .vscode/
 *.swp
+
+# Third-party market data kept local only (public repo); sha256 manifests are committed
+research_v3/cn_transfer/data/*.csv
+research_v3/cn_transfer/data/*_raw.json
+research_v3/cn_transfer/validation/data/*.csv
+research_v3/cn_transfer/validation/data/*_raw.json
+research_v3/sector_mom/data/bars/
+research_v3/sector_mom/data/sina_raw/
+research_v3/sector_mom/data/shibor_3m.csv
+research_v3/sector_mom/universe/raw_*

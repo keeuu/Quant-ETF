@@ -1,0 +1,14 @@
+{
+ "status": "completed",
+ "completed_utc": "2026-10-19T01:27:01.338019+00:00",
+ "authorization": {
+  "authorized": true,
+  "protocol": "research_v3/sector_mom/protocol_hybrid.json",
+  "protocol_sha256": "6ec329269e0e9a75791f7be966d6071a1f22505912035d7da5f95f77f0310997",
+  "scope": "one-time phase-2 holdout run of HYBRID vs CAP_DEF_M_CN and benchmarks, 2024-10-01..2026-09-30",
+  "authorized_by": "user, in chat on 2026-10-19",
+  "pre_phase2_changes": [
+   "guard.py: added HOLDOUT_END, current_limit(), open_holdout() context manager (requires this file and run state 'started'); assert/clip read the current limit. No rule changes."
+  ]
+ }
+}

@@ -1,0 +1,42 @@
+{
+ "independent_recompute": {
+  "2021-01-29": {
+   "match": true,
+   "E": 0.6666666666666666,
+   "n_sector": 5,
+   "sum_weights": 0.6666666666666666,
+   "cash": 0.33333333333333337
+  },
+  "2023-10-31": {
+   "match": true,
+   "E": 0,
+   "n_sector": 5,
+   "sum_weights": 0.6666666666666666,
+   "cash": 0.33333333333333337
+  },
+  "2024-07-31": {
+   "match": true,
+   "E": 0.3333333333333333,
+   "n_sector": 5,
+   "sum_weights": 1.0,
+   "cash": 0.0
+  }
+ },
+ "replacement_off_max_abs_nav_diff_vs_CAP_DEF_M_CN": 0.0,
+ "bootstrap_HYBRID_minus_CAP": {
+  "primary": {
+   "diff": 0.013678772216959595,
+   "lo": -0.5024472284500006,
+   "hi": 0.5534183658624333,
+   "includes_0": true
+  },
+  "sens": {
+   "diff": 0.012216327559005383,
+   "lo": -0.5038876406023607,
+   "hi": 0.5537707477558304,
+   "includes_0": true
+  }
+ },
+ "first_execution": "2020-08-03",
+ "n_monthly_rebalances_in_dev": 50
+}

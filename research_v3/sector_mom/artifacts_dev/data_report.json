@@ -1,0 +1,176 @@
+{
+ "n_included": 751,
+ "n_with_bars": 398,
+ "n_without_bars": 32,
+ "without_bars": [
+  "158016",
+  "158036",
+  "158051",
+  "158062",
+  "158065",
+  "158066",
+  "158067",
+  "158072",
+  "158078",
+  "158079",
+  "158081",
+  "158082",
+  "158087",
+  "158088",
+  "158091",
+  "515293",
+  "516163",
+  "561270",
+  "561860",
+  "561970",
+  "562090",
+  "562100",
+  "562210",
+  "562630",
+  "562690",
+  "562720",
+  "588490",
+  "588560",
+  "589370",
+  "589450",
+  "589590",
+  "589610"
+ ],
+ "source_by_symbol_kind": {
+  "THS+Sina_ext": 399
+ },
+ "sina_adjustment_failed": [],
+ "ths_empty": [
+  "158016",
+  "158065",
+  "158078",
+  "158079",
+  "158081",
+  "158082",
+  "158088"
+ ],
+ "ths_errors": {
+  "158036": "DataError: THS code 3004 for 158036.SZ",
+  "158051": "DataError: THS code 3004 for 158051.SZ",
+  "158062": "DataError: THS code 3004 for 158062.SZ",
+  "158066": "DataError: THS code 3004 for 158066.SZ",
+  "158067": "DataError: THS code 3004 for 158067.SZ",
+  "158072": "DataError: THS code 3004 for 158072.SZ",
+  "158087": "DataError: THS code 3004 for 158087.SZ",
+  "158091": "DataError: THS code 3004 for 158091.SZ",
+  "515293": "DataError: THS code 3001 for 515293.SH",
+  "516163": "DataError: THS code 3001 for 516163.SH",
+  "561270": "DataError: THS code 3004 for 561270.SH",
+  "561860": "DataError: THS code 3004 for 561860.SH",
+  "561970": "DataError: THS code 3004 for 561970.SH",
+  "562090": "DataError: THS code 3004 for 562090.SH",
+  "562100": "DataError: THS code 3004 for 562100.SH",
+  "562210": "DataError: THS code 3004 for 562210.SH",
+  "562630": "DataError: THS code 3004 for 562630.SH",
+  "562690": "DataError: THS code 3004 for 562690.SH",
+  "562720": "DataError: THS code 3004 for 562720.SH",
+  "588490": "DataError: THS code 3004 for 588490.SH",
+  "588560": "DataError: THS code 3004 for 588560.SH",
+  "589370": "DataError: THS code 3004 for 589370.SH",
+  "589450": "DataError: THS code 3004 for 589450.SH",
+  "589590": "DataError: THS code 3004 for 589590.SH",
+  "589610": "DataError: THS code 3004 for 589610.SH"
+ },
+ "sina_errors": {
+  "158016": "DataError: Sina bars unavailable for sz158016",
+  "158036": "DataError: Sina bars unavailable for sz158036",
+  "158051": "DataError: Sina bars unavailable for sz158051",
+  "158062": "DataError: Sina bars unavailable for sz158062",
+  "158065": "DataError: Sina bars unavailable for sz158065",
+  "158066": "DataError: Sina bars unavailable for sz158066",
+  "158067": "DataError: Sina bars unavailable for sz158067",
+  "158072": "DataError: Sina bars unavailable for sz158072",
+  "158078": "DataError: Sina bars unavailable for sz158078",
+  "158079": "DataError: Sina bars unavailable for sz158079",
+  "158081": "DataError: Sina bars unavailable for sz158081",
+  "158082": "DataError: Sina bars unavailable for sz158082",
+  "158087": "DataError: Sina bars unavailable for sz158087",
+  "158088": "DataError: Sina bars unavailable for sz158088",
+  "158091": "DataError: Sina bars unavailable for sz158091",
+  "515293": "DataError: Sina bars unavailable for sh515293",
+  "516163": "DataError: Sina bars unavailable for sh516163",
+  "561270": "DataError: Sina bars unavailable for sh561270",
+  "561860": "DataError: Sina bars unavailable for sh561860",
+  "561970": "DataError: Sina bars unavailable for sh561970",
+  "562090": "DataError: Sina bars unavailable for sh562090",
+  "562100": "DataError: Sina bars unavailable for sh562100",
+  "562210": "DataError: Sina bars unavailable for sh562210",
+  "562630": "DataError: Sina bars unavailable for sh562630",
+  "562690": "DataError: Sina bars unavailable for sh562690",
+  "562720": "DataError: Sina bars unavailable for sh562720",
+  "588490": "DataError: Sina bars unavailable for sh588490",
+  "588560": "DataError: Sina bars unavailable for sh588560",
+  "589370": "DataError: Sina bars unavailable for sh589370",
+  "589450": "DataError: Sina bars unavailable for sh589450",
+  "589590": "DataError: Sina bars unavailable for sh589590",
+  "589610": "DataError: Sina bars unavailable for sh589610"
+ },
+ "overlap_ratio_max_dev_p50_p95_max": [
+  0.0,
+  0.01728000558771403,
+  0.09263959390862953
+ ],
+ "overlap_daily_logret_max_abs_diff_p50_p95_max": [
+  0.0,
+  0.014765306781488644,
+  0.0972155471638716
+ ],
+ "overlap_turnover_median_ratio_p50_p95_max": [
+  1.0,
+  1.0,
+  1.0000000298069611
+ ],
+ "ths_dates_missing_in_sina_total": 2,
+ "missing_session_bars_inside_listing_span": {
+  "n_symbols": 49,
+  "total": 762,
+  "worst": [
+   [
+    "512640",
+    263
+   ],
+   [
+    "159933",
+    95
+   ],
+   [
+    "512220",
+    78
+   ],
+   [
+    "159936",
+    67
+   ],
+   [
+    "159909",
+    60
+   ],
+   [
+    "512600",
+    43
+   ],
+   [
+    "512120",
+    28
+   ],
+   [
+    "159944",
+    25
+   ],
+   [
+    "510150",
+    14
+   ],
+   [
+    "512580",
+    11
+   ]
+  ]
+ },
+ "bars_on_non_session_dates": {}
+}
