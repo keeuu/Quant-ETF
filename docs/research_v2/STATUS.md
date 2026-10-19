@@ -10,11 +10,11 @@
 | **Stage 2** | 冻结数据、交易日历与分区权限 | **COMPLETED** | `research_v2/artifacts/phase_02/phase_receipt.json` |
 | **Stage 3** | 周信号、选择器与防未来执行日程 | **PASS_AFTER_DST_FIX** | `research_v2/artifacts/phase_03_fix/phase_receipt.json` |
 | **Stage 4** | 自融资账本、交易成本与统一日线度量 | **COMPLETED** | `research_v2/artifacts/phase_04/phase_receipt.json` |
-| **Stage 5** | 固定对照、SPY 基准与隔离 V1 Oracle 桥接 | PENDING | `research_v2/artifacts/phase_05/phase_receipt.json` |
-| **Stage 6** | 验证集选择、Walk-Forward 与稳定性审计 | PENDING | `research_v2/artifacts/phase_06/phase_receipt.json` |
-| **Stage 7** | 统计推断、多重检验调整与机制表现 | PENDING | `research_v2/artifacts/phase_07/phase_receipt.json` |
-| **Stage 8** | 历史留出解锁与前瞻 OOS 门控 | PENDING | `research_v2/artifacts/phase_08/phase_receipt.json` |
-| **Stage 9** | 确定性重放、最终报告与交付清单 | PENDING | `research_v2/artifacts/phase_09/phase_receipt.json` |
+| **Stage 5** | 固定对照、SPY 基准与隔离 V1 Oracle 桥接 | **STAGE_5_PASS** | `research_v2/artifacts/phase_05/phase_receipt.json` |
+| **Stage 6** | 验证集选择、Walk-Forward 与稳定性审计 | **STAGE_6_PASS** | `research_v2/artifacts/phase_06/phase_receipt.json` |
+| **Stage 7** | 统计推断、多重检验调整与机制表现 | **STAGE_7_PASS** | `research_v2/artifacts/phase_07/phase_receipt.json` |
+| **Stage 8** | 历史留出解锁与前瞻 OOS 门控 | **SEALED (Holdout Lock v5)** | `research_v2/artifacts/phase_08/phase_receipt.json`; `docs/research_v2/stage_09_holdout_lock_v5.json`; `research_v2/artifacts/phase_08/stage_09_holdout_lock_active_hash.txt` |
+| **Stage 9** | 确定性重放、最终报告与交付清单 | **COMPLETED_EXPOSED** | `research_v2/artifacts/phase_09/stage_09_receipt.json`; `docs/research_v2/holdout_exposure_state.json`; `docs/research_v2/stage_09_final_report.md` |
 
 ---
 
@@ -61,14 +61,32 @@
 - **Holdout Gate**: NOT_ACCESSED
 - **Receipt**: `research_v2/artifacts/phase_04/phase_receipt.json` (SHA256: `4c3430c96ce63071c76f207975e6d806c2c1601e81cbc91ac8b5d42d4c57d335`)
 
+### Stage 5-7
+- **状态**: Stage 5 `STAGE_5_PASS`、Stage 6 `STAGE_6_PASS`、Stage 7 `STAGE_7_PASS`（各阶段 `verdict` 字段，见对应 `phase_receipt.json`）
+- **Holdout Gate**: Stage 5/6 `NOT_ACCESSED`；Stage 7 验证集 `ACCESSED_AS_AUTHORIZED`、Retrospective Holdout `NOT_ACCESSED`
+- **模型选择**: `NONE`（Stage 6/7 均仅作描述性排序，无事后模型定义）
+
+### Stage 8
+- **状态**: 封存（Seal）完成，最终有效 Holdout Lock 为 v5（Lock v1 为 `REJECTED_PRE_EXPOSURE`，v2/v3/v4 先后被拒或被替换，见 `docs/research_v2/stage_09_holdout_lock_v*.json`）
+- **Active Lock Hash**: `4c24c4e65d9bb7df7c4e595bf40894eaf0fc11dd9c847094caf4b8746cd1acd9`（`research_v2/artifacts/phase_08/stage_09_holdout_lock_active_hash.txt`，与 v5 `lock_sha256` 一致）
+- **Ready Tag**: `research-v2-stage8-ready-v2`（指向提交 `2789f8f`）
+- **说明**: `research_v2/artifacts/phase_08/phase_receipt.json` 与 `docs/research_v2/stage_08_final_audit.json` 是封存过程中较早快照（分别记录 v4 候选与 `STAGE_8_BLOCKED`），以 v5 Lock 与 active hash 为准。
+
+### Stage 9
+- **状态**: `COMPLETED_EXPOSED`（`research_v2/artifacts/phase_09/stage_09_receipt.json`）
+- **执行尝试**: 第 1 次 `FAILED_UNEXPOSED`（CASH 伪资产边界不匹配，未暴露绩效）；第 2 次 `SUCCESS`
+- **Exposure State**: `COMPLETED_EXPOSED`，`successful_stage9_runs = 1`，`failed_unexposed_runs = 1`（`docs/research_v2/holdout_exposure_state.json`）
+- **Holdout 类别**: `RETROSPECTIVE_HOLDOUT`，限制 `NOT_TRUE_FINAL_UNSEEN`；`model_selection = NONE`，`promotion_decision = NO_PROMOTION_DECISION`，用途 `DESCRIPTIVE_ONLY`
+- **最终报告**: `docs/research_v2/stage_09_final_report.md`；产物清单 `research_v2/artifacts/phase_09/stage_09_artifact_manifest.json`
+- **Prospective Final OOS**: `PENDING_DATA`（至少 504 个交易日 / 24 个月）
+
 ---
 
-## 3. 下一阶段入口 (Stage 5)
+## 3. 后续入口
 
-进入 Stage 5 时，仅需读取以下文件：
-1. `CODEX_EXECUTION_PLAN.md` (Stage 5 小节)
-2. `docs/research_v2/STATUS.md`
-3. `research_v2/artifacts/phase_04/phase_receipt.json`
-4. `docs/research_v2/REPO_MAP.md`
-5. `docs/research_v2/dataset_manifest.json`
-
+Research V2 的 Stage 1-9 均已执行完毕；Retrospective Holdout 已暴露，不可再作为 Final Unseen 证据。后续仅剩前瞻 OOS（Paper V2 本地影子运行，`PENDING_DATA`）。需要了解当前状态时读取：
+1. `docs/research_v2/STATUS.md`
+2. `research_v2/artifacts/phase_09/stage_09_receipt.json`
+3. `docs/research_v2/holdout_exposure_state.json`
+4. `docs/research_v2/stage_09_final_report.md`
+5. `docs/research_v2/REPO_MAP.md`

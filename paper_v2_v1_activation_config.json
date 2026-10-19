@@ -2,7 +2,8 @@
   "strategy_version": "paper-v2-v1",
   "mode": "LOCAL_SHADOW_ONLY",
   "research_v2_source_commit": "88ed36a95f0306dc47c23142d485ccb3431e170d",
-  "research_v2_dependency_manifest_hash": "ccb0bfe324f10b194c4e85b22c82f97522d37e9c7c2beb88307a42e61889065f",
+  "research_v2_dependency_manifest_hash": "82dcb173a4a66d1f3b720586de6a84bb847a08c6f58bd0b09e83dac169e37aea",
+  "_note": "research_v2_dependency_manifest_hash = sha256 of the raw bytes of paper_v2_state/research_v2_dependency_manifest.json (file added in commit 5892f15). The earlier value ccb0bfe3... matched no hash of that file and no code defines or verifies it; corrected 2026-10-19. Manifest blob SHAs verified equal to research_v2/{calendar,schedule,signals,ledger,contracts}.py at commit 88ed36a and at the working tree.",
   "paper_v2_implementation_commit": "4c64f0f197ecd750d085383221c42a4b169142a7",
   "model_package": 18,
   "universe": [

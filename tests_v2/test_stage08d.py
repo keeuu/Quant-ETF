@@ -12,24 +12,61 @@ import shutil
 import uuid
 
 root = Path(__file__).parent.parent
-lock_path = root / "docs/research_v2/stage_09_holdout_lock_v5.json"
-exposure_path = root / "docs/research_v2/holdout_exposure_state.json"
-active_path = root / "research_v2/artifacts/phase_08/stage_09_holdout_lock_active_hash.txt"
+LOCK_REL = "docs/research_v2/stage_09_holdout_lock_v5.json"
+EXPOSURE_REL = "docs/research_v2/holdout_exposure_state.json"
+ACTIVE_REL = "research_v2/artifacts/phase_08/stage_09_holdout_lock_active_hash.txt"
+lock_path = root / LOCK_REL  # read-only reference to the real lock (existence checks only)
+
+# Files the Stage-9 runner reads/writes relative to its `root` argument.  They are
+# copied into a temporary root so the tests can never delete or rewrite tracked files.
+_COPY_FILES = [
+    LOCK_REL,
+    EXPOSURE_REL,
+    ACTIVE_REL,
+    "docs/research_v2/dataset_manifest.json",
+    "research_v2/protocol.json",
+    "research_v2/stage9_runner.py",
+    "research_v2/data.py",
+    "research_v2/contracts.py",
+]
+
+
+@pytest.fixture
+def work_root(tmp_path):
+    """Temporary copy of the minimal inputs the runner needs (never touches the repo tree)."""
+    dest = tmp_path / "repo"
+    for rel in _COPY_FILES:
+        src = root / rel
+        if src.exists():
+            (dest / rel).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, dest / rel)
+    proto = dest / "research_v2/protocol.json"
+    if proto.exists():
+        pdata = json.loads(proto.read_text())
+        if "protocol_path" in pdata and (root / pdata["protocol_path"]).exists():
+            rel = pdata["protocol_path"]
+            (dest / rel).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(root / rel, dest / rel)
+    # Read-only dataset snapshot: symlink instead of copying.
+    snap_dst = dest / "research_v2/data/snapshot_20260918"
+    snap_dst.parent.mkdir(parents=True, exist_ok=True)
+    snap_dst.symlink_to(root / "research_v2/data/snapshot_20260918", target_is_directory=True)
+    return dest
+
 
 @pytest.fixture(autouse=True)
-def clean_env(monkeypatch):
+def clean_env(monkeypatch, work_root):
+    exposure_path = work_root / EXPOSURE_REL
     if not exposure_path.exists():
+        exposure_path.parent.mkdir(parents=True, exist_ok=True)
         exposure_path.write_text(json.dumps({"state": "UNEXPOSED"}))
-    state = json.loads(exposure_path.read_text())
-    orig_state = dict(state)
+    state = json.loads((work_root / EXPOSURE_REL).read_text())
     state["state"] = "UNEXPOSED"
     state["failed_unexposed_runs"] = 0
     state["successful_stage9_runs"] = 0
     state["retrospective_holdout_performance_accessed"] = False
     exposure_path.write_text(json.dumps(state))
-    
-    orig_active = active_path.read_text() if active_path.exists() else ""
-    
+
     orig_run = subprocess.run
     def mock_run(*args, **kwargs):
         if args[0] == ["git", "status", "--porcelain"]:
@@ -42,15 +79,9 @@ def clean_env(monkeypatch):
             return type('obj', (object,), {'returncode': 0})
         return orig_run(*args, **kwargs)
     monkeypatch.setattr(subprocess, "run", mock_run)
-    
     yield
-    exposure_path.write_text(json.dumps(orig_state))
-    active_path.write_text(orig_active)
-    final_dest = root / "research_v2/artifacts/phase_09"
-    if final_dest.exists():
-        shutil.rmtree(final_dest)
 
-def test_dirty_worktree(monkeypatch):
+def test_dirty_worktree(monkeypatch, work_root):
     orig_run = subprocess.run
     def mock_run(*args, **kwargs):
         if args[0] == ["git", "status", "--porcelain"]:
@@ -58,9 +89,9 @@ def test_dirty_worktree(monkeypatch):
         return orig_run(*args, **kwargs)
     monkeypatch.setattr(subprocess, "run", mock_run)
     with pytest.raises(ValueError, match="FAIL_CLOSED_DIRTY_WORKTREE"):
-        verify_stage9_holdout_lock(lock_path, root)
+        verify_stage9_holdout_lock(work_root / LOCK_REL, work_root)
 
-def test_wrong_implementation_ancestry(monkeypatch):
+def test_wrong_implementation_ancestry(monkeypatch, work_root):
     orig_run = subprocess.run
     def mock_run(*args, **kwargs):
         if args[0][:3] == ["git", "merge-base", "--is-ancestor"]:
@@ -74,9 +105,9 @@ def test_wrong_implementation_ancestry(monkeypatch):
         return orig_run(*args, **kwargs)
     monkeypatch.setattr(subprocess, "run", mock_run)
     with pytest.raises(ValueError, match="FAIL_CLOSED_IMPLEMENTATION_NOT_ANCESTOR"):
-        verify_stage9_holdout_lock(lock_path, root)
+        verify_stage9_holdout_lock(work_root / LOCK_REL, work_root)
 
-def test_wrong_head_tag(monkeypatch):
+def test_wrong_head_tag(monkeypatch, work_root):
     orig_run = subprocess.run
     def mock_run(*args, **kwargs):
         if args[0] == ["git", "rev-parse", "research-v2-stage8-ready-v2^{commit}"]:
@@ -90,12 +121,12 @@ def test_wrong_head_tag(monkeypatch):
         return orig_run(*args, **kwargs)
     monkeypatch.setattr(subprocess, "run", mock_run)
     with pytest.raises(ValueError, match="FAIL_CLOSED_HEAD_NOT_READY_TAG"):
-        verify_stage9_holdout_lock(lock_path, root)
+        verify_stage9_holdout_lock(work_root / LOCK_REL, work_root)
 
-def test_code_manifest_mutation(tmp_path):
+def test_code_manifest_mutation(tmp_path, work_root):
     if not lock_path.exists():
         pytest.skip("Lock v4 not generated yet")
-    lock_data = json.loads(lock_path.read_text())
+    lock_data = json.loads((work_root / LOCK_REL).read_text())
     broken = dict(lock_data)
     del broken["lock_sha256"]
     broken["provenance"]["execution_code_manifest_sha256"] = "wrong_hash"
@@ -103,7 +134,7 @@ def test_code_manifest_mutation(tmp_path):
     temp_lock = tmp_path / "lock_wrong_manifest.json"
     temp_lock.write_text(json.dumps(broken))
     with pytest.raises(ValueError, match="Execution manifest mismatch"):
-        verify_stage9_holdout_lock(temp_lock, root)
+        verify_stage9_holdout_lock(temp_lock, work_root)
 
 def test_generic_loader():
     with pytest.raises(ValueError, match="invalid or missing authorization"):
@@ -141,7 +172,7 @@ def mock_engine(monkeypatch):
     monkeypatch.setattr("research_v2.signals.compute_model_signals_for_events", lambda *args, **kwargs: pd.DataFrame())
     monkeypatch.setattr("research_v2.signals.compute_matched_monthly_signals", lambda *args, **kwargs: pd.DataFrame())
 
-def test_success_simulation(mock_engine, monkeypatch):
+def test_success_simulation(mock_engine, monkeypatch, work_root):
     if not lock_path.exists():
         pytest.skip("Lock v4 not generated yet")
         
@@ -150,18 +181,18 @@ def test_success_simulation(mock_engine, monkeypatch):
     monkeypatch.setattr("research_v2.schedule.build_weekly_schedule", mock_build_weekly)
     monkeypatch.setattr("research_v2.schedule.build_monthly_matched_schedule", mock_build_monthly)
         
-    stage9_holdout_once(str(lock_path), str(root))
+    stage9_holdout_once(str(work_root / LOCK_REL), str(work_root))
     
-    final_dest = root / "research_v2/artifacts/phase_09"
+    final_dest = work_root / "research_v2/artifacts/phase_09"
     assert final_dest.exists()
     assert (final_dest / "holdout_trial_ledger.csv").exists()
     
-    exposure = json.loads(exposure_path.read_text())
+    exposure = json.loads((work_root / EXPOSURE_REL).read_text())
     assert exposure["state"] == "COMPLETED_EXPOSED"
     assert exposure["retrospective_holdout_performance_accessed"] is True
     assert exposure["successful_stage9_runs"] == 1
 
-def test_model_failure_simulation(mock_engine, monkeypatch):
+def test_model_failure_simulation(mock_engine, monkeypatch, work_root):
     if not lock_path.exists():
         pytest.skip("Lock v4 not generated yet")
     
@@ -187,19 +218,19 @@ def test_model_failure_simulation(mock_engine, monkeypatch):
     monkeypatch.setattr("research_v2.engine.run_backtest", fail_at_7)
     
     with pytest.raises(RuntimeError, match="Mock failure at 7/18"):
-        stage9_holdout_once(str(lock_path), str(root))
+        stage9_holdout_once(str(work_root / LOCK_REL), str(work_root))
         
-    final_dest = root / "research_v2/artifacts/phase_09"
+    final_dest = work_root / "research_v2/artifacts/phase_09"
     assert not final_dest.exists()
     
     stagings = list(final_dest.parent.glob(".phase_09_staging_*"))
     assert len(stagings) == 0
     
-    exposure = json.loads(exposure_path.read_text())
+    exposure = json.loads((work_root / EXPOSURE_REL).read_text())
     assert exposure["state"] == "UNEXPOSED"
     assert exposure["retrospective_holdout_performance_accessed"] is False
 
-def test_publish_failure_simulation(mock_engine, monkeypatch):
+def test_publish_failure_simulation(mock_engine, monkeypatch, work_root):
     if not lock_path.exists():
         pytest.skip("Lock v4 not generated yet")
         
@@ -213,12 +244,12 @@ def test_publish_failure_simulation(mock_engine, monkeypatch):
     monkeypatch.setattr(os, "replace", mock_replace)
     
     with pytest.raises(RuntimeError, match="Mock atomic rename failure"):
-        stage9_holdout_once(str(lock_path), str(root))
+        stage9_holdout_once(str(work_root / LOCK_REL), str(work_root))
         
-    final_dest = root / "research_v2/artifacts/phase_09"
+    final_dest = work_root / "research_v2/artifacts/phase_09"
     assert not final_dest.exists()
     
-    exposure = json.loads(exposure_path.read_text())
+    exposure = json.loads((work_root / EXPOSURE_REL).read_text())
     assert exposure["state"] == "UNEXPOSED"
     assert exposure["retrospective_holdout_performance_accessed"] is False
 
