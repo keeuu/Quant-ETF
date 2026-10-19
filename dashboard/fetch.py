@@ -40,14 +40,17 @@ class FetchResult:
     notes: list = field(default_factory=list)
     fetched_at_utc: str = ""
     extra_prices: dict = field(default_factory=dict)     # latest close of the cash-proxy ETF (order list only)
+    detail: dict = field(default_factory=dict)           # per-symbol source detail (attempts, splice junction/factor)
 
     @property
     def fallback_used(self) -> bool:
         return any(not s.startswith(("THS", "yfinance")) for s in self.sources.values()) or "快照" in self.rate_source
 
 
-def retry(fn, tries: int = 3, wait: float = 2.0, throttle: float = THROTTLE_S, what: str = "request"):
-    """At most `tries` attempts with a throttle before each call; raises FetchError (sanitized) at the end."""
+def retry(fn, tries: int = 3, wait: float = 2.0, throttle: float = THROTTLE_S, what: str = "request",
+          backoff: float = 1.0):
+    """At most `tries` attempts with a throttle before each call (sleep `wait*backoff**i` between attempts);
+    raises FetchError (sanitized) at the end."""
     last = None
     for i in range(tries):
         try:
@@ -57,7 +60,7 @@ def retry(fn, tries: int = 3, wait: float = 2.0, throttle: float = THROTTLE_S, w
             last = e
             log.warning("%s failed (attempt %d/%d): %s", what, i + 1, tries, sanitize(f"{type(e).__name__}: {e}"))
             if i < tries - 1:
-                time.sleep(wait)
+                time.sleep(wait * backoff ** i)
     raise FetchError(sanitize(f"{what}: {type(last).__name__}: {last}"))
 
 
@@ -72,43 +75,164 @@ def _check_bars(sym: str, df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ------------------------------------------------------------------------------------------------ US
-def fetch_us(spec: MarketSpec, now_utc: datetime, start: str = "2018-01-01") -> FetchResult:
+YF_TRIES = 3
+SOURCE_ALPACA = "Alpaca IEX"
+
+
+def _yf_frame(yf, sym: str, **kw) -> pd.DataFrame:
+    """One yfinance download; an EMPTY frame counts as a failure (yfinance sometimes returns empty, not an error)."""
+    raw = yf.download(sym, progress=False, auto_adjust=False, **kw)
+    if raw is None or len(raw) == 0:
+        raise FetchError(f"yfinance returned no data for {sym}")
+    return raw
+
+
+def iter_us_snapshots(data_root: Path):
+    """Yield (date_str, snapshot_dir, US manifest) newest first; unreadable manifests are skipped."""
+    root = Path(data_root)
+    if not root.is_dir():
+        return
+    for d in sorted((x for x in root.iterdir() if x.is_dir()), key=lambda x: x.name, reverse=True):
+        try:
+            man = json.loads((d / "manifest.json").read_text())["markets"]["US"]
+        except Exception:  # noqa: BLE001
+            continue
+        yield d.name, d, man
+
+
+def _verified_csv(d: Path, man: dict, rel: str):
+    meta = man["files"].get(rel)
+    if not meta or not (d / rel).is_file() or sha256_file(d / rel) != meta["sha256"]:
+        return None
+    return pd.read_csv(d / rel, dtype={"Date": str})
+
+
+def load_cached_us_bars(data_root: Path, sym: str):
+    """(snapshot date, bars) of the most recent snapshot whose `sym` bars came from yfinance and pass the hash check."""
+    for date_str, d, man in iter_us_snapshots(data_root):
+        if not str(man.get("sources", {}).get(sym, "")).startswith("yfinance"):
+            continue
+        df = _verified_csv(d, man, f"US/{sym}.csv")
+        if df is not None and len(df):
+            return date_str, df
+    return None
+
+
+def splice_bars(cached: pd.DataFrame, alp: pd.DataFrame, sym: str = "") -> tuple:
+    """Cached yfinance history + Alpaca bars after the last cached date. The Alpaca adj_close/adj_open are scaled so
+    the level is continuous at the junction date (which must exist in both): factor = cached adj_close / Alpaca
+    adj_close there. Raw OHLC/close stay Alpaca raw. Returns (bars, junction_date, factor, n_new)."""
+    cached = cached.sort_values("Date").reset_index(drop=True)
+    j = str(cached["Date"].iloc[-1])
+    a = alp.set_index("Date")
+    if j not in a.index:
+        raise FetchError(f"{sym}: junction date {j} missing in Alpaca bars")
+    factor = float(cached["adj_close"].iloc[-1]) / float(a.loc[j, "adj_close"])
+    if not (0.5 < factor < 2.0):
+        raise FetchError(f"{sym}: implausible junction factor {factor:.4f} at {j}")
+    new = alp[alp["Date"] > j].copy()
+    new["adj_close"] = new["adj_close"] * factor
+    new["adj_open"] = new["adj_open"] * factor
+    if "dividends" in cached.columns:
+        new["dividends"] = 0.0                      # not provided by the fallback; unused by the dashboard
+    out = pd.concat([cached, new[list(cached.columns)]], ignore_index=True)
+    return out, j, factor, int(len(new))
+
+
+def _alpaca_us_bars(sym: str, start: str, data_root: Path, http=None):
+    """Alpaca recent bars spliced onto the newest cached yfinance snapshot (raises FetchError if none)."""
+    from . import iex_fallback as alpaca
+    cached = load_cached_us_bars(data_root, sym)
+    if cached is None:
+        raise FetchError(f"{sym}: no cached yfinance snapshot to splice Alpaca bars onto")
+    snap_date, cdf = cached
+    try:
+        alp = alpaca.fetch_alpaca_bars(sym, start=str(cdf["Date"].iloc[-1]), http=http)
+    except alpaca.AlpacaError as e:
+        raise FetchError(sanitize(f"{sym}: {e}")) from None
+    out, j, factor, n_new = splice_bars(cdf, alp, sym)
+    detail = {"source": f"{SOURCE_ALPACA}(拼接于快照 {snap_date})", "snapshot": snap_date, "junction": j,
+              "factor": round(factor, 8), "new_bars": n_new}
+    return out, detail
+
+
+def _irx_from_snapshot(data_root: Path):
+    for date_str, d, man in iter_us_snapshots(data_root):
+        r = _verified_csv(d, man, "US/rate.csv")
+        if r is not None and len(r):
+            return date_str, pd.Series(r["rate_pct"].values, index=r["Date"].values, dtype=float)
+    return None
+
+
+def fetch_us(spec: MarketSpec, now_utc: datetime, start: str = "2018-01-01", data_root: Path | None = None,
+             http=None) -> FetchResult:
     import yfinance as yf
     from paper_v2.market_data import normalize_yf_frame
     from research_v3.cash_yield import load_irx
+    from . import config
 
-    bars, sources = {}, {}
+    data_root = Path(data_root or config.DATA_ROOT)
+    bars, sources, detail, notes = {}, {}, {}, []
     for sym in spec.universe:
-        raw = retry(lambda s=sym: yf.download(s, start=start, progress=False, auto_adjust=False, actions=True),
-                    what=f"yfinance {sym}")
-        if raw is None or len(raw) == 0:
-            raise FetchError(f"yfinance returned no data for {sym}")
-        bars[sym] = _check_bars(sym, normalize_yf_frame(raw))
-        sources[sym] = "yfinance"
+        n_try = [0]
+
+        def _one(s=sym, n=n_try):
+            n[0] += 1
+            return _yf_frame(yf, s, start=start, actions=True)
+        try:
+            raw = retry(_one, tries=YF_TRIES, what=f"yfinance {sym}", backoff=2.0)
+            bars[sym] = _check_bars(sym, normalize_yf_frame(raw))
+            sources[sym] = "yfinance"
+            detail[sym] = {"source": "yfinance", "attempts": n_try[0]}
+        except Exception as e_yf:  # noqa: BLE001
+            log.warning("%s: yfinance exhausted (%s); falling back to Alpaca IEX", sym, sanitize(e_yf))
+            try:
+                df, d = _alpaca_us_bars(sym, start, data_root, http)
+                bars[sym] = _check_bars(sym, df)
+            except Exception as e_al:  # noqa: BLE001
+                raise FetchError(sanitize(f"{sym}: yfinance 失败({e_yf}); Alpaca 备用也失败({e_al})")) from None
+            d["yfinance_attempts"] = YF_TRIES
+            sources[sym], detail[sym] = d["source"], d
+            notes.append(sanitize(f"{sym} yfinance 连续 {YF_TRIES} 次失败，改用 Alpaca IEX 近期行情，"
+                                  f"拼接于快照 {d['snapshot']}（交接日 {d['junction']}，复权系数 {d['factor']:.6f}，"
+                                  f"新增 {d['new_bars']} 根）"))
     end = (pd.Timestamp(now_utc).tz_localize(None) + pd.Timedelta(days=2)).strftime("%Y-%m-%d")
 
     def _irx():
-        raw = yf.download("^IRX", start="2021-01-01", end=end, auto_adjust=False, progress=False)
-        if raw is None or len(raw) == 0:
-            raise FetchError("yfinance returned no ^IRX data")
+        raw = _yf_frame(yf, "^IRX", start="2021-01-01", end=end)
         s = raw["Close"]["^IRX"] if isinstance(raw.columns, pd.MultiIndex) else raw["Close"]
         return pd.Series(s.values, index=pd.DatetimeIndex(s.index).strftime("%Y-%m-%d"), dtype=float).dropna()
 
-    fwd = retry(_irx, what="yfinance ^IRX")
-    base = load_irx()                               # hash-verified research snapshot, 2005..2020
-    fwd = fwd[~fwd.index.isin(base.index)]
-    rate = pd.concat([base, fwd]).sort_index()
+    rate_source = "yfinance ^IRX(2021起)+研究数据(至2020)"
+    try:
+        fwd = retry(_irx, tries=YF_TRIES, what="yfinance ^IRX", backoff=2.0)
+        base = load_irx()                           # hash-verified research snapshot, 2005..2020
+        fwd = fwd[~fwd.index.isin(base.index)]
+        rate = pd.concat([base, fwd]).sort_index()
+    except FetchError as e:
+        snap = _irx_from_snapshot(data_root)
+        if snap is None:
+            raise
+        rate_source = f"快照 {snap[0]} 的现金利率(^IRX 获取失败)"
+        rate = snap[1]
+        notes.append(sanitize(f"^IRX 获取失败，现金利率沿用快照 {snap[0]}（末日 {rate.index[-1]}）: {e}"))
     extra = {}
     try:
         from .config import load_account
         proxy = load_account()["US"]["cash_proxy"]
-        raw = retry(lambda: yf.download(proxy, period="10d", progress=False, auto_adjust=False), what=f"yfinance {proxy}")
-        c = raw["Close"][proxy] if isinstance(raw.columns, pd.MultiIndex) else raw["Close"]
-        extra[proxy] = float(c.dropna().iloc[-1])
+        try:
+            raw = retry(lambda: _yf_frame(yf, proxy, period="10d"), tries=YF_TRIES, what=f"yfinance {proxy}", backoff=2.0)
+            c = raw["Close"][proxy] if isinstance(raw.columns, pd.MultiIndex) else raw["Close"]
+            extra[proxy] = float(c.dropna().iloc[-1])
+        except Exception as e:  # noqa: BLE001
+            log.warning("%s: yfinance exhausted (%s); falling back to Alpaca latest close", proxy, sanitize(e))
+            from . import iex_fallback as alpaca
+            extra[proxy] = alpaca.latest_close(proxy, http=http)
+            notes.append(f"{proxy} 最新价来自 {SOURCE_ALPACA}（yfinance 失败）")
     except Exception as e:  # noqa: BLE001  (non-fatal: the order list falls back to a nominal price)
         log.warning("cash proxy price unavailable: %s", sanitize(e))
-    return FetchResult("US", bars, rate, sources, "yfinance ^IRX(2021起)+研究数据(至2020)",
-                       fetched_at_utc=now_utc.astimezone(timezone.utc).isoformat(), extra_prices=extra)
+    return FetchResult("US", bars, rate, sources, rate_source, notes,
+                       fetched_at_utc=now_utc.astimezone(timezone.utc).isoformat(), extra_prices=extra, detail=detail)
 
 
 # ------------------------------------------------------------------------------------------------ CN
@@ -257,7 +381,7 @@ def write_snapshot(root: Path, date_str: str, fr: FetchResult) -> Path:
     man = json.loads(mp.read_text()) if mp.is_file() else {"markets": {}}
     man["markets"][fr.market] = {"fetched_at_utc": fr.fetched_at_utc, "sources": fr.sources,
                                  "rate_source": fr.rate_source, "notes": fr.notes, "files": files,
-                                 "extra_prices": fr.extra_prices}
+                                 "extra_prices": fr.extra_prices, "source_detail": fr.detail}
     tmp = mp.with_suffix(".tmp")
     tmp.write_text(json.dumps(man, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
     tmp.replace(mp)
@@ -278,4 +402,4 @@ def load_snapshot(snapshot_dir: Path, market: str) -> FetchResult:
     r = pd.read_csv(d / market / "rate.csv", dtype={"Date": str})
     rate = pd.Series(r["rate_pct"].values, index=r["Date"].values, dtype=float)
     return FetchResult(market, bars, rate, man["sources"], man["rate_source"], man["notes"], man["fetched_at_utc"],
-                       man.get("extra_prices", {}))
+                       man.get("extra_prices", {}), man.get("source_detail", {}))

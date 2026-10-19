@@ -466,7 +466,13 @@ def _preview_body(v: dict) -> str:
 
 def _source_body(v: dict, alerts_html: str) -> str:
     src = v["sources"]
-    src_txt = "、".join(sorted(set(src.values()))) if src else "—"
+    kinds = sorted(set(src.values()))
+    if not src:
+        src_txt = "—"
+    elif len(kinds) == 1:
+        src_txt = kinds[0]
+    else:                                   # mixed: list which symbols came from which source
+        src_txt = "；".join(f'{k}：{" ".join(sorted(s for s, x in src.items() if x == k))}' for k in kinds)
     badge = "使用了备用数据源" if v["fallback_used"] else "主数据源"
     out = [f'<p class="note" style="margin-top:0">数据截至 {e(v["as_of"])} 收盘 · 数据源 {e(src_txt)}（{badge}）· '
            f'现金收益 {e(v["rate_source"])} · 冻结日 {e(v["freeze_date"])}。</p>']
