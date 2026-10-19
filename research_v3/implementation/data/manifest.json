@@ -1,0 +1,266 @@
+{
+  "created_utc": "2026-10-19T04:15:06.182103+00:00",
+  "end_requested": "2026-10-20",
+  "fetch_log": {
+    "em_moneyfund_511990": "ok",
+    "fr001": "FAILED failed after 3 tries: KeyError: 'frValueMap'",
+    "gc001": "ok",
+    "sina_159649": "ok",
+    "sina_159972": "ok",
+    "sina_511010": "ok",
+    "sina_511020": "ok",
+    "sina_511060": "ok",
+    "sina_511090": "ok",
+    "sina_511100": "ok",
+    "sina_511130": "ok",
+    "sina_511160": "ok",
+    "sina_511220": "ok",
+    "sina_511260": "ok",
+    "sina_511270": "ok",
+    "sina_511520": "ok",
+    "sina_511580": "ok",
+    "sina_511880": "ok",
+    "sina_511990": "ok",
+    "ths_159649.csv": "ok",
+    "ths_159972.csv": "ok",
+    "ths_511010.csv": "ok",
+    "ths_511020.csv": "ok",
+    "ths_511060.csv": "ok",
+    "ths_511090.csv": "ok",
+    "ths_511100.csv": "ok",
+    "ths_511130.csv": "ok",
+    "ths_511160.csv": "ok",
+    "ths_511220.csv": "ok",
+    "ths_511260.csv": "ok",
+    "ths_511270.csv": "ok",
+    "ths_511520.csv": "ok",
+    "ths_511580.csv": "ok",
+    "ths_511880.csv": "ok",
+    "ths_511990.csv": "ok",
+    "yf_BIL": "ok",
+    "yf_SGOV": "ok",
+    "yf_^IRX": "ok"
+  },
+  "files": {
+    "em_moneyfund_511990.csv": {
+      "bytes": 201746,
+      "sha256": "f158ad65137309f5ed48a114193ad55e61d6b1e0c5d9cd477f9f232f50b305d9"
+    },
+    "gc001_204001_sina.csv": {
+      "bytes": 102562,
+      "sha256": "b1c0096bef93c5e2881a630b8df811ee019a686543b9ef1580e9b032fd9e9dac"
+    },
+    "sina_159649.csv": {
+      "bytes": 60876,
+      "sha256": "0aae070669398e848ae1be5031bc25521f5e612da3570c4d29d24bfcb5b5f481"
+    },
+    "sina_159649_hfq.json": {
+      "bytes": 395,
+      "sha256": "0efdf36d7d30fdc8e878388d0da0768ff6f3da2108b4b53df8d3a35ae87044fe"
+    },
+    "sina_159972.csv": {
+      "bytes": 100941,
+      "sha256": "c552fbb8fa75fad62cb687d378f8faf441f1223f3668b981a7e7c54b79ffa9f1"
+    },
+    "sina_159972_hfq.json": {
+      "bytes": 635,
+      "sha256": "49b536469bd49b4c9dc7c5fd943bb126cf2eac914c13c0cda730faef583c9654"
+    },
+    "sina_511010.csv": {
+      "bytes": 201556,
+      "sha256": "c9c2dcd50ea99cbc1c09098095523173a0a040f1db0e53c82924d44d457d7440"
+    },
+    "sina_511010_hfq.json": {
+      "bytes": 955,
+      "sha256": "a8aaf07170f06512ccafacedf2a657c2966ce737a58e78ad61eecec32f34b079"
+    },
+    "sina_511020.csv": {
+      "bytes": 101746,
+      "sha256": "8678aa4d7627d6971dbb04eb4ee761b6bcd9d5c59af73664836d5e70dc076f4f"
+    },
+    "sina_511020_hfq.json": {
+      "bytes": 716,
+      "sha256": "59c3d5ae97de60087f3b1e967c2f0afff2b3c7813014449c1b4db979766206d7"
+    },
+    "sina_511060.csv": {
+      "bytes": 99611,
+      "sha256": "a08c6e0a43b3ebf29f1a8bcfda31327048883d209ffa7ab22617a99b655a358d"
+    },
+    "sina_511060_hfq.json": {
+      "bytes": 2247,
+      "sha256": "4f2f00db904f8a9a23a60a94eedfdfcc44ea21db65e03277fd9820e575cc8449"
+    },
+    "sina_511090.csv": {
+      "bytes": 51856,
+      "sha256": "d12f02b82f876ab4c74118b2f5e1375d0162e195757e63ab959987967fe12df1"
+    },
+    "sina_511090_hfq.json": {
+      "bytes": 795,
+      "sha256": "d319472a2a4378e919f4abce6b6075c0315cfd2930b54e25cb942391e9b90c29"
+    },
+    "sina_511100.csv": {
+      "bytes": 43604,
+      "sha256": "02c2887b0f856e17f8cef8b5aad3e87bad7b6e7b6733d8c1efa4915d7a9f6cb1"
+    },
+    "sina_511100_hfq.json": {
+      "bytes": 395,
+      "sha256": "d8ff0f03d6324de4a2d9bfd9e068c8bbcd199d58d40b87efa7614e602fad366c"
+    },
+    "sina_511130.csv": {
+      "bytes": 39991,
+      "sha256": "d96974b70789d7e35e5e63bf627124c7baa62720e3d7adedd611b77403faae72"
+    },
+    "sina_511130_hfq.json": {
+      "bytes": 635,
+      "sha256": "c74eedcd0451dfcb9955c3c1fd16f1e181a9e6c577e71eee41c65e2f642c5a86"
+    },
+    "sina_511160.csv": {
+      "bytes": 26723,
+      "sha256": "a4f4ffa34f84e9866db98fe8edf87f7fba09c0b7c8bbe7211cf2c63fec91aee6"
+    },
+    "sina_511160_hfq.json": {
+      "bytes": 395,
+      "sha256": "9db0754f52b86cebd4d35e3489b598e8d17db11b71c60c1a5a867b5f3e3d065d"
+    },
+    "sina_511220.csv": {
+      "bytes": 158540,
+      "sha256": "cd3c5be7cf451c218b1fa5fcbc5d4c646995cb6b119e8180ee512d8a903f78cc"
+    },
+    "sina_511220_hfq.json": {
+      "bytes": 3475,
+      "sha256": "cb003bba4ff6ac0fadf18beb020ac942fc91d1f8e6c338a83934ef8d39719463"
+    },
+    "sina_511260.csv": {
+      "bytes": 134656,
+      "sha256": "74323d3a8daa42448e8a9f561fe0de52d1d89977ee872467c9e2b178625d2324"
+    },
+    "sina_511260_hfq.json": {
+      "bytes": 795,
+      "sha256": "0794a53608b27492d182d2fa15b5bcdb329eeda8c178dc0c4d80b55684c2f19f"
+    },
+    "sina_511270.csv": {
+      "bytes": 114425,
+      "sha256": "30c593b30166c0876f5742e9e1f56425998f6752917db9b699a198df7b320fcc"
+    },
+    "sina_511270_hfq.json": {
+      "bytes": 2652,
+      "sha256": "9b4b7d7bb4327b1e133d4a42ce6204c2971a6ce385bc138a95cafd2672a9f1e8"
+    },
+    "sina_511520.csv": {
+      "bytes": 62173,
+      "sha256": "8272a2f012d9c69723c54e5dc26d19bc3c7be31ea38d9439d4128bb09a52fccc"
+    },
+    "sina_511520_hfq.json": {
+      "bytes": 395,
+      "sha256": "7a4c9ad0e0d3561bb7c811862f4ed2e81a73c63c1e90dd734fc1cf95866065f6"
+    },
+    "sina_511580.csv": {
+      "bytes": 57539,
+      "sha256": "ad7859ca939735a9fb95b3febeaf1fb31af2eedf852c6f8240b572046e94a76c"
+    },
+    "sina_511580_hfq.json": {
+      "bytes": 395,
+      "sha256": "7244576c38fc5fde64c8c10a3b329f7e4e6ef04e822279d33d72a7d5874b4955"
+    },
+    "sina_511880.csv": {
+      "bytes": 217688,
+      "sha256": "fdf7c5ee97e8b473095964fa76c66f8f4adaa0677953860b5816f56aa7c96a30"
+    },
+    "sina_511880_hfq.json": {
+      "bytes": 1447,
+      "sha256": "ef6eeaab415b125eff1097806f4b6e50239d0240102c663a4ae4bbeb7c7fc15f"
+    },
+    "sina_511990.csv": {
+      "bytes": 209953,
+      "sha256": "9646cbb2df8930ff3c6f726ab20e032d21bfa1d17b5cfe819bc6c84387c262d8"
+    },
+    "sina_511990_hfq.json": {
+      "bytes": 395,
+      "sha256": "9eaf33584c7e7b89aeb85e1213e10e9b8578d2bd6d04cab5d8a160647dee0a72"
+    },
+    "ths_159649.csv": {
+      "bytes": 74061,
+      "sha256": "ff44995a2ec87269a101e25dc836c8fff0b0a333ef45379af10ecad054ec428b"
+    },
+    "ths_159972.csv": {
+      "bytes": 90263,
+      "sha256": "45a71dba77b45cb327ec14a2f739ab7ca56b4a8471fddf52f7be4edd168a1041"
+    },
+    "ths_511010.csv": {
+      "bytes": 92063,
+      "sha256": "a666e0aa6964066c61955ff56e2ca5454bd659bd87f8d1089503b34528e6b622"
+    },
+    "ths_511020.csv": {
+      "bytes": 88784,
+      "sha256": "2a413b14a0957ede704053035f140827488c9b0be9ce9595604d45bccfdbc356"
+    },
+    "ths_511060.csv": {
+      "bytes": 89751,
+      "sha256": "feb1e896dfa45f937ac472f79fd5259086abb74f61c8e0f20e6b5e1d2b5a9954"
+    },
+    "ths_511090.csv": {
+      "bytes": 61799,
+      "sha256": "29d472cc795026001a2294302a51d53d099a2de09cf9632977bd62e6d972bff8"
+    },
+    "ths_511100.csv": {
+      "bytes": 52717,
+      "sha256": "d0c1a3b98ac02f1ee6bac9ba6fa1bf22c46baed5132ba792addf04f19e2801af"
+    },
+    "ths_511130.csv": {
+      "bytes": 46761,
+      "sha256": "8f2b207ff6dd1472d924d34d7d3816af8faa954bc5cbbea10d6d507b1790bb25"
+    },
+    "ths_511160.csv": {
+      "bytes": 32209,
+      "sha256": "bb00e6eb2657f1418cc978a898ae5482689b7099a343e04079334f27132b8842"
+    },
+    "ths_511220.csv": {
+      "bytes": 85054,
+      "sha256": "cee4ec5e55b35538c39d0525b84011f06cbc237f782c71c4cbb20b235d92140b"
+    },
+    "ths_511260.csv": {
+      "bytes": 90753,
+      "sha256": "c71121847871a232a3ef8c8ed42b023a10aade3dd69f9e05fafc9e9e9b786e44"
+    },
+    "ths_511270.csv": {
+      "bytes": 90871,
+      "sha256": "e9d72357ba20845383653fcd8f5f2f7629292d0961a0f41a15c6280b6a06b1b8"
+    },
+    "ths_511520.csv": {
+      "bytes": 73146,
+      "sha256": "eab471bc3912d6a697ebf233c39f6b16ef55fe8b1fe9998f6dff2caf5a1f88b1"
+    },
+    "ths_511580.csv": {
+      "bytes": 70007,
+      "sha256": "5fe675210b2a404acc009d924b8ff16e8e6d50597ead08674f7e4da68da2df09"
+    },
+    "ths_511880.csv": {
+      "bytes": 90421,
+      "sha256": "4fe6eb93b53b7decf19a248a813923eee957900648e1e8cf08de4668bb059ed7"
+    },
+    "ths_511990.csv": {
+      "bytes": 91476,
+      "sha256": "67f82816ba33c3ec35631e629682274ce50362605bd0f3a327f4ab6eeff93444"
+    },
+    "yf_BIL.csv": {
+      "bytes": 573747,
+      "sha256": "74ef9976fe7dd4c052d1cd1cc613f2c07a91c6c81240a5ebb8682a4e5ef9ee54"
+    },
+    "yf_IRX.csv": {
+      "bytes": 577503,
+      "sha256": "80d290d0336d8958c40b7b4a28459a34e02b9f83b697cbd0268595b90a402ed4"
+    },
+    "yf_SGOV.csv": {
+      "bytes": 196510,
+      "sha256": "e2658c1158d3af7727fe7de0d4e906f5145e0989f1c9b31059dd178ddae3083a"
+    }
+  },
+  "sources": {
+    "em_moneyfund_511990.csv": "akshare fund_money_fund_info_em 511990 (income per 10k units, 7d yield)",
+    "fr001_chinamoney.csv": "akshare repo_rate_hist (chinamoney FR/FDR fixings)",
+    "gc001_204001_sina.csv": "akshare bond_zh_hs_daily sh204001 (close = annualized rate %)",
+    "sina_*": "akshare fund_etf_hist_sina (unadjusted) + Sina hfq.js distributions",
+    "ths_*.csv": "THS fuyao /api/fund/market/historical (forward-adjusted, 1d)",
+    "yf_*.csv": "yfinance, auto_adjust=False, actions=True"
+  }
+}

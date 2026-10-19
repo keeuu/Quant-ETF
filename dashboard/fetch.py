@@ -39,6 +39,7 @@ class FetchResult:
     rate_source: str
     notes: list = field(default_factory=list)
     fetched_at_utc: str = ""
+    extra_prices: dict = field(default_factory=dict)     # latest close of the cash-proxy ETF (order list only)
 
     @property
     def fallback_used(self) -> bool:
@@ -97,8 +98,17 @@ def fetch_us(spec: MarketSpec, now_utc: datetime, start: str = "2018-01-01") -> 
     base = load_irx()                               # hash-verified research snapshot, 2005..2020
     fwd = fwd[~fwd.index.isin(base.index)]
     rate = pd.concat([base, fwd]).sort_index()
+    extra = {}
+    try:
+        from .config import load_account
+        proxy = load_account()["US"]["cash_proxy"]
+        raw = retry(lambda: yf.download(proxy, period="10d", progress=False, auto_adjust=False), what=f"yfinance {proxy}")
+        c = raw["Close"][proxy] if isinstance(raw.columns, pd.MultiIndex) else raw["Close"]
+        extra[proxy] = float(c.dropna().iloc[-1])
+    except Exception as e:  # noqa: BLE001  (non-fatal: the order list falls back to a nominal price)
+        log.warning("cash proxy price unavailable: %s", sanitize(e))
     return FetchResult("US", bars, rate, sources, "yfinance ^IRX(2021起)+研究数据(至2020)",
-                       fetched_at_utc=now_utc.astimezone(timezone.utc).isoformat())
+                       fetched_at_utc=now_utc.astimezone(timezone.utc).isoformat(), extra_prices=extra)
 
 
 # ------------------------------------------------------------------------------------------------ CN
@@ -204,8 +214,25 @@ def fetch_cn(spec: MarketSpec, now_utc: datetime) -> FetchResult:
                 raise FetchError(sanitize(f"{sym}: THS、新浪、东方财富均失败"))
         bars[sym], sources[sym] = df, src
     rate, rate_src, n2 = fetch_shibor()
+    extra = {}
+    if key:
+        try:
+            from .config import load_account
+            proxy = load_account()["CN"]["cash_proxy"]
+            code = f"{proxy}.{'SZ' if proxy.startswith(('15', '16')) else 'SH'}"
+            import requests
+            end_ms = int(now_utc.timestamp() * 1000)
+
+            def _px():
+                r = requests.get(THS_BASE + THS_PATH, headers={"X-api-key": key}, timeout=30,
+                                 params={"thscode": code, "interval": "1d", "start": end_ms - 20 * 86400 * 1000, "end": end_ms})
+                r.raise_for_status()
+                return r.json()["data"]["item"][-1]["close_price"]
+            extra[proxy] = float(retry(_px, what=f"THS {proxy}"))
+        except Exception as e:  # noqa: BLE001  (non-fatal)
+            log.warning("cash proxy price unavailable: %s", sanitize(e))
     return FetchResult("CN", bars, rate, sources, rate_src, notes + n2,
-                       fetched_at_utc=now_utc.astimezone(timezone.utc).isoformat())
+                       fetched_at_utc=now_utc.astimezone(timezone.utc).isoformat(), extra_prices=extra)
 
 
 # ------------------------------------------------------------------------------------------------ snapshots
@@ -229,7 +256,8 @@ def write_snapshot(root: Path, date_str: str, fr: FetchResult) -> Path:
     mp = d / "manifest.json"
     man = json.loads(mp.read_text()) if mp.is_file() else {"markets": {}}
     man["markets"][fr.market] = {"fetched_at_utc": fr.fetched_at_utc, "sources": fr.sources,
-                                 "rate_source": fr.rate_source, "notes": fr.notes, "files": files}
+                                 "rate_source": fr.rate_source, "notes": fr.notes, "files": files,
+                                 "extra_prices": fr.extra_prices}
     tmp = mp.with_suffix(".tmp")
     tmp.write_text(json.dumps(man, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
     tmp.replace(mp)
@@ -249,4 +277,5 @@ def load_snapshot(snapshot_dir: Path, market: str) -> FetchResult:
         bars[Path(rel).stem] = pd.read_csv(d / rel, dtype={"Date": str})
     r = pd.read_csv(d / market / "rate.csv", dtype={"Date": str})
     rate = pd.Series(r["rate_pct"].values, index=r["Date"].values, dtype=float)
-    return FetchResult(market, bars, rate, man["sources"], man["rate_source"], man["notes"], man["fetched_at_utc"])
+    return FetchResult(market, bars, rate, man["sources"], man["rate_source"], man["notes"], man["fetched_at_utc"],
+                       man.get("extra_prices", {}))

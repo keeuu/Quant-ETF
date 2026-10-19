@@ -67,9 +67,10 @@ def run(*, now_utc: datetime | None = None, output_dir: Path | None = None, data
                 if write_snapshots:
                     fetch.write_snapshot(data_root, run_date, fr)
             meta = {"sources": fr.sources, "rate_source": fr.rate_source, "notes": fr.notes,
-                    "fallback_used": fr.fallback_used, "fetched_at_utc": fr.fetched_at_utc}
+                    "fallback_used": fr.fallback_used, "fetched_at_utc": fr.fetched_at_utc,
+                    "extra_prices": fr.extra_prices}
             view = compute_market_view(spec, fr.bars, fr.rate, run_now, base_cal=cal_f(), freeze_date=freeze_date,
-                                       meta=meta)
+                                       meta=meta, account=config.load_account().get(key))
             views[key] = view
             last_success[key] = view["as_of"]
             log.info("%s ok: as_of=%s sources=%s fallback=%s window_sessions=%d", key, view["as_of"],

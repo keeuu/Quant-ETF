@@ -265,7 +265,8 @@ def data_quality_notes(spec: MarketSpec, bars, sessions, today_local: pd.Timesta
 
 # ------------------------------------------------------------------------------------------------ main entry
 def compute_market_view(spec: MarketSpec, bars: dict, rate: pd.Series, now_utc: datetime, *, base_cal,
-                        freeze_date: str, initial_nav: float = INITIAL_NAV, meta: dict | None = None) -> dict:
+                        freeze_date: str, initial_nav: float = INITIAL_NAV, meta: dict | None = None,
+                        account: dict | None = None) -> dict:
     meta = meta or {}
     now_utc = now_utc if now_utc.tzinfo else now_utc.replace(tzinfo=timezone.utc)
     today_local = pd.Timestamp(now_utc.astimezone(SHANGHAI))   # countdowns are in the user's (Shanghai) days
@@ -341,4 +342,19 @@ def compute_market_view(spec: MarketSpec, bars: dict, rate: pd.Series, now_utc: 
 
     view["next_rebalance"] = next_rebalance(cal, sessions, monthly, today_local)
     view["quality_notes"] = data_quality_notes(spec, bars, sessions, today_local)
+    view["orders"] = _orders_for(view, bars, account, meta.get("extra_prices"))
     return view
+
+
+def _orders_for(view: dict, bars: dict, account: dict | None, extra_prices: dict | None):
+    """Order list for a real account (dashboard.orders). Read-only on the finished view; a failure here must never
+    take the market down, and account={"enabled": False} switches it off (used by the identity test)."""
+    from . import config
+    from .orders import compute_orders
+    acct = config.load_account().get(view["key"]) if account is None else account
+    if not acct or acct.get("enabled") is False:
+        return None
+    try:
+        return compute_orders(view, bars, acct, extra_prices)
+    except Exception as e:  # noqa: BLE001
+        return {"error": f"{type(e).__name__}: {e}"}

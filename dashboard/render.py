@@ -65,6 +65,8 @@ svg text{fill:var(--muted);font:12px -apple-system,"PingFang SC","Microsoft YaHe
 details{margin-top:6px;font-size:13px;color:var(--muted)}
 .kind-add{color:var(--good);font-weight:600}.kind-del{color:var(--bad);font-weight:600}
 .kind-chg{color:var(--info-fg);font-weight:600}
+td.buy{color:var(--good);font-weight:600}td.sell{color:var(--bad);font-weight:600}
+.card.orders{border-color:var(--warn-fg)}
 footer{margin:8px 0 24px;font-size:12.5px;color:var(--muted)}
 """
 
@@ -279,6 +281,8 @@ def _section_ok(v: dict) -> str:
                    f'同期现金收益 {pct(di["bill_ret"])}，{"高于现金，空闲仓位配置防御资产" if ok else "不高于现金，空闲仓位留作现金"}。</p>')
     out.append("</div>")
 
+    out.append(_orders_card(v))
+
     # trend
     out.append('<div class="card"><h3>距 40 周趋势线</h3>')
     out.append(trend_chart(v))
@@ -312,6 +316,58 @@ def _section_ok(v: dict) -> str:
     if notes:
         out.append(f'<details><summary>数据备注（{len(notes)}）</summary><ul>'
                    + "".join(f"<li>{e(n)}</li>" for n in notes) + "</ul></details>")
+    return "".join(out)
+
+
+def _qty(x: float, frac: bool) -> str:
+    return f"{x:,.4f}".rstrip("0").rstrip(".") if frac else f"{x:,.0f}"
+
+
+def _orders_card(v: dict) -> str:
+    o = v.get("orders")
+    if not o:
+        return ""
+    if o.get("error"):
+        return (f'<div class="card orders"><h3>调仓清单</h3><div class="banner warn">调仓清单计算失败（不影响信号与净值）：'
+                f'{e(o["error"])}</div></div>')
+    cur, frac = o["currency"], o["fractional"]
+    out = [f'<div class="card orders"><h3>调仓清单<span class="badge b-warn">参考，非交易指令</span></h3>',
+           f'<div class="banner warn" style="margin-bottom:8px">{e(o["disclaimer"])}。</div>',
+           f'<p class="note" style="margin-top:0">账户资金 {o["capital"]:,.0f} {e(cur)}（可在 dashboard/account.json 修改）；'
+           f'价格为 {e(o["price_date"])} 收盘价，实际成交价会不同；现金代理 {e(o["cash_proxy"])}'
+           f'（{e(o["proxy_note"])} {o["proxy_price"]:,.3f}）。'
+           + (f'沪深ETF按整手(每手 {o["lot"]:.0f} 份)，手续费 max({o["min_fee"]:g} 元, 万分之{o["commission_bp"]:g})/笔。'
+              if not frac else "美股可买碎股(Alpaca)，同时给出整股数；佣金 0。") + "</p>"]
+    for sec in o["sections"]:
+        preview = sec["kind"] == "preview"
+        out.append(f'<h3 style="margin-top:12px">{e(sec["title"])}'
+                   f'<span class="badge {"b-info" if preview else "b-good"}">{"预览" if preview else "正式"}</span></h3>')
+        out.append(f'<p class="note" style="margin-top:0">起点：{e(sec["basis_label"])}。目标：{e(sec["target_label"])}。</p>')
+        rows = []
+        for r in sec["rows"]:
+            if r["side"] == "持有" and r["cur_shares"] <= 1e-9 and r["tgt_shares"] <= 1e-9:
+                continue
+            cls = {"买入": "buy", "卖出": "sell"}.get(r["side"], "mut")
+            nm = e(f'{r["symbol"]} {r["name"]}') + (' <span class="badge b-mute">现金代理</span>' if r["is_proxy"] else "")
+            cells = (f'<td>{nm}</td><td class="{cls}">{r["side"]}</td><td>{_qty(abs(r["delta"]), frac)}</td>'
+                     f'<td>{_qty(r["cur_shares"], frac)} → {_qty(r["tgt_shares"], frac)}</td><td>{r["price"]:,.3f}</td>'
+                     f'<td>{r["amount"]:,.0f}</td><td>{r["fee"]:,.2f}</td>')
+            if frac:
+                cells += f'<td>{_qty(abs(r["whole_delta"]), False)} ({_qty(r["whole_cur"], False)} → {_qty(r["whole_tgt"], False)})</td>'
+            rows.append(f"<tr>{cells}</tr>")
+        head = ("<tr><th>资产</th><th>方向</th><th>数量(份)</th><th>持仓变化</th><th>参考价</th><th>金额</th><th>预计费用</th>"
+                + ("<th>整股方案(变化)</th>" if frac else "") + "</tr>")
+        body = "".join(rows) or f'<tr><td colspan="{8 if frac else 7}" class="mut">无需操作</td></tr>'
+        out.append(f'<div class="scroll"><table>{head}{body}</table></div>')
+        left = (f'调仓后剩余现金 <b>{sec["cash_after"]:,.2f}</b> {e(cur)}' + (f'（整股方案 {sec["cash_after_whole"]:,.2f}）' if frac else "")
+                + f'；预计手续费合计 <b>{sec["fees"]:,.2f}</b>；成交额合计 {sec["turnover_amount"]:,.0f}。')
+        if not frac and sec.get("proxy_lot_cost"):
+            left += (f' 剩余资金不足一手现金代理（一手约 {sec["proxy_lot_cost"]:,.0f}）时留作账户现金；'
+                     f'其余空闲资金已计入 {e(o["cash_proxy"])}。')
+        out.append(f'<p class="note">{left}</p>')
+        for n in sec["notes"]:
+            out.append(f'<p class="note">注：{e(n)}</p>')
+    out.append("</div>")
     return "".join(out)
 
 

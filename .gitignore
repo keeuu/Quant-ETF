@@ -40,3 +40,11 @@ research_v3/sector_mom/universe/raw_*
 # Dashboard: downloaded snapshots and generated pages stay local
 dashboard/data/
 dashboard/output/
+
+# Implementation checks: raw third-party data kept local; manifest.json is committed
+research_v3/implementation/data/*.csv
+research_v3/implementation/data/*_hfq.json
+
+# us_long: raw third-party snapshots kept local; manifest.json is committed
+research_v3/us_long/data/*
+!research_v3/us_long/data/manifest.json

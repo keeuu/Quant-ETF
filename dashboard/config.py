@@ -83,3 +83,30 @@ def cn_spec() -> MarketSpec:
         tz=SHANGHAI, open_hm=(9, 30), close_hm=(15, 0), suspension_rules=True,
         momentum_months=rule["momentum_months"], trend_weeks=rule["trend_weeks"], top_n=rule["top_n"],
         defensive_months=3)
+
+
+# ------------------------------------------------------------------------------------------------ account (order list)
+ACCOUNT_PATH = DASH / "account.json"
+ACCOUNT_DEFAULTS = {
+    "CN": {"capital": 100_000.0, "currency": "CNY", "cash_proxy": "511880", "lot_size": 100, "commission_bp": 2.5,
+           "min_fee": 5.0, "nominal_proxy_price": 100.9},
+    "US": {"capital": 10_000.0, "currency": "USD", "cash_proxy": "SGOV", "lot_size": 1, "commission_bp": 0.0,
+           "min_fee": 0.0, "nominal_proxy_price": 100.5},
+}
+
+
+def load_account(path: Path | None = None) -> dict:
+    """Per-market account settings for the order list: defaults overlaid with dashboard/account.json (if readable).
+    Only used by dashboard.orders; the shadow replay never sees it."""
+    out = {k: dict(v) for k, v in ACCOUNT_DEFAULTS.items()}
+    try:
+        raw = json.loads(Path(path or ACCOUNT_PATH).read_text(encoding="utf-8"))
+    except Exception:
+        return out
+    for k in out:
+        if isinstance(raw.get(k), dict):
+            out[k].update({kk: vv for kk, vv in raw[k].items() if not kk.startswith("_")})
+    for k, v in out.items():
+        if not (isinstance(v["capital"], (int, float)) and v["capital"] > 0):
+            out[k]["capital"] = ACCOUNT_DEFAULTS[k]["capital"]
+    return out
