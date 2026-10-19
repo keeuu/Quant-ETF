@@ -15,6 +15,7 @@ from research_v2.signals import compute_matched_monthly_signals, compute_model_s
 from research_v3.cash_yield import CashYieldCurve
 from research_v3.signals_step3 import make_defensive_provider, reselect3
 
+from .month_end import true_month_ends
 from .config import (CANDIDATE_COST_BPS, CANDIDATE_EFFECTIVE_COST_BPS, CANDIDATE_LABEL, CANDIDATE_MODEL,
                      CANDIDATE_SLIPPAGE_BPS, FREEZE_DATE)
 
@@ -76,7 +77,7 @@ def cap_def_m_signal_row(bars, session_dates: List[str], as_of_ts: str, curve: C
     weekly_events = build_weekly_schedule(session_dates, as_of_ts)
     if not weekly_events:
         return None
-    monthly_events = build_monthly_matched_schedule(session_dates, as_of_ts, weekly_events)
+    monthly_events = true_month_ends(build_monthly_matched_schedule(session_dates, as_of_ts, weekly_events))
     if not monthly_events:
         return None
     latest = monthly_events[-1]
