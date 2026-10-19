@@ -40,7 +40,8 @@ def default_markets():
 
 def run(*, now_utc: datetime | None = None, output_dir: Path | None = None, data_root: Path | None = None,
         snapshot_dir: Path | None = None, markets: dict | None = None, freeze_date: str | None = None,
-        last_success_path: Path | None = None, write_snapshots: bool = True) -> int:
+        last_success_path: Path | None = None, write_snapshots: bool = True, notify: bool = False,
+        notifier=None, alerts_path: Path | None = None, alert_state_path: Path | None = None) -> int:
     """Returns the process exit code: 1 only if every market failed."""
     from . import fetch
     from .render import render_page
@@ -83,7 +84,16 @@ def run(*, now_utc: datetime | None = None, output_dir: Path | None = None, data
                           "last_success": last_success.get(key)}
 
     ok = [k for k, v in views.items() if v["status"] == "ok"]
-    html = render_page(views, now_utc, last_success)
+    alert_info = None
+    try:                                  # alerts are read-only and must never stop the page from rendering
+        from . import alerts
+        alert_info = alerts.process(
+            views, now_utc, cfg=alerts.load_alert_config(alerts_path),
+            state_path=Path(alert_state_path or (data_root / "alert_state.json")),
+            notify=notify and not snapshot_dir, notifier=notifier)
+    except Exception as e:  # noqa: BLE001
+        log.error("alerts failed: %s", sanitize(f"{type(e).__name__}: {e}"))
+    html = render_page(views, now_utc, last_success, alerts=alert_info)
     _atomic_write(output_dir / "index.html", html)
     _atomic_write(output_dir / "archive" / f"{run_date}.html", html)
     if ok and not snapshot_dir:
@@ -98,12 +108,14 @@ def main(argv=None) -> int:
     r = sub.add_parser("run", help="fetch data, replay the frozen shadow, render the HTML dashboard")
     r.add_argument("--snapshot", type=Path, help="re-render from a saved dashboard/data/<date>/ snapshot (no network)")
     r.add_argument("--out", type=Path, help="output directory (default dashboard/output)")
+    r.add_argument("--no-notify", action="store_true", help="evaluate and show alerts but send no macOS notification "
+                   "(and do not mark any alert as notified)")
     args = ap.parse_args(argv)
     load_env(config.REPO)
     setup_logging(config.LOG_PATH)
     try:
         out = args.out or (config.OUTPUT_DIR / f"replay_{args.snapshot.name}" if args.snapshot else None)
-        return run(snapshot_dir=args.snapshot, output_dir=out)
+        return run(snapshot_dir=args.snapshot, output_dir=out, notify=not args.no_notify)
     except Exception as e:  # never leak secrets, never traceback to a terminal without sanitizing
         log.error("fatal: %s", sanitize(f"{type(e).__name__}: {e}"))
         return 1

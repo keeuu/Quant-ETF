@@ -67,6 +67,8 @@ details{margin-top:6px;font-size:13px;color:var(--muted)}
 .kind-chg{color:var(--info-fg);font-weight:600}
 td.buy{color:var(--good);font-weight:600}td.sell{color:var(--bad);font-weight:600}
 .card.orders{border-color:var(--warn-fg)}
+.card.alerts{border-color:var(--accent)}
+.card.alerts ul{margin:4px 0 0;padding-left:20px}
 footer{margin:8px 0 24px;font-size:12.5px;color:var(--muted)}
 """
 
@@ -212,13 +214,39 @@ def _banner_empty(view) -> str:
             f'下方仍展示冻结时的参考目标组合、趋势线距离、月末预览与下次调仓日期。</div>')
 
 
-def _section_ok(v: dict) -> str:
+def _alerts_card(info: dict | None, key: str) -> str:
+    """"提醒" card: active alerts of this market and the last notification time. Empty string if alerts did not run."""
+    if not info or key not in info.get("markets", {}):
+        return ""
+    m = info["markets"][key]
+    last = "—"
+    if m.get("last_notified"):
+        try:
+            last = datetime.fromisoformat(m["last_notified"]).astimezone(SHANGHAI).strftime("%Y-%m-%d %H:%M")
+        except ValueError:
+            last = m["last_notified"]
+    if not info.get("enabled", True):
+        state = "通知已关闭（alerts.json）"
+    elif not info.get("notify", True):
+        state = "本次运行未发送通知（--no-notify 或回放）"
+    else:
+        state = "通知已开启"
+    items = "".join(
+        f'<li><span class="badge {"b-warn" if a.get("new") else "b-mute"}">{e(a["code"])}</span> {e(a["text"])}</li>'
+        for a in m["alerts"])
+    body = f"<ul>{items}</ul>" if items else '<p class="mut" style="margin:4px 0 0">当前没有需要关注的提醒。</p>'
+    return (f'<!--alerts--><div class="card alerts"><h3>提醒</h3>{body}'
+            f'<p class="note">上次通知：{e(last)} · {e(state)}。提醒仅供查看，不影响信号、净值与调仓清单。</p></div><!--/alerts-->')
+
+
+def _section_ok(v: dict, alerts_html: str = "") -> str:
     out = []
     src = v["sources"]
     src_txt = "、".join(sorted(set(src.values()))) if src else "—"
     badge = '<span class="badge b-warn">使用备用数据源</span>' if v["fallback_used"] else '<span class="badge b-good">主数据源</span>'
     out.append(f'<div class="mhead"><h2>{e(v["title"])}</h2><span class="sub">数据截至 {e(v["as_of"])} 收盘 · '
                f'数据源 {e(src_txt)}{badge} · 现金收益 {e(v["rate_source"])}</span></div>')
+    out.append(alerts_html)
     out.append(_banner_empty(v))
     w = v["window"]
     if not w["empty"] and w["n_sessions"] < 5:
@@ -383,7 +411,8 @@ def _section_err(v: dict) -> str:
             f'最后一次成功：{e(ls) if ls else "无记录"}</div>')
 
 
-def render_page(views: dict, generated_at: datetime, last_success: dict | None = None) -> str:
+def render_page(views: dict, generated_at: datetime, last_success: dict | None = None,
+                alerts: dict | None = None) -> str:
     gen = generated_at.astimezone(SHANGHAI).strftime("%Y-%m-%d %H:%M")
     chips = [f'<span class="chip">生成时间 {gen}（Asia/Shanghai）</span>']
     secs = []
@@ -393,11 +422,11 @@ def render_page(views: dict, generated_at: datetime, last_success: dict | None =
             continue
         if v["status"] == "ok":
             chips.append(f'<span class="chip">{e(v["title"])}数据截至 {e(v["as_of"])}</span>')
-            secs.append(f'<section class="market">{_section_ok(v)}</section>')
+            secs.append(f'<section class="market">{_section_ok(v, _alerts_card(alerts, key))}</section>')
         else:
             v = {**v, "last_success": v.get("last_success") or (last_success or {}).get(key)}
             chips.append(f'<span class="chip">{e(v["title"])}：失败（最后成功 {e(v["last_success"] or "无")}）</span>')
-            secs.append(f'<section class="market">{_section_err(v)}</section>')
+            secs.append(f'<section class="market">{_section_err(v)}{_alerts_card(alerts, key)}</section>')
     ok = [v for v in views.values() if v["status"] == "ok"]
     fz = ok[0]["freeze_date"] if ok else "2026-10-19"
     chips.append(f'<span class="chip">冻结日 {e(fz)}</span>')

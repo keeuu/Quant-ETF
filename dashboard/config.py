@@ -12,6 +12,8 @@ DATA_ROOT = DASH / "data"
 OUTPUT_DIR = DASH / "output"
 LOG_PATH = REPO / "logs" / "dashboard.log"
 LAST_SUCCESS_PATH = DATA_ROOT / "last_success.json"
+ALERTS_PATH = DASH / "alerts.json"
+ALERT_STATE_PATH = DATA_ROOT / "alert_state.json"
 
 SHANGHAI = zoneinfo.ZoneInfo("Asia/Shanghai")
 NEW_YORK = zoneinfo.ZoneInfo("America/New_York")
