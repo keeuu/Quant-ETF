@@ -16,6 +16,7 @@ from .config import (MODELS, SIGNAL_JOURNAL_PATH, EXEC_JOURNAL_PATH, NAV_JOURNAL
                      CANDIDATE_MODEL, CANDIDATE_COST_BPS, CANDIDATE_SLIPPAGE_BPS, CANDIDATE_EFFECTIVE_COST_BPS)
 from .candidate import cap_def_m_signal_row, provenance, warn as candidate_warn
 from .irx import load_irx_curve
+from .month_end import true_month_ends
 from .state import PaperState
 from .journal import AppendOnlyJournal
 from .market_data import fetch_market_data
@@ -60,7 +61,7 @@ def run_signal_phase(as_of_date: str):
     session_dates = build_session_table(start="2005-01-03", end=as_of_date)["session_date"].tolist()
 
     weekly_events = build_weekly_schedule(session_dates, as_of_ts)
-    monthly_events = build_monthly_matched_schedule(session_dates, as_of_ts, weekly_events)
+    monthly_events = true_month_ends(build_monthly_matched_schedule(session_dates, as_of_ts, weekly_events))
 
     if not weekly_events:
         return

@@ -335,3 +335,29 @@ def test_config_hash_includes_candidate():
 def test_candidate_constants_match_frozen_json():
     c = candidate.candidate_spec()
     assert c["label"] == CANDIDATE_LABEL and c["cadence"] == "M" and c["trend_weeks"] == 40
+
+
+# ---------- mid-month as-of: no monthly event for an unfinished month ----------
+
+def test_mid_month_signal_phase_emits_no_monthly_event(forward_bars):
+    # 2026-11-12 (Thu) is mid-month: the research builder sees it as the last available November session.
+    with patch("paper_v2.phases.fetch_market_data", return_value=(forward_bars, "h")):
+        run_signal_phase("2026-11-12")
+    sigs = AppendOnlyJournal(config.SIGNAL_JOURNAL_PATH).read_all()
+    monthly_ids = {m.model_id for m in ALL_MODELS if m.cadence == "M"}
+    monthly_sigs = [s for s in sigs if s["model_id"] in monthly_ids]
+    assert monthly_sigs and all(s["signal_session"] == "2026-10-30" for s in monthly_sigs), \
+        sorted({(s["model_id"], s["signal_session"]) for s in monthly_sigs})
+    st = PaperState()
+    for mid in monthly_ids:
+        po = st.get_model_state(mid)["pending_order"]
+        assert po is None or po["signal_session"] == "2026-10-30", (mid, po)
+
+
+def test_cap_def_m_signal_row_mid_month_uses_last_true_month_end(forward_bars):
+    bars = _research_bars(forward_bars)
+    sessions = build_session_table(start="2005-01-03", end="2026-11-12")["session_date"].tolist()
+    curve = CashYieldCurve(pd.concat([load_irx(), fake_forward_irx("2026-11-12")]))
+    _, as_of_ts = normalize_as_of("2026-11-12")
+    row = cap_def_m_signal_row(bars, sessions, as_of_ts, curve)
+    assert row is not None and row["signal_session"] == "2026-10-30"
