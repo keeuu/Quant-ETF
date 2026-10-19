@@ -1,0 +1,55 @@
+{
+  "created": "2026-10-19T04:23:17.243272+00:00",
+  "files": {
+    "devxus_daily.csv": {
+      "bytes": 434183,
+      "sha256": "6287bbbcba03be35c8dbe99d21364967f07eb087893079167f41ec8a9047f185",
+      "source": "https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/ftp/Developed_ex_US_3_Factors_Daily_CSV.zip",
+      "zip_member": "Developed_ex_US_3_Factors_Daily.csv"
+    },
+    "ff3_daily.csv": {
+      "bytes": 1210997,
+      "sha256": "c2dc30c9e89eeea05a689c81fb426f4d76711270733b3731997615cbdff5b247",
+      "source": "https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/ftp/F-F_Research_Data_Factors_daily_CSV.zip",
+      "zip_member": "F-F_Research_Data_Factors_daily.csv"
+    },
+    "fred_DGS10.csv": {
+      "bytes": 269075,
+      "sha256": "b972c9a2bbfbbe82596aeeef473dbee40490f2c6a773dbd228491df17306a04d",
+      "source": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10"
+    },
+    "fred_DGS20.csv": {
+      "bytes": 262344,
+      "sha256": "a2feeb360c6f3080e893d7ff0d23774d785cc7f8e9f31515918ba123b939e6a4",
+      "source": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS20"
+    },
+    "fred_DGS30.csv": {
+      "bytes": 206669,
+      "sha256": "6b0d819efc6284c7d6ccd272881e20608ae1674eca82127eca8424bc2994ddbc",
+      "source": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS30"
+    },
+    "fred_DTB3.csv": {
+      "bytes": 301361,
+      "sha256": "d9392b1d5214f5c3bfd70a7b2b47ff1f5a04fb3e2a456abc0af96a6470c3a387",
+      "source": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTB3"
+    },
+    "gold_goldprice_com.csv": {
+      "bytes": 255533,
+      "note": "FRED GOLDAMGBD228NLBM/GOLDPMGBD228NLBM return an error page; LBMA json blocked by Cloudflare; stooq requires JS challenge",
+      "sha256": "c6f2fbbecd3f27a88cc6876050df4de48cf9858e29d23bf9df700f317b4fc30c",
+      "source": "https://goldprice.com/gold-price-history.csv"
+    },
+    "size_daily.csv": {
+      "bytes": 9527515,
+      "sha256": "973789dff0fdd3995a3ddb3f69d93f194a8b8dd80067f42df59c382ce45fdaab",
+      "source": "https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/ftp/Portfolios_Formed_on_ME_Daily_CSV.zip",
+      "zip_member": "Portfolios_Formed_on_ME_daily.csv"
+    },
+    "yf_IXIC.csv": {
+      "bytes": 250021,
+      "sha256": "79b19767d686bbdb7c3b8c35e6fb04153bfdfa3579b9ffe7cf139d57afaa01f0",
+      "source": "yfinance ^IXIC Close, 1970-01-01..2006-01-09",
+      "yfinance_version": "1.7.0"
+    }
+  }
+}
