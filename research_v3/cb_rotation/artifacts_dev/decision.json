@@ -1,0 +1,48 @@
+{
+ "c1_dev_xs_gt_EW_CB": {
+  "value": 0.41011065650549733,
+  "threshold_or_benchmark": 0.7532486777307588,
+  "passed": false
+ },
+ "c1_dev_xs_gt_CB_INDEX": {
+  "value": 0.41011065650549733,
+  "threshold_or_benchmark": 0.3365943645543741,
+  "passed": true
+ },
+ "c2_devA_xs_gt_EW_CB": {
+  "value": 0.9469905091358438,
+  "threshold_or_benchmark": 0.8623430090753985,
+  "passed": true
+ },
+ "c2_devB_xs_gt_EW_CB": {
+  "value": -0.19363843738044853,
+  "threshold_or_benchmark": 0.628467901334728,
+  "passed": false
+ },
+ "c3_dev_mdd_le_25pct": {
+  "value": 0.26656109575584097,
+  "threshold_or_benchmark": 0.25,
+  "passed": false
+ },
+ "c4_slip30_xs_gt_EW_CB": {
+  "value": 0.2936072131724679,
+  "threshold_or_benchmark": 0.7532486777307588,
+  "passed": false
+ },
+ "c4_slip30_xs_gt_CB_INDEX": {
+  "value": 0.2936072131724679,
+  "threshold_or_benchmark": 0.3365943645543741,
+  "passed": false
+ },
+ "c4_min5_xs_gt_EW_CB": {
+  "value": 0.3091223652869804,
+  "threshold_or_benchmark": 0.7532486777307588,
+  "passed": false
+ },
+ "c4_min5_xs_gt_CB_INDEX": {
+  "value": 0.3091223652869804,
+  "threshold_or_benchmark": 0.3365943645543741,
+  "passed": false
+ },
+ "VERDICT": "FAIL"
+}

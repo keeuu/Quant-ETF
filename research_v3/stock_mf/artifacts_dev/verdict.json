@@ -1,0 +1,30 @@
+{
+ "c1_xsharpe_beats_ew_and_csi1000": true,
+ "c2_beats_ew_in_both_halves": false,
+ "c3_mdd_below_ew": true,
+ "c4_c1_holds_at_20bp": true,
+ "verdict": "FAIL",
+ "inputs": {
+  "x_strat_10": 0.07167545583952185,
+  "x_ew_10": -0.03740068884904161,
+  "x_strat_20": -0.0498107195042725,
+  "x_ew_20": -0.051439192559376984,
+  "x_csi1000_overlap": -0.014909132771335655,
+  "x_strat_csi1000_overlap": 0.15175338676104097,
+  "x_strat20_csi1000_overlap": 0.03832513089000434,
+  "xA_strat": 0.30320259948562417,
+  "xA_ew": 0.08506418233267242,
+  "xB_strat": -0.21773994051704157,
+  "xB_ew": -0.19647853609450391,
+  "mdd_strat": 0.5592829149142933,
+  "mdd_ew": 0.6657076619578068
+ },
+ "dev_mdd_within_40pct": false,
+ "diagnostics": {
+  "listed_stocks_loaded": 5015.0,
+  "adjustment_events_skipped": 0.0,
+  "tx_action_days": 1328.0,
+  "tx_S_changes": 474.0,
+  "delisted_stocks_loaded": 276.0
+ }
+}

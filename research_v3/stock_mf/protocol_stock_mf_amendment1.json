@@ -1,0 +1,19 @@
+{
+  "amendment": 1,
+  "amends": "research_v3/stock_mf/protocol_stock_mf.json (sha256 87fd53062b31...)",
+  "written_at": "2026-10-19",
+  "context": "Written AFTER the development results of the original strategy (FAIL: lost to EW_UNIVERSE in DEV_B; cost drag 4.7%/yr at SMALL/NO_MIN; 11.3%/yr at MIN5) were seen, and BEFORE any single-factor decomposition was run. The only motivation used is the observed cost drag; no factor-level result has been seen. Holdout 2024-04-01..2026-09-30 remains unopened. Trial count becomes N = 2.",
+
+  "new_strategy": {
+    "name": "LOWTURN_MONTHLY",
+    "unchanged": "Universe, the four factors (REV, LOWVOL, LOWTURN, SIZE) with identical windows and equal weights, top 10, equal weight 1/10 for new buys, affordability filter, execution model, costs, accounts, periods, benchmarks, metrics.",
+    "changes": {
+      "rebalance": "monthly: signal at the close of the last session of each month, trades at the next session open (instead of every second week)",
+      "buffer": "an existing holding is kept while its composite rank is <= 30 and it is still in the universe (instead of <= 20)"
+    }
+  },
+
+  "decision_on_development": "Same four PASS conditions as the original protocol, evaluated for LOWTURN_MONTHLY at SMALL / NO_MIN / 10 bp, with the 20 bp check. Additionally report MIN5. If PASS, ask the user in chat for the one-time holdout run of LOWTURN_MONTHLY only.",
+  "diagnostics_policy": "A single-factor decomposition may be run after this amendment is hashed. It is descriptive only and must not be used to select, drop or reweight factors in any later strategy evaluated on this development period.",
+  "freeze_rule": "Frozen once hashed."
+}
