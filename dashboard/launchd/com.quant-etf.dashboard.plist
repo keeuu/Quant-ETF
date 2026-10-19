@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.quant-etf.dashboard</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/zhangzeyuan/Projects/quant-ETF/.venv/bin/python</string>
+        <string>-m</string>
+        <string>dashboard</string>
+        <string>run</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/zhangzeyuan/Projects/quant-ETF</string>
+    <!-- Local time (the Mac runs on Asia/Shanghai): 06:30 after the US close, 16:00 after the CN close. -->
+    <key>StartCalendarInterval</key>
+    <array>
+        <dict>
+            <key>Hour</key>
+            <integer>6</integer>
+            <key>Minute</key>
+            <integer>30</integer>
+        </dict>
+        <dict>
+            <key>Hour</key>
+            <integer>16</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+    </array>
+    <key>StandardOutPath</key>
+    <string>/Users/zhangzeyuan/Projects/quant-ETF/logs/dashboard.launchd.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/zhangzeyuan/Projects/quant-ETF/logs/dashboard.launchd.err.log</string>
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

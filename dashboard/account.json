@@ -1,0 +1,21 @@
+{
+  "_comment": "Order-list settings only. No secrets. Edit capital here; strategy and signals never read this file.",
+  "CN": {
+    "capital": 100000,
+    "currency": "CNY",
+    "cash_proxy": "511880",
+    "lot_size": 100,
+    "commission_bp": 2.5,
+    "min_fee": 5.0,
+    "nominal_proxy_price": 100.9
+  },
+  "US": {
+    "capital": 10000,
+    "currency": "USD",
+    "cash_proxy": "SGOV",
+    "lot_size": 1,
+    "commission_bp": 0.0,
+    "min_fee": 0.0,
+    "nominal_proxy_price": 100.5
+  }
+}

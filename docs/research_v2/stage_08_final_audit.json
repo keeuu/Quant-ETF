@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "audit_type": "STAGE_8C_FINAL_HOLDOUT_SEAL_AUDIT",
+  "audit_time": "2026-09-23T20:52:00+08:00",
+  "verdict": "STAGE_8_BLOCKED",
+  "reason": "Lock v2 bound execution_commit to Stage 7 base commit d8585d8c, but the Stage 9 runner, authorization verifier, loader guard, and exposure state machine were created uncommitted post-d8585d8c and are absent from that commit/tree. Section 8 blocks checkpointing.",
+  "old_lock": {
+    "hash": "84757af7d8cfd1e84e9b3d9f28e616367bc86f7f4bd57c607788319a1e4b61d7",
+    "status": "REJECTED_PRE_EXPOSURE"
+  },
+  "candidate_lock_v2": {
+    "hash": "2aed06d19cce0aaa57d52a16f28b623d0c1610982f2f6720873a7973f228b2b9",
+    "status": "REJECTED_COMMIT_MISMATCH"
+  },
+  "bindings": {
+    "dataset_binding": "PASS",
+    "protocol_binding": "PASS",
+    "code_binding": "FAIL_RUNNER_POST_DATES_COMMIT"
+  },
+  "guards": {
+    "clean_worktree_guard": "PASS",
+    "authorization_guard": "PASS",
+    "generic_override": "ABSENT",
+    "atomic_runner": "PASS",
+    "partial_output_protection": "PASS",
+    "stdout_safety": "PASS",
+    "exposure_state_machine": "PASS"
+  },
+  "exposure_state": {
+    "current": "UNEXPOSED",
+    "retrospective_holdout_performance_accessed": false
+  },
+  "statistical_artifacts": "UNCHANGED",
+  "pytest": {
+    "total": 191,
+    "passed": 191,
+    "failed": 0,
+    "status": "PASS"
+  },
+  "production_state": "PASS",
+  "tag": "NOT_CREATED",
+  "stage_9_ready": false
+}

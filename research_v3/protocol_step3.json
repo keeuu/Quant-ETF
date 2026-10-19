@@ -1,0 +1,44 @@
+{
+  "protocol": "research_v3_step3",
+  "version": 1,
+  "preregistered_before_any_step3_backtest": true,
+  "partitions": ["train", "validation"],
+  "settings": "research_v3.config.V3_DEFAULT (^IRX cash yield, cost 5 bps + slippage 5 bps per side)",
+  "universe": "research_v2 UNIVERSE, unchanged",
+  "trend_filter": "price above trend SMA (research_v2 strict >), weekly K-week SMA, unchanged",
+  "top_n": 3,
+  "trend_weeks": [36, 40, 44],
+  "base_momentum_months": 12,
+  "ens_momentum_months": [3, 6, 12],
+  "ivol_window": 63,
+  "asset_class_groups": {
+    "US_EQ": ["SPY", "QQQ", "IWM"],
+    "INTL_EQ": ["EFA", "EEM"],
+    "GOLD": ["GLD"],
+    "BONDS": ["TLT", "IEF"]
+  },
+  "cap_rule": "at most 1 selected asset per group; walk the v2-ranked (momentum desc, universe tie-break) trend-passing assets in order and skip an asset whose group already has a selection",
+  "slot_modes": {
+    "renorm": "v2 convention: equal weight over selected assets, 100% CASH only if none qualifies",
+    "cashslot": "no renormalisation: each of top_n slots is 1/top_n; unfilled slots go to CASH",
+    "def": "like cashslot, but each unfilled slot goes to IEF if the IEF defensive test passes, else CASH; if IEF is already a risky selection its extra slot weight adds to it"
+  },
+  "defensive_test": {
+    "symbol": "IEF",
+    "months": 3,
+    "description": "IEF adj_close total return from anchor session (latest session <= signal_close - DateOffset(months=3), as v2 find_anchor_session) to the signal close session, WITHOUT the one-week skip (window ends at signal close), strictly greater than the T-bill return over the same window (product of research_v3 CashYieldCurve.accrual_factor over consecutive sessions in (anchor, signal_close], each using the IRX value of the previous session or earlier). IEF if strictly greater, else CASH. Any missing input gives CASH."
+  },
+  "ivol_in_candidates": "weights proportional to 1/sigma over the risky selected assets only (sigma = sample std ddof=1 of daily adj_close log returns, last ivol_window returns ending at signal close); the risky total (k/top_n under cashslot/def, 1 under renorm) is unchanged; defensive slots keep 1/top_n each",
+  "variants": {
+    "BASE": {"description": "as step 2 BASE (v2 signals unchanged)", "cadences": ["W", "M"], "ens": false, "ivol": false, "cap": false, "slots": "renorm"},
+    "CASHSLOT": {"description": "no renormalisation, unfilled slots to CASH", "cadences": ["W", "M"], "ens": false, "ivol": false, "cap": false, "slots": "cashslot"},
+    "DEF": {"description": "CASHSLOT with defensive IEF/CASH slot filling", "cadences": ["W", "M"], "ens": false, "ivol": false, "cap": false, "slots": "def"},
+    "CAP": {"description": "asset-class cap, BASE renormalisation", "cadences": ["W", "M"], "ens": false, "ivol": false, "cap": true, "slots": "renorm"},
+    "CAP_DEF": {"description": "asset-class cap + DEF slot filling", "cadences": ["W", "M"], "ens": false, "ivol": false, "cap": true, "slots": "def"},
+    "CAND": {"description": "POST-HOC CANDIDATE chosen after seeing step-2 results: ENS (3/6/12 mean momentum) + IVOL (63-session inverse-vol), weekly only, BASE renormalisation", "post_hoc": true, "cadences": ["W"], "ens": true, "ivol": true, "cap": false, "slots": "renorm"},
+    "CAND_CAP_DEF": {"description": "POST-HOC CANDIDATE chosen after seeing step-2 results: CAND selection with CAP and DEF slot filling, IVOL on risky share only, weekly only", "post_hoc": true, "cadences": ["W"], "ens": true, "ivol": true, "cap": true, "slots": "def"}
+  },
+  "metrics": ["cagr", "ann_vol", "sharpe_rf0", "excess_sharpe_over_irx", "max_drawdown", "ann_one_way_turnover", "mean_cash_weight", "mean_ief_defensive_weight", "worst_calendar_year", "year_2008_return"],
+  "calendar_year_convention": "year return = NAV(last session of year)/NAV(last session of previous year)-1, first year of a partition measured from initial NAV; worst calendar year only over years with at least 200 scored sessions; 2008 reported for train only",
+  "parameter_search": "none"
+}

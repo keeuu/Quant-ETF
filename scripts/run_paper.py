@@ -2,7 +2,8 @@ import sys
 import os
 import argparse
 import uuid
-from datetime import datetime
+from datetime import date, datetime, timedelta
+from zoneinfo import ZoneInfo
 from pathlib import Path
 import pandas as pd
 
@@ -60,6 +61,62 @@ def perform_credential_leak_scan() -> bool:
             pass
     return True
 
+def verify_research_selection(monthly_close: pd.DataFrame, target_weights: dict, top_n: int = TOP_N) -> dict:
+    """
+    Research 信号一致性核验：用 V1 信号函数 (calculate_12_1_momentum / check_trend_filter)
+    对同一份 monthly_close 重新计算最新信号日的期望选基，并用独立的 pandas 排序逻辑
+    (不经过 select_top_assets) 与实际 target_weights 比对。
+
+    不再硬编码期望标的；若选基集合或权重不一致则抛出 RESEARCH_SIGNAL_DRIFT。
+    返回期望权重 dict（便于日志与测试）。
+    """
+    mom_df = calculate_12_1_momentum(monthly_close)
+    trend_df = check_trend_filter(monthly_close)
+    latest = monthly_close.index[-1]
+    mom = mom_df.loc[latest].dropna()
+    trend = trend_df.loc[latest]
+    qualified = [s for s in mom.index if bool(trend.get(s, False))]
+    ranked = mom.loc[qualified].sort_values(ascending=False, kind="stable")
+    chosen = list(ranked.index[:min(len(ranked), top_n)])
+    expected = {s: 1.0 / len(chosen) for s in chosen} if chosen else {}
+
+    same_set = set(expected) == set(target_weights)
+    same_w = same_set and all(abs(expected[s] - target_weights[s]) < 1e-9 for s in expected)
+    if not (same_set and same_w):
+        logger.critical(f"RESEARCH_SIGNAL_DRIFT: 重算期望选基 {expected}，实际为 {target_weights}")
+        raise RuntimeError("RESEARCH_SIGNAL_DRIFT: 实际选基与基于同一数据重算的 V1 信号不一致！")
+    return expected
+
+
+def probe_broker_calendar(client, run_date: date) -> dict:
+    """
+    以运行日期为基准（而非硬编码日期）只读探测 Broker Calendar：
+    当月前 5 个自然日窗口与下月前 5 个自然日窗口各自的首个交易日。
+    """
+    cur_start = run_date.replace(day=1)
+    nxt_start = (pd.Period(run_date.strftime("%Y-%m"), freq="M") + 1).start_time.date()
+    info = {}
+    for key, start in (("current_month_first_trading", cur_start), ("next_month_first_trading", nxt_start)):
+        cal = client.get_calendar(
+            start_date=start.strftime("%Y-%m-%d"),
+            end_date=(start + timedelta(days=4)).strftime("%Y-%m-%d"),
+        )
+        info[key] = cal[0]["date"].strftime("%Y-%m-%d") if cal else "N/A"
+    return info
+
+
+def kill_switch_self_test(order_submission_enabled: bool = ORDER_SUBMISSION_ENABLED) -> str:
+    """
+    纯本地 Kill-Switch 自检：绝不接触 Broker，绝不提交任何（包括测试）订单。
+    若 ORDER_SUBMISSION_ENABLED 为 True，则抛出 SecurityException 终止运行（Fail Closed）。
+    """
+    if order_submission_enabled:
+        raise SecurityException(
+            "KILL_SWITCH_SELF_TEST_FAIL: ORDER_SUBMISSION_ENABLED 为 True，本阶段拒绝运行 --execute（未提交任何订单）。"
+        )
+    return "PASS (本地自检：ORDER_SUBMISSION_ENABLED=False，未接触 Broker，未提交任何订单)"
+
+
 def main():
     parser = argparse.ArgumentParser(description="Alpaca Paper Trading 动量交易系统 Phase 5.7 (Read-Only & Guards)")
     parser.add_argument("--dry-run", action="store_true", default=True, help="以只读 Dry-Run 模式运行，绝不提交真实订单 (默认)")
@@ -97,12 +154,10 @@ def main():
             except Exception as e:
                 logger.warning(f"读取 Broker Clock 异常: {e}")
 
-            # 读取 Broker Calendar
+            # 读取 Broker Calendar（相对运行日期，只读）
             try:
-                cal_sep = client.get_calendar(start_date="2026-09-01", end_date="2026-09-05")
-                cal_oct = client.get_calendar(start_date="2026-10-01", end_date="2026-10-05")
-                broker_calendar_info["sep_01_trading"] = any(c["date"].strftime("%Y-%m-%d") == "2026-09-01" for c in cal_sep)
-                broker_calendar_info["oct_first"] = cal_oct[0]["date"].strftime("%Y-%m-%d") if cal_oct else "N/A"
+                run_date = datetime.now(ZoneInfo(MARKET_TIMEZONE)).date()
+                broker_calendar_info = probe_broker_calendar(client, run_date)
             except Exception as e:
                 logger.warning(f"读取 Broker Calendar 异常: {e}")
 
@@ -162,11 +217,13 @@ def main():
     # 直接调用 Research V1 选基模块
     target_weights = select_top_assets(curr_mom, curr_trend, top_n=TOP_N, verbose=False)
 
-    # Research Signal 一致性核验
-    expected_top3 = {"EEM", "IWM", "QQQ"}
-    if set(target_weights.keys()) != expected_top3:
-        logger.critical(f"RESEARCH_SIGNAL_DRIFT: 期望选基 {expected_top3}，实际为 {set(target_weights.keys())}")
-        raise RuntimeError(f"RESEARCH_SIGNAL_DRIFT: 最新信号偏离冻结 Research V1 预期！")
+    # Research Signal 一致性核验：基于同一数据用 V1 信号函数重算期望选基并比对
+    expected_weights = verify_research_selection(monthly_close, target_weights, top_n=TOP_N)
+    logger.info(
+        f"Research 选基 (信号日 {latest_signal_date.date()}): "
+        f"{', '.join(f'{k}={v:.4f}' for k, v in target_weights.items()) or '100% 现金'}；"
+        f"重算核验: 一致 (期望 {sorted(expected_weights)})"
+    )
 
     # 5. 调仓执行窗口守护检查 (Execution Window Guard - 基于真实日历与时钟)
     exec_window_status = check_execution_window(
@@ -195,13 +252,8 @@ def main():
             raise RuntimeError(f"EXECUTION_WINDOW_BLOCKED: {exec_window_status.execution_block_reason}")
 
         logger.warning("【安全防护激活】Phase 5.7 ORDER_SUBMISSION_ENABLED = False，系统硬性阻断订单提交！")
-        try:
-            client.submit_order(symbol="SPY", qty=1, side="buy", client_order_id="momv1_test_kill_switch_01")
-            kill_switch_test_result = "FAIL (未拦截)"
-        except SecurityException:
-            kill_switch_test_result = "PASS (成功硬拦截)"
-        except Exception as e:
-            kill_switch_test_result = f"PASS ({e})"
+        # 本地自检：不调用 client.submit_order，任何情况下都不会发出测试订单
+        kill_switch_test_result = kill_switch_self_test(ORDER_SUBMISSION_ENABLED)
 
     is_dry_run = True
     order_execution_status = "DRY_RUN_ONLY (ORDER_SUBMISSION_ENABLED = FALSE)"
@@ -265,7 +317,7 @@ def main():
         print(f"Next Close:                       N/A (离线模式)")
 
     if broker_calendar_info:
-        print(f"Broker Calendar Status:           LIVE_CALENDAR_SUCCESS (2026-09-01合法: {broker_calendar_info.get('sep_01_trading')}, 2026-10首交易日: {broker_calendar_info.get('oct_first')})")
+        print(f"Broker Calendar Status:           LIVE_CALENDAR_SUCCESS (本月首个交易日: {broker_calendar_info.get('current_month_first_trading')}, 下月首个交易日: {broker_calendar_info.get('next_month_first_trading')})")
     else:
         print(f"Broker Calendar Status:           OFFLINE_MOCK (由 exchange_calendars XNYS 官方交易日历提供)")
 

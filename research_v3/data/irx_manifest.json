@@ -1,0 +1,11 @@
+{
+  "created": "2026-10-18T15:18:10.352677+00:00",
+  "file": "irx_20050103_20201231.csv",
+  "first_date": "2005-01-03",
+  "last_date": "2020-12-31",
+  "na_rows": 0,
+  "rows": 4023,
+  "sha256": "3ea5da9af7d9724439f004279debd9be94c543b7e20ae171a59669c5d8293bc8",
+  "source": "yfinance ^IRX Close (13-week T-bill discount rate, annualized percent)",
+  "yfinance_version": "1.7.0"
+}

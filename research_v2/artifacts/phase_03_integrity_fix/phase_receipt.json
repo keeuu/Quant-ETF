@@ -1,0 +1,71 @@
+{
+  "stage": "3.3",
+  "name": "Paper Test Isolation and F0 Integrity Fix",
+  "created_at": "2026-09-21T15:21:17.693684+00:00",
+  "code_commit": "3f708f888277a6564ea6db204dafde95c2a548c7",
+  "tags": {
+    "research-v1": "d35840148354105cb4d719ba828e0ff7b4a44782",
+    "paper-v1-ready": "34039df69c16b2c63439556b5762c06b50785384"
+  },
+  "verdict": {
+    "integrity_fix": "PASS",
+    "H1_state_path_isolation": "FIXED",
+    "H2_logger_import_isolation": "FIXED",
+    "H3_baseline_semantics": "ADDRESSED",
+    "static_f0_guard": "STATIC_MUTATIONS_FROM_STAGE33_INTENTIONAL",
+    "dynamic_state_classification": "IMPLEMENTED",
+    "network_isolation": "PASS",
+    "paper_kill_switch": "OFF",
+    "real_orders_submitted": "NOT_RECHECKED"
+  },
+  "production_logs_invariant": {
+    "app_log_sha256_before": "015a85822e8d7951034d86aad70188f76d463e7665524964c042a87a126c3393",
+    "app_log_sha256_after": "015a85822e8d7951034d86aad70188f76d463e7665524964c042a87a126c3393",
+    "app_log_match": true,
+    "state_json_sha256_before": "59a9e800d56c6bbb8d486033d33aa5a10bc868115643982501154b0c79caacd4",
+    "state_json_sha256_after": "59a9e800d56c6bbb8d486033d33aa5a10bc868115643982501154b0c79caacd4",
+    "state_json_match": true,
+    "invariant_result": "PASS"
+  },
+  "pytest": {
+    "tests_old": {
+      "total": 96,
+      "passed": 96,
+      "failed": 0,
+      "error": 0
+    },
+    "tests_v2": {
+      "total": 54,
+      "passed": 54,
+      "failed": 0,
+      "error": 0
+    },
+    "combined": {
+      "total": 150,
+      "passed": 150,
+      "failed": 0,
+      "warning": 1
+    }
+  },
+  "files_modified": [
+    "src/execution/reconciliation.py",
+    "src/execution/executor.py",
+    "src/utils/logger.py",
+    "research_v2/guards.py"
+  ],
+  "files_created": [
+    "tests/conftest.py",
+    "tests/test_isolation_regression.py",
+    "docs/research_v2/baseline_manifest_v2.json",
+    "docs/research_v2/phase_03_integrity_fix.md",
+    "research_v2/artifacts/phase_03_integrity_fix/phase_receipt.json"
+  ],
+  "research_v2_protocol": "UNCHANGED",
+  "research_v1_unchanged": true,
+  "paper_tag_unchanged": true,
+  "original_baseline_preserved": true,
+  "stage4_recommendation": "READY_FOR_STAGE_4",
+  "implementation_base_commit": "3f708f888277a6564ea6db204dafde95c2a548c7",
+  "code_commit_role": "implementation_base_commit (HEAD prior to Stage 3.3 integrity fixes; fixes checkpointed in stage_03_checkpoint.json)",
+  "receipt_sha256": "79ef5c9e051a48290e4ecf76e366aef46bffe80b2dd4de12d66728045a87638f"
+}

@@ -1,0 +1,18 @@
+{
+  "main": {
+    "outcome": "SUPPORTED",
+    "C1_full_xsharpe_gt_60_40": true,
+    "C2_full_mdd_lt_spy_bh": true,
+    "C3a_sub_a_xsharpe_gt_60_40": true,
+    "C3b_sub_b_xsharpe_gt_60_40": true
+  },
+  "challenger": {
+    "outcome": "NOT_SUPPORTED",
+    "C1_full_mdd_lower_by_ge_3pp": false,
+    "full_mdd_reduction_pp": 2.297118989722202,
+    "C2_full_xsharpe_not_lower_by_gt_0.05": true,
+    "full_xsharpe_change": 0.022398335782789713,
+    "C3a_sub_a_mdd_not_higher": true,
+    "C3b_sub_b_mdd_not_higher": false
+  }
+}

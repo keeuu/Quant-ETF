@@ -1,0 +1,24 @@
+{
+ "c1_xsharpe_beats_ew_and_csi1000": false,
+ "c2_beats_ew_in_both_halves": false,
+ "c3_mdd_below_ew": false,
+ "c4_c1_holds_at_20bp": false,
+ "verdict": "FAIL",
+ "inputs": {
+  "x_strat_10": -0.03564831201785047,
+  "x_ew_10": -0.03740068884904161,
+  "x_strat_20": -0.14749868666334148,
+  "x_ew_20": -0.051439192559376984,
+  "x_csi1000_overlap": -0.014909132771335655,
+  "x_strat_csi1000_overlap": -0.08553290796677897,
+  "x_strat20_csi1000_overlap": -0.18723137586687386,
+  "xA_strat": 0.4347108490444524,
+  "xA_ew": 0.08506418233267242,
+  "xB_strat": -0.6115764684155732,
+  "xB_ew": -0.19647853609450391,
+  "mdd_strat": 0.7007314567616423,
+  "mdd_ew": 0.6657076619578068
+ },
+ "dev_mdd_within_40pct": false,
+ "dsr_var_sr_daily": 2.2853950688696714e-05
+}

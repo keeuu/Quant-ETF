@@ -1,0 +1,15 @@
+{
+ "primary_cost_met": false,
+ "sensitivity_cost_met": false,
+ "outcome": "NOT_SUPPORTED",
+ "bootstrap_primary": {
+  "diff": -0.22712346049455767,
+  "lo": -0.7992417079879098,
+  "hi": 0.3527737750888945,
+  "includes_0": true
+ },
+ "slice": [
+  "2024-10-08",
+  "2026-09-30"
+ ]
+}

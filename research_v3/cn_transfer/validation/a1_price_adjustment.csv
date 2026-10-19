@@ -1,0 +1,7 @@
+symbol,reference,n_days,mean_abs_diff_bp,max_abs_diff_bp,max_abs_diff_date,n_days_gt_5bp,n_days_gt_50bp,n_days_gt_50bp_unexplained,ann_ours,ann_ref,ann_diff_pp,corr,pass,unexplained_detail
+510300,"SUBSTITUTE: Tencent unadjusted + Eastmoney distribution/split records, baseline adjustment code",3204,0.006935082963068424,5.3633681952258705,2015-12-07,2,0,0,0.07175026888405944,0.07175026888405989,-4.440892098500626e-14,0.9999992802397073,True,
+510050,"SUBSTITUTE: Tencent unadjusted + Eastmoney distribution/split records, baseline adjustment code",3204,0.01980066177427511,15.766624051082312,2018-08-31,2,0,0,0.06971197071235613,0.06971197071235657,-4.440892098500626e-14,0.9999954580002223,True,
+510500,"SUBSTITUTE: Tencent unadjusted + Eastmoney distribution/split records, baseline adjustment code",3202,0.0016078715093968577,2.613012803762693,2015-12-03,0,0,0,0.07653502732754247,0.07653502732754269,-2.220446049250313e-14,0.9999999243765165,True,
+159915,"SUBSTITUTE: Tencent unadjusted + Eastmoney distribution/split records, baseline adjustment code",3203,0.0,0.0,2013-07-30,0,0,0,0.0814820031133403,0.0814820031133403,0.0,1.0,True,
+518880,"SUBSTITUTE: Tencent unadjusted + Eastmoney distribution/split records, baseline adjustment code",3204,0.0,0.0,2013-07-30,0,0,0,0.09456214400452967,0.09456214400452967,0.0,1.0,True,
+511010,"SUBSTITUTE: Tencent unadjusted + Eastmoney distribution/split records, baseline adjustment code",3204,0.007469556127931605,10.758609442356182,2018-08-20,2,0,0,0.03000319416183661,0.03000319416183661,0.0,0.9998425283528806,True,

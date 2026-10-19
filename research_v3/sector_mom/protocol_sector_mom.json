@@ -1,0 +1,68 @@
+{
+  "protocol": "research_v3 sector_mom: short-term momentum rotation across A-share industry/theme ETFs, with daily moving-average exits",
+  "written_at": "2026-10-19",
+  "written_before_any_sector_etf_price_data_was_downloaded": true,
+  "relation_to_other_work": "Independent new experiment. Does not change the frozen CAP_DEF_M candidate. Goal is profit-seeking short-term momentum (holding days to weeks).",
+
+  "universe": {
+    "candidates": "All exchange-traded equity ETFs listed in Shanghai/Shenzhen whose tracked index is an industry or thematic index (e.g. semiconductors, securities, banks, military, healthcare, new energy, consumer, real estate, media, coal, nonferrous metals). Excluded: broad-market and size indices (e.g. SSE 50, CSI 300/500/1000/2000, ChiNext, STAR 50, SZSE 100, A50/A500), pure style/strategy indices (dividend, value, growth, low-vol, quality, ESG), cross-border/QDII and Hong Kong-linked ETFs, bond, gold, commodity and money-market ETFs.",
+    "classification_procedure": "Classify by the tracked index name/type from THS fund profile (or akshare if unavailable) using a written keyword rule; the rule and the full classified list (included and excluded, with reason) are produced and saved BEFORE any price data is downloaded or any return is computed.",
+    "delisted": "Include ETFs that have since been delisted if any source lists them; if no source provides delisted ETFs, state the survivorship bias explicitly.",
+    "point_in_time_eligibility": "At each weekly signal date an ETF is eligible only if: listed for at least 250 sessions, has a bar on the signal date, and its mean daily turnover (CNY) over the previous 60 sessions is at least 30,000,000.",
+    "dedup_same_index": "If several eligible ETFs track the same index, keep only the one with the highest 60-session mean turnover at that signal date.",
+    "min_universe": "Scoring starts at the first weekly signal date with at least 15 eligible ETFs after dedup."
+  },
+
+  "data": {
+    "primary": "THS fund market historical daily bars (forward-adjusted, 5-year windows stitched), API key from .env FUYAO_API_KEY",
+    "fallback": "akshare (Eastmoney hfq or Sina unadjusted + self-built adjustment as in research_v3/cn_transfer)",
+    "turnover": "daily turnover in CNY from the same source",
+    "cash": "SHIBOR 3M as in research_v3/cn_transfer",
+    "benchmark_prices": "510300 for CSI300; same source",
+    "snapshot": "all raw data saved with a sha256 manifest; runs verify hashes"
+  },
+
+  "periods": {
+    "development": "score start (per min_universe) to 2024-09-30",
+    "development_halves": "development split at its midpoint date into DEV_A and DEV_B",
+    "holdout": "2024-10-01 to 2026-09-30. Must not be loaded, scored, plotted or summarised until the one-time holdout run authorised by the user after candidate selection. Code must enforce this with a guard."
+  },
+
+  "execution_model": {
+    "calendar": "XSHG",
+    "weekly_schedule": "signal at the close of the last session of each week; trades at the open of the next session",
+    "daily_exit_check": "at each session close; exit trade at the next session open",
+    "t_plus_1": "no position is sold on the session it was bought",
+    "limit_rules": "cannot buy if the open is at or above +limit (prev close * 1.10, or *1.20 for ETFs on 20% boards); cannot sell if the open is at or below -limit; blocked orders retry at each following open",
+    "costs": "commission 2.5 bp per side + slippage 10 bp per side (primary); sensitivity: 2.5 + 20 bp. No stamp duty for ETFs.",
+    "cash": "uninvested cash accrues SHIBOR 3M (previous-session rate)",
+    "capital": "fractional shares, 1,000,000 CNY start (secondary: 100-share lots with min 5 CNY commission at 100,000 CNY)"
+  },
+
+  "strategies": {
+    "S1_WEEKLY_MOM": "score = mean(20-session return, 60-session return) on adjusted close at the signal close; eligible only if close > 20-session SMA; select top 5 by score; weights proportional to 1/sigma20 (std of 20 daily log returns), sum 1 if 5 selected, otherwise each unfilled slot's 1/5 stays cash; weekly rebalance.",
+    "S2_MA10_EXIT_WEEKLY_REENTRY": "S1, plus: a held ETF whose close falls below its 10-session SMA is sold at the next open to cash; it can be re-bought only at the next weekly rebalance and only if it is selected AND its close is above its 10-session SMA at that signal.",
+    "S3_MA5_EXIT_WEEKLY_REENTRY": "same as S2 with a 5-session SMA.",
+    "S4_MA10_EXIT_DAILY_REENTRY": "S2, but an ETF exited by the MA10 rule is re-bought at the next open after any close back above its 10-session SMA, provided it is still in the latest weekly selection, at its latest weekly target weight.",
+    "benchmarks": {
+      "CSI300_BH": "510300 buy and hold",
+      "EW_SECTOR": "equal weight across all eligible deduplicated sector ETFs, rebalanced monthly (first session of each month), same eligibility rules"
+    }
+  },
+
+  "metrics": ["CAGR", "ann_vol", "excess Sharpe over SHIBOR", "max drawdown and its dates", "worst calendar year", "calendar-year returns", "annualised one-way turnover", "cost drag (CAGR with zero cost minus CAGR)", "number of trades", "win rate of round trips", "average holding days", "mean cash weight", "count of limit-blocked orders", "stationary block bootstrap (block 21, 2000 resamples, seed 20261019) 90% CI of excess Sharpe difference vs EW_SECTOR and vs CSI300_BH", "PSR and DSR with N = number of strategies in this protocol (4)"],
+
+  "candidate_selection_on_development_only": {
+    "conditions_all_required": [
+      "DEV excess Sharpe > EW_SECTOR and > CSI300_BH (point estimates)",
+      "DEV max drawdown < CSI300_BH DEV max drawdown",
+      "excess Sharpe > EW_SECTOR in both DEV_A and DEV_B",
+      "conditions hold under the 2.5+20 bp sensitivity cost as well"
+    ],
+    "pick": "among qualifiers, the one with the highest min(DEV_A, DEV_B) excess Sharpe; at most 1 candidate",
+    "if_none": "report that no strategy qualifies; the holdout is not run unless the user explicitly asks to run it for information only"
+  },
+
+  "holdout_run": "One time only, after selection, for the single candidate and the two benchmarks, with the user's explicit go-ahead. Report all metrics regardless of outcome. No changes after seeing it.",
+  "freeze_rule": "This protocol is frozen at commit time; any change is a separately labelled amendment written before the affected run."
+}

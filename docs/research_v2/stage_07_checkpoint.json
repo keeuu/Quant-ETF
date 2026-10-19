@@ -1,0 +1,94 @@
+{
+  "artifact_hashes": {
+    "convergence_audit": "618308e5878378abb9668940deceb6878da78f5d50f70736583508fb1999154b",
+    "leakage_audit": "a928580da95f766944f513264ecc313773e41bd8a75da9e4c397e896e13b5ba0",
+    "train_validation_comparison": "9c667474b48a681440c14379160dec4d1ec7411c289c46d03958279bd99fd643",
+    "train_validation_rank_correlation": "2e8a0b708a8302e096c5139c400a4d5ae762c75869ec99ac0e3fe75aa0b1f2ae",
+    "train_validation_surface_correlation": "789094a71003512233e002cbc7ed5a6514ba790f788146dd6fe1d05321458ae0",
+    "validation_neighbor_stability": "0efb3fdfee08bebc1d31d745af0ba1ff20ed52531ccad0f2558be8f8ff24fd48",
+    "validation_surface_cagr": "bc96cb1e1e43a4e83924fb5cc113268bb2e0762e714f77a880f5e9c2c09324f5",
+    "validation_surface_cash": "4b2d1a1602e78018ecae4c5f41426a4a3c037b34e938d3ec8a706e894b349bc7",
+    "validation_surface_fees": "f2bd15aa6e9cf38c0dbf0f8de22cf5248ee234276bbcb19b735316f1e6ccb290",
+    "validation_surface_gross_turnover": "1ac45ceb5c7d99e891efdd39ff10576ceaaed6c8c777b0d0884b38c1d9419192",
+    "validation_surface_maxdd": "ad9305e66d059ab319d8e2e456649276f3fcc6d2aa62bf71202a4e0029a566f2",
+    "validation_surface_sharpe": "849df1a07433f840404c71b31c64b21d703bd7c21e5c9f5300a0a508c2d40d6a",
+    "validation_surface_turnover": "fd539fc45802cfb5c36181a932bc2cf3b4388c548ddeb62574c40d25cdd816be",
+    "validation_surface_vol": "7955bd0938fdd0b84ee957f208115891bb360f44d602d762dfa9c63d5bb061ea",
+    "validation_trial_ledger": "db869e438ca72666a7d1c2e18314ab12ac8095fdbed378f6f5da7a09d973c882",
+    "walkforward_maxdd_matrix": "8f57660dee00550958968ca50fd45600d343a7f8f4a55881d1c9c3e494d8c84f",
+    "walkforward_metrics": "551404ed3beb68f6c8d33066cd2bef62f3c7c22974e97bf96b589797ecfa7422",
+    "walkforward_return_matrix": "dd38719268bc3ec69cc3e247b147a2c94121100f815e7f821dcc903a3164eaf4",
+    "walkforward_sharpe_matrix": "97c83a3b2f062e73a2b3d86d7304fcf0f4534cdd9eabdec51ab6a712e8167c46",
+    "walkforward_summary": "5098c603f09d8bc5660418439cec2d1c009743df4cde7ae72c6720fbda0bfcbe",
+    "walkforward_turnover_matrix": "db4ede07a768db49a73d990c492287f07706af905312e4799e2f500de1a9e8d8"
+  },
+  "checkpoint_sha256": "57c0c85be5a40ced5696fa42298d336e4e4f5bcf7cd1d337e8bacbebe3d0c951",
+  "commits": {
+    "stage_06_base_commit": "cac6d91ae3f1758b2bba7758ba5a7ca73c63ee30",
+    "stage_06_base_tag": "research-v2-stage6-ready",
+    "stage_07_implementation_commit": "713473865500428105f2a3373855ae11aa62d948"
+  },
+  "full_pytest_result": {
+    "command": ".venv/bin/python -m pytest tests/ tests_v2/",
+    "failed": 0,
+    "passed": 179,
+    "skipped": 0,
+    "status": "PASS",
+    "total": 179,
+    "warnings": 1,
+    "xfailed": 0
+  },
+  "hashes": {
+    "dataset_sha256": "65aa99046a92ae9b5fd80155cea26065d80ebcc78a740883452d2106e4000aa3",
+    "phase_receipt_hash": "45662a25a3ec7e173d6b498610c4b6afe13d53ce90d202f0ddcd3c9a4f1ad73a",
+    "protocol_sha256": "a35fe1e50f90b537bd543e9d41a78eff3d9ae9991c362adc603f42432a23e9fb",
+    "stage_07_audit_hash": "5eb97275efbd4f6a76b8acba909e1e5cc04fa439a513c07982e0cbd7e9dcddb5"
+  },
+  "model_selection": "NONE",
+  "name": "Stage 7 Checkpoint: Validation, Yearly Walk-Forward, Convergence & Leakage Audit",
+  "partition_gates": {
+    "prospective_oos": "PENDING_DATA",
+    "retrospective_holdout": "NOT_ACCESSED",
+    "validation": "ACCESSED_AS_AUTHORIZED"
+  },
+  "production_state_invariance": {
+    "app_log_sha256": "015a85822e8d7951034d86aad70188f76d463e7665524964c042a87a126c3393",
+    "rebalance_state_sha256": "59a9e800d56c6bbb8d486033d33aa5a10bc868115643982501154b0c79caacd4",
+    "status": "PASS"
+  },
+  "schema_version": 1,
+  "stage": "7",
+  "tags": {
+    "paper-v1-ready": {
+      "peeled_commit": "3f708f888277a6564ea6db204dafde95c2a548c7",
+      "tag_object": "34039df69c16b2c63439556b5762c06b50785384"
+    },
+    "research-v1": {
+      "peeled_commit": "d35840148354105cb4d719ba828e0ff7b4a44782",
+      "tag_object": "d35840148354105cb4d719ba828e0ff7b4a44782"
+    },
+    "research-v2-stage3-ready": {
+      "peeled_commit": "61e7c20a799447f34f8a7c5b40ac9c36cf894d6f",
+      "tag_object": "61e7c20a799447f34f8a7c5b40ac9c36cf894d6f"
+    },
+    "research-v2-stage4-ready": {
+      "peeled_commit": "4fd1e61f1c5f7cb29078814e0b3ebe0b9abf793d",
+      "tag_object": "4fd1e61f1c5f7cb29078814e0b3ebe0b9abf793d"
+    },
+    "research-v2-stage5-ready": {
+      "peeled_commit": "e0e9e265515dbae7918eaaecbc228ed72f5de25a",
+      "tag_object": "e0e9e265515dbae7918eaaecbc228ed72f5de25a"
+    },
+    "research-v2-stage6-ready": {
+      "peeled_commit": "cac6d91ae3f1758b2bba7758ba5a7ca73c63ee30",
+      "tag_object": "7878018928a2912d513d14faee3780dd50263fae"
+    }
+  },
+  "timestamp": "2026-09-23T12:15:00.000000+00:00",
+  "trial_accounting": {
+    "post_hoc_model_definitions": 0,
+    "primary_model_definitions": 9,
+    "validation_evaluations": 9
+  },
+  "verdict": "STAGE_7_CHECKPOINT_PASS"
+}

@@ -1,0 +1,87 @@
+{
+  "protocol": "research_v3 cb_rotation: China convertible-bond double-low rotation for a 20,000-30,000 CNY account",
+  "written_at": "2026-10-19",
+  "written_before_any_cb_price_series_was_downloaded_in_bulk_or_any_strategy_return_computed": true,
+  "feasibility": "research_v3/cb_rotation/feasibility/FEASIBILITY.md (coverage only; no returns computed)",
+
+  "data": {
+    "list": "Eastmoney RPT_BOND_CB_LIST (all bonds incl. delisted; listing date, delisting date, redemption notice dates, redemption price)",
+    "bars": "Sina bond_zh_hs_cov_daily (OHLC, volume) + Tencent (amount); last trading day = last bar",
+    "valuation": "Eastmoney RPTA_WEB_KZZ_LS daily series (conversion value, premium, conversion price); truncated at the last bar; where conversion price is missing, implied from conversion value and the underlying close (research_v3/stock_mf local data)",
+    "events": "redemption notice date (NOTICE_DATE_SH/HS); downward revisions as embedded in the daily conversion-price series",
+    "cash": "SHIBOR 3M",
+    "benchmarks": "CSI Convertible Bond Index (000832) price index; CSI300 (510300 total return from research_v3 data); EW_CB built from the universe"
+  },
+
+  "universe": {
+    "schedule": "evaluated at each weekly signal (last session of the week)",
+    "eligible_if_all": [
+      "listed for at least 10 sessions",
+      "has a bar with volume > 0 on the signal date",
+      "20-session mean daily amount >= 5,000,000 CNY (replaces outstanding-size filter, unavailable for SSE bonds)",
+      "no forced-redemption notice published on or before the signal date",
+      "last trading day not known to be within the next 20 sessions (maturity)",
+      "underlying stock not inferred-ST on the signal date (research_v3/stock_mf inferred-ST rule)",
+      "close <= 150"
+    ]
+  },
+
+  "signal": {
+    "score": "double-low = close price + 100 x conversion premium rate (premium as a decimal), using values dated on or before the signal close",
+    "selection": "hold the 10 lowest scores; an existing holding is kept while its score rank is <= 20 and it stays eligible; remaining slots filled by the lowest-ranked non-held bonds",
+    "weights": "equal weight 1/10 for new buys; kept holdings are not resized",
+    "forced_exit": "a holding that becomes ineligible (e.g. redemption notice, inferred-ST underlying) is sold at the next session open even between rebalances",
+    "rebalance": "weekly; trades at the next session open"
+  },
+
+  "execution_model": {
+    "t_plus_0": "allowed but not used (orders only at opens)",
+    "price_limits": "no daily limit before 2022-08-01; from 2022-08-01 +/-20% (effective date unverified, declared); a buy is blocked if open >= +20% limit, a sell if open <= -20% limit; blocked orders retry each open",
+    "lot": "10 bonds (SMALL account)",
+    "delisting": {
+      "redemption_or_maturity": "if still held at the last bar, converted to cash at the last close",
+      "passive_delisting": "a bond whose delisting is not explained by a redemption notice or maturity (default, underlying delisting, unknown code) is converted at 0% of its last close on its last trading day (decision version); sensitivity: 50%"
+    }
+  },
+
+  "costs": {
+    "commission": "1 bp per side, minimum 1 CNY per order (decision version); sensitivity: minimum 5 CNY",
+    "stamp_duty": "none",
+    "slippage": "10 bp per side; sensitivity 30 bp"
+  },
+
+  "accounts": {
+    "SMALL": "25,000 CNY, 10-bond lots, leftover cash earns SHIBOR (decision version)",
+    "LARGE": "1,000,000 CNY fractional (reported)"
+  },
+
+  "periods": {
+    "data_start": "2017-07-01",
+    "development": "2018-01-01 to 2023-12-31",
+    "development_halves": "DEV_A 2018-01-01..2020-12-31, DEV_B 2021-01-01..2023-12-31",
+    "holdout": "2024-01-01 to 2026-09-30; guarded (authorisation file + one-time state file), run only after the user's go-ahead in chat"
+  },
+
+  "benchmarks": {
+    "EW_CB": "equal weight across all eligible bonds, weekly, same costs, LARGE account",
+    "CB_INDEX": "CSI Convertible Bond Index price index buy and hold",
+    "CSI300": "510300 total-return buy and hold"
+  },
+
+  "metrics": ["CAGR", "ann_vol", "excess Sharpe over SHIBOR", "max drawdown and dates", "calendar-year returns", "turnover", "cost drag", "trades", "mean holdings", "mean cash", "forced exits", "passive delistings held", "blocked orders", "stationary block bootstrap (block 21, 2000 resamples, seed 20261019) 90% CI of excess Sharpe difference vs EW_CB and vs CB_INDEX", "PSR(0)"],
+
+  "decision_on_development": {
+    "version": "SMALL, commission 1 bp min 1 CNY, slippage 10 bp, passive delisting at 0%",
+    "PASS_if_all": [
+      "DEV excess Sharpe > EW_CB and > CB_INDEX",
+      "excess Sharpe > EW_CB in DEV_A and in DEV_B",
+      "DEV max drawdown <= 25%",
+      "first condition still holds with 30 bp slippage and with min 5 CNY commission"
+    ],
+    "if_PASS": "ask the user for the one-time holdout run",
+    "if_FAIL": "report; holdout unused"
+  },
+
+  "declared_biases": ["no SSE outstanding-size history (amount filter used instead)", "no delisting-period prices for passive delistings (0% terminal assumption)", "no point-in-time credit rating", "delisting reason codes partly inferred", "2022 price-limit effective date unverified", "benchmark CB index is a price index"],
+  "freeze_rule": "Frozen once hashed; changes only via labelled amendments written before the affected run."
+}

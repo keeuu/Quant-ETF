@@ -1,0 +1,123 @@
+{
+  "artifact_hashes": {
+    "convergence_audit": "618308e5878378abb9668940deceb6878da78f5d50f70736583508fb1999154b",
+    "leakage_audit": "a928580da95f766944f513264ecc313773e41bd8a75da9e4c397e896e13b5ba0",
+    "stage_07_audit": "5eb97275efbd4f6a76b8acba909e1e5cc04fa439a513c07982e0cbd7e9dcddb5",
+    "train_validation_comparison": "9c667474b48a681440c14379160dec4d1ec7411c289c46d03958279bd99fd643",
+    "train_validation_rank_correlation": "2e8a0b708a8302e096c5139c400a4d5ae762c75869ec99ac0e3fe75aa0b1f2ae",
+    "train_validation_surface_correlation": "789094a71003512233e002cbc7ed5a6514ba790f788146dd6fe1d05321458ae0",
+    "validation_neighbor_stability": "0efb3fdfee08bebc1d31d745af0ba1ff20ed52531ccad0f2558be8f8ff24fd48",
+    "validation_surface_cagr": "bc96cb1e1e43a4e83924fb5cc113268bb2e0762e714f77a880f5e9c2c09324f5",
+    "validation_surface_cash": "4b2d1a1602e78018ecae4c5f41426a4a3c037b34e938d3ec8a706e894b349bc7",
+    "validation_surface_fees": "f2bd15aa6e9cf38c0dbf0f8de22cf5248ee234276bbcb19b735316f1e6ccb290",
+    "validation_surface_gross_turnover": "1ac45ceb5c7d99e891efdd39ff10576ceaaed6c8c777b0d0884b38c1d9419192",
+    "validation_surface_maxdd": "ad9305e66d059ab319d8e2e456649276f3fcc6d2aa62bf71202a4e0029a566f2",
+    "validation_surface_sharpe": "849df1a07433f840404c71b31c64b21d703bd7c21e5c9f5300a0a508c2d40d6a",
+    "validation_surface_turnover": "fd539fc45802cfb5c36181a932bc2cf3b4388c548ddeb62574c40d25cdd816be",
+    "validation_surface_vol": "7955bd0938fdd0b84ee957f208115891bb360f44d602d762dfa9c63d5bb061ea",
+    "validation_trial_ledger": "db869e438ca72666a7d1c2e18314ab12ac8095fdbed378f6f5da7a09d973c882",
+    "walkforward_maxdd_matrix": "8f57660dee00550958968ca50fd45600d343a7f8f4a55881d1c9c3e494d8c84f",
+    "walkforward_metrics": "551404ed3beb68f6c8d33066cd2bef62f3c7c22974e97bf96b589797ecfa7422",
+    "walkforward_return_matrix": "dd38719268bc3ec69cc3e247b147a2c94121100f815e7f821dcc903a3164eaf4",
+    "walkforward_sharpe_matrix": "97c83a3b2f062e73a2b3d86d7304fcf0f4534cdd9eabdec51ab6a712e8167c46",
+    "walkforward_summary": "5098c603f09d8bc5660418439cec2d1c009743df4cde7ae72c6720fbda0bfcbe",
+    "walkforward_turnover_matrix": "db4ede07a768db49a73d990c492287f07706af905312e4799e2f500de1a9e8d8"
+  },
+  "base_checkpoint": {
+    "commit": "cac6d91ae3f1758b2bba7758ba5a7ca73c63ee30",
+    "tag": "research-v2-stage6-ready"
+  },
+  "correlation_results": {
+    "rank_correlation": {
+      "CAGR": {
+        "spearman_rho": -0.2333333333333333
+      },
+      "MaxDD": {
+        "spearman_rho": -0.34050261230349943
+      },
+      "Sharpe": {
+        "spearman_rho": -0.39999999999999997
+      },
+      "Turnover": {
+        "spearman_rho": 0.26666666666666666
+      }
+    },
+    "surface_correlation": {
+      "CAGR": {
+        "pearson_r": -0.03446429787026731,
+        "spearman_rho": -0.2333333333333333
+      },
+      "MaxDD": {
+        "pearson_r": -0.1540222791481708,
+        "spearman_rho": -0.34050261230349943
+      },
+      "Sharpe": {
+        "pearson_r": -0.23062793762606226,
+        "spearman_rho": -0.39999999999999997
+      },
+      "Turnover": {
+        "pearson_r": 0.4085470071624943,
+        "spearman_rho": 0.26666666666666666
+      }
+    }
+  },
+  "dataset_sha256": "65aa99046a92ae9b5fd80155cea26065d80ebcc78a740883452d2106e4000aa3",
+  "mean_cash_reconciliation": {
+    "description": "Mean Cash dynamically re-derived from daily NAV/cash paths and persisted to validation_trial_ledger.csv and validation_surface_cash.csv",
+    "status": "ARTIFACT_CORRECTION_REQUIRED"
+  },
+  "model_selection": "NONE",
+  "name": "Validation, Yearly Walk-Forward, Convergence & Leakage Audit",
+  "partition_gates": {
+    "prospective_oos": "PENDING_DATA",
+    "retrospective_holdout": "NOT_ACCESSED",
+    "validation": "ACCESSED_AS_AUTHORIZED"
+  },
+  "production_state_invariance": {
+    "app_log_sha256": "015a85822e8d7951034d86aad70188f76d463e7665524964c042a87a126c3393",
+    "rebalance_state_sha256": "59a9e800d56c6bbb8d486033d33aa5a10bc868115643982501154b0c79caacd4",
+    "status": "PASS"
+  },
+  "protocol_sha256": "a35fe1e50f90b537bd543e9d41a78eff3d9ae9991c362adc603f42432a23e9fb",
+  "pytest_summary": {
+    "command": ".venv/bin/python -m pytest tests/ tests_v2/",
+    "failed": 0,
+    "passed": 179,
+    "skipped": 0,
+    "status": "PASS",
+    "total": 179,
+    "xfailed": 0
+  },
+  "receipt_sha256": "86c6a6db69f3f1f7e3f8e0cbdc39e27ceb620d914103988004d3b31c8ebc5cc2",
+  "schema_version": 1,
+  "stage": 7,
+  "trial_accounting": {
+    "post_hoc_model_definitions": 0,
+    "primary_model_definitions": 9,
+    "validation_evaluations": 9
+  },
+  "validation_partition": {
+    "carry_in_count": 1,
+    "end": "2020-12-31",
+    "executed_count": 261,
+    "pending_count": 1,
+    "start": "2016-01-01",
+    "terminal_pending_decision": "2020-12-31"
+  },
+  "verdict": "STAGE_7_PASS",
+  "walkforward": {
+    "fold_count": 10,
+    "folds": [
+      "WF_2011",
+      "WF_2012",
+      "WF_2013",
+      "WF_2014",
+      "WF_2015",
+      "WF_2016",
+      "WF_2017",
+      "WF_2018",
+      "WF_2019",
+      "WF_2020"
+    ]
+  }
+}

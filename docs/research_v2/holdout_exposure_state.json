@@ -1,0 +1,7 @@
+{
+  "state": "COMPLETED_EXPOSED",
+  "retrospective_holdout_performance_accessed": true,
+  "successful_stage9_runs": 1,
+  "failed_unexposed_runs": 1,
+  "failed_exposed_runs": 0
+}

@@ -1,0 +1,14 @@
+{
+ "128114": {
+  "type": "passive",
+  "evidence": "cninfo window shows no redemption or maturity-payment announcement; 2023-08 bondholder meetings, 2023-11-30 rating terminated, conversion suspended; Eastmoney notice 2022-06-08 is 14 months before the last bar (stale) -> treated as default/unexplained"
+ },
+ "123029": {
+  "type": "redemption",
+  "evidence": "cninfo 2021-06-23..28: outstanding face value below 30m CNY, trading to stop (balance exhausted by conversion); not a credit event; position treated as converted to cash at last close"
+ },
+ "128012": {
+  "type": "redemption",
+  "evidence": "cninfo 2020-06..08: put (回售) notices and result; delisting follows exhausted balance, not a credit event; treated as converted to cash at last close"
+ }
+}

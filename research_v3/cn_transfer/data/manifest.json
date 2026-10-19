@@ -1,0 +1,128 @@
+{
+  "akshare_version": "1.19.1",
+  "amendment1_verification": "Tencent (ak.stock_zh_a_hist_tx, unadjusted) windows around the Sina-missing sessions, fetched during amendment-1 verification; Eastmoney unreachable",
+  "distribution_events": {
+    "159915": {
+      "dividend_points": 0,
+      "share_factor_points": 0
+    },
+    "510050": {
+      "dividend_points": 18,
+      "share_factor_points": 18
+    },
+    "510300": {
+      "dividend_points": 14,
+      "share_factor_points": 14
+    },
+    "510500": {
+      "dividend_points": 7,
+      "share_factor_points": 7
+    },
+    "511010": {
+      "dividend_points": 7,
+      "share_factor_points": 7
+    },
+    "518880": {
+      "dividend_points": 0,
+      "share_factor_points": 0
+    }
+  },
+  "download_date": "2026-10-18",
+  "download_timestamp_utc": "2026-10-18T19:23:46.269732+00:00",
+  "files": {
+    "159915.csv": {
+      "rows": 3603,
+      "sha256": "a9c03e0a33a0c663283c91bcc6e610a14019ad18ac531a432a5951abc114655d"
+    },
+    "159915_sina_hfqjs_raw.json": {
+      "rows": null,
+      "sha256": "7f92708019835e23b4856d693e5ecd0815d79637c6b9194cd23edcc5ba198e8e"
+    },
+    "159915_sina_raw.csv": {
+      "rows": 3603,
+      "sha256": "e530572ff08cb5c7b48c2bf8394b58cd4dfd4290ef2f1e30b91a486a4590629b"
+    },
+    "510050.csv": {
+      "rows": 5260,
+      "sha256": "14ab768785cfe5570b48b0af6267e96348e05b3e3e3d5364c0de9138d1379cdb"
+    },
+    "510050_sina_hfqjs_raw.json": {
+      "rows": null,
+      "sha256": "2d0cbc04de03ded299f721e1a6caee5ebd05ff3464cad2c0950605fbbb776e67"
+    },
+    "510050_sina_raw.csv": {
+      "rows": 5260,
+      "sha256": "dfc9c0e9adf8b168cea9387b0c7cb0133a25cf568b40042777415a8521f2f903"
+    },
+    "510300.csv": {
+      "rows": 3495,
+      "sha256": "45dc66408204750bc4b04b2c8d0a5250faa8dd13e46e64ab5bccc30053ef52a6"
+    },
+    "510300_sina_hfqjs_raw.json": {
+      "rows": null,
+      "sha256": "a6b5081db14000155c5c507e6890a186c22b4e6e77a5e1589710fc9e23988155"
+    },
+    "510300_sina_raw.csv": {
+      "rows": 3495,
+      "sha256": "a41b54018214534de806d2d8fb7b28313ebf320f773be835c8f4ba55ae884d0c"
+    },
+    "510500.csv": {
+      "rows": 3298,
+      "sha256": "c5eda82c0208132286f754cdb58f151d1ff5e251ac109cb73d05d392dfc4a9a2"
+    },
+    "510500_sina_hfqjs_raw.json": {
+      "rows": null,
+      "sha256": "e0fd24a36ef170bc71fce96cc425cde8c0b8098517721cb686ea9d3d5b5c7278"
+    },
+    "510500_sina_raw.csv": {
+      "rows": 3298,
+      "sha256": "2d4fd1fbc56fa81070a5338a6f5de1c64ad7425509a23a2cd4a50959af9df57e"
+    },
+    "511010.csv": {
+      "rows": 3285,
+      "sha256": "5097231b48f06ccc55fda8ae244431bd67f37fb6c23cd7cfd41c706f1102bc66"
+    },
+    "511010_sina_hfqjs_raw.json": {
+      "rows": null,
+      "sha256": "a8aaf07170f06512ccafacedf2a657c2966ce737a58e78ad61eecec32f34b079"
+    },
+    "511010_sina_raw.csv": {
+      "rows": 3285,
+      "sha256": "c9c2dcd50ea99cbc1c09098095523173a0a040f1db0e53c82924d44d457d7440"
+    },
+    "518880.csv": {
+      "rows": 3212,
+      "sha256": "dd530cfe8b9c9bafe78849ba078f64212cc36d0c3c267774b8942a23ca9a11ed"
+    },
+    "518880_sina_hfqjs_raw.json": {
+      "rows": null,
+      "sha256": "ac4805afa0639fb78ddc1433baf0f6c4c8ac2c06b588aeb0cc212d70fb27ea52"
+    },
+    "518880_sina_raw.csv": {
+      "rows": 3212,
+      "sha256": "9e72759714fd6fda92fd0d0ef9e715a9a6b84a5f7110cf8d5af552129b5a0535"
+    },
+    "shibor_3m.csv": {
+      "rows": 5000,
+      "sha256": "44fcf34faed3550264ffc0c37a06404e04bfb33006471fa66fcf650b9b1867e9"
+    },
+    "shibor_all_crosscheck_raw.csv": {
+      "rows": 2385,
+      "sha256": "8cb1010d7d90bb63821b5a06adba2cd5ea6daff550747996e0b27b077ab186ef"
+    },
+    "tencent_verification_raw.csv": {
+      "rows": 12,
+      "sha256": "78396344fc3128531ea8c82100a04e47a931b18d487d302311973568d19843f0"
+    }
+  },
+  "price_note": "open/high/low/close = unadjusted exchange prices; adj_open/adj_close = self-built total-return adjusted",
+  "source": "akshare fund_etf_hist_sina (unadjusted) + Sina hfq.js distributions (self-built total-return adjustment); rate_interbank Shibor\u4eba\u6c11\u5e01 3\u6708",
+  "symbols": [
+    "510300",
+    "510050",
+    "510500",
+    "159915",
+    "518880",
+    "511010"
+  ]
+}

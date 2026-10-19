@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "stage": 7,
+  "verdict": "STAGE_7_AUDIT_PASS",
+  "validation_boundary": {
+    "initial_wealth": 100000.0,
+    "initial_position": "CASH",
+    "carry_in": 1,
+    "normal_executed": 260,
+    "total_executed": 261,
+    "pending_out": 1,
+    "terminal_pending_decision": "2020-12-31"
+  },
+  "mean_cash_reconciliation": {
+    "status": "ARTIFACT_CORRECTION_REQUIRED",
+    "details": "Initial Stage 7 report displayed Mean Cash = 0.000000 due to omitted mean_cash_weight column in validation_trial_ledger.csv. Values were dynamically re-derived from daily NAV/cash paths and persisted to validation_trial_ledger.csv and validation_surface_cash.csv.",
+    "all_cash_events": {
+      "T36_models": {
+        "models": ["W_M6_T36", "W_M9_T36", "W_M12_T36"],
+        "sessions": ["2018-11-05", "2018-11-06", "2018-11-07", "2018-11-08", "2018-11-09"],
+        "session_count": 5,
+        "mean_cash_weight": 0.003971405877680699,
+        "max_cash_weight": 1.0
+      },
+      "T40_models": {
+        "models": ["W_M6_T40", "W_M9_T40", "W_M12_T40"],
+        "sessions": ["2018-11-05", "2018-11-06", "2018-11-07", "2018-11-08", "2018-11-09"],
+        "session_count": 5,
+        "mean_cash_weight": 0.003971405877680699,
+        "max_cash_weight": 1.0
+      },
+      "T44_models": {
+        "models": ["W_M6_T44", "W_M9_T44", "W_M12_T44"],
+        "sessions": [
+          "2018-10-29", "2018-10-30", "2018-10-31", "2018-11-01", "2018-11-02",
+          "2018-11-05", "2018-11-06", "2018-11-07", "2018-11-08", "2018-11-09"
+        ],
+        "session_count": 10,
+        "mean_cash_weight": 0.007942811755361398,
+        "max_cash_weight": 1.0
+      }
+    }
+  },
+  "rank_correlation": {
+    "cagr": -0.2333333333333333,
+    "sharpe": -0.39999999999999997,
+    "maxdd": -0.34050261230349943,
+    "turnover": 0.26666666666666666,
+    "tie_handling": "average_rank"
+  },
+  "surface_correlation": {
+    "CAGR": {
+      "pearson_r": -0.03446429787026731,
+      "spearman_rho": -0.2333333333333333
+    },
+    "Sharpe": {
+      "pearson_r": -0.23062793762606226,
+      "spearman_rho": -0.39999999999999997
+    },
+    "MaxDD": {
+      "pearson_r": -0.1540222791481708,
+      "spearman_rho": -0.34050261230349943
+    },
+    "Turnover": {
+      "pearson_r": 0.4085470071624943,
+      "spearman_rho": 0.26666666666666666
+    }
+  },
+  "neighbor_stability": {
+    "unique_edges": 12,
+    "key_edge": {
+      "edge": "W_M6_T36 <-> W_M9_T36",
+      "train_delta_cagr": 0.0362797968798394,
+      "validation_delta_cagr": 0.005848913561403493
+    }
+  },
+  "walkforward": {
+    "folds": 10,
+    "fold_ids": [
+      "WF_2011", "WF_2012", "WF_2013", "WF_2014", "WF_2015",
+      "WF_2016", "WF_2017", "WF_2018", "WF_2019", "WF_2020"
+    ],
+    "independent_reset": "PASS",
+    "spot_checks": "PASS"
+  },
+  "convergence": {
+    "prefix_invariance": "PASS"
+  },
+  "leakage": {
+    "future_poisoning": "PASS",
+    "execution_open_isolation": "PASS",
+    "same_day_ordering": "PASS"
+  },
+  "holdout": {
+    "firewall": "PASS",
+    "strategy_performance": "NOT_ACCESSED"
+  },
+  "model_selection": "NONE",
+  "interpretation": "within-period local smoothness does not imply cross-period rank stability"
+}

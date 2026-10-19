@@ -1,0 +1,58 @@
+{
+  "protocol": "research_v3 sector_mom HYBRID: frozen CAP_DEF_M allocation layer with sector-momentum equity selection; one-time holdout test",
+  "written_at": "2026-10-19",
+  "written_before_any_hybrid_run_and_before_any_sector_etf_holdout_data_was_read": true,
+
+  "question": "Inside the frozen CAP_DEF_M allocation framework on the CN universe, does replacing the broad equity ETF(s) it selects with 12-1 sector momentum ETFs improve risk-adjusted return in the holdout period?",
+
+  "exposure_disclosure": {
+    "holdout_window": "2024-10-01 to 2026-09-30",
+    "already_seen_for_this_window": "Returns of CAP_DEF_M on the 6-ETF CN universe, CSI300 (510300), CN_60_40, gold (518880) and bonds (511010) were reported in research_v3/cn_transfer (commit 2078682). The allocation layer's behaviour in the holdout is therefore NOT unseen.",
+    "not_yet_seen": "Any sector ETF return or sector-momentum result after 2024-09-30 (guarded by research_v3/sector_mom/guard.py).",
+    "consequence": "The test is clean only for the incremental question (HYBRID vs CAP_DEF_M_CN). Comparisons with CSI300_BH and CN_60_40 are reported but are not clean out-of-sample evidence."
+  },
+
+  "components_all_previously_fixed": {
+    "allocation_layer": "Frozen CAP_DEF_M rule exactly as implemented in research_v3/cn_transfer (6-ETF universe, groups, momentum 12m, trend 40w, top 3, cap one per group, DEF slots with 511010 vs SHIBOR cash, matched-monthly schedule, amendment-1 suspension handling).",
+    "sector_selection": "S5_IND_MOM_12_1 score from research_v3/sector_mom amendment 1 (adjusted close 21 sessions before signal / 252 sessions before signal - 1), eligibility with at least 253 sessions of bars, 60-session mean turnover >= 30,000,000 CNY, bar on the signal date, dedup by tracked index keeping the highest-turnover ETF; universe = the classified sector list (sha256 64bc28ed7a49...eaaf)."
+  },
+
+  "hybrid_rule": {
+    "timing": "At each CAP_DEF_M monthly signal session (the cn_transfer matched-monthly schedule), compute the CAP_DEF_M target weights. Trades execute at that schedule's execution session open.",
+    "equity_weight": "E = total CAP_DEF_M weight on the two equity groups (CN_LARGE {510300, 510050} and CN_MIDSMALL_GROWTH {510500, 159915}); E is 0, 1/3 or 2/3.",
+    "replacement": "If E > 0: replace those equity holdings by the top 5 eligible sector ETFs by S5 score computed at the same signal session close, each with weight E/5. If fewer than 5 are eligible, split E equally among those available; if none is eligible, keep CAP_DEF_M's own equity ETF(s).",
+    "non_equity": "Gold, bond (incl. DEF slots) and cash weights are exactly CAP_DEF_M's.",
+    "no_other_logic": "No stop-loss, no trend filter on sectors, no extra parameters."
+  },
+
+  "execution_model": "As in sector_mom protocol: XSHG calendar, T+1, limit-blocked orders retry at each following open (10% limit, 20% for ETFs tracking ChiNext/STAR-based indices), SHIBOR 3M cash on uninvested cash, suspended (missing-bar) symbols valued at last close and rebalances postponed per cn_transfer amendment 1. Fractional shares, 1,000,000 CNY.",
+  "costs": {"primary": "2.5 bp commission + 10 bp slippage per side, applied to ALL strategies in this protocol", "sensitivity": "2.5 + 20 bp"},
+
+  "strategies": {
+    "HYBRID": "as above",
+    "CAP_DEF_M_CN": "frozen rule alone, run in this same engine with the same costs (the comparator for the primary question)",
+    "CSI300_BH": "510300 buy and hold",
+    "CN_60_40": "60% 510300 / 40% 511010, monthly on the same execution sessions",
+    "EW_SECTOR": "as in sector_mom (monthly equal weight across eligible deduplicated sector ETFs)"
+  },
+
+  "phases": {
+    "phase_1_dev_sanity": "Run all strategies on DEV (2020-07-13..2024-09-30) only, to check the code. No decision depends on it; no parameter exists to tune. The guard stays active. Report it.",
+    "phase_2_holdout_once": "Only after the user's explicit go-ahead in chat. Run continuously from DEV start through 2026-09-30 and score the HOLDOUT slice (first session >= 2024-10-01 .. 2026-09-30). Implemented behind an explicit authorisation file written by the main session after the user's go-ahead, and a one-time state file recording that the holdout has been run; a second run must be refused."
+  },
+
+  "success_criteria_holdout_primary_cost": {
+    "primary": "HYBRID excess Sharpe > CAP_DEF_M_CN excess Sharpe (point estimate) AND HYBRID max drawdown <= CAP_DEF_M_CN max drawdown + 5.0 pp",
+    "statistical": "Report the stationary block bootstrap (block 21, 2000 resamples, seed 20261019) 90% CI of the excess Sharpe difference HYBRID - CAP_DEF_M_CN; if it includes 0 the result must be described as not statistically distinguishable.",
+    "robustness": "Primary criterion also evaluated under the sensitivity cost; report whether it holds.",
+    "outcomes": {
+      "SUPPORTED": "primary criterion met under both costs",
+      "WEAK": "primary criterion met under primary cost only",
+      "NOT_SUPPORTED": "primary criterion not met under primary cost"
+    },
+    "secondary_reported_only": "HYBRID vs CSI300_BH, CN_60_40, EW_SECTOR (not clean, see exposure_disclosure)"
+  },
+
+  "metrics": ["CAGR", "ann_vol", "excess Sharpe over SHIBOR", "max drawdown and dates", "calendar-year returns", "annualised one-way turnover", "cost drag", "mean equity / gold / bond / cash weights", "number of trades", "limit-blocked orders", "bootstrap CI as above"],
+  "freeze_rule": "Frozen once hashed. No changes after phase 1 output is seen except bug fixes that do not change any rule; any such fix is listed with its diff before phase 2."
+}

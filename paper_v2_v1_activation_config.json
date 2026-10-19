@@ -1,0 +1,28 @@
+{
+  "strategy_version": "paper-v2-v1",
+  "mode": "LOCAL_SHADOW_ONLY",
+  "research_v2_source_commit": "88ed36a95f0306dc47c23142d485ccb3431e170d",
+  "research_v2_dependency_manifest_hash": "82dcb173a4a66d1f3b720586de6a84bb847a08c6f58bd0b09e83dac169e37aea",
+  "_note": "research_v2_dependency_manifest_hash = sha256 of the raw bytes of paper_v2_state/research_v2_dependency_manifest.json (file added in commit 5892f15). The earlier value ccb0bfe3... matched no hash of that file and no code defines or verifies it; corrected 2026-10-19. Manifest blob SHAs verified equal to research_v2/{calendar,schedule,signals,ledger,contracts}.py at commit 88ed36a and at the working tree.",
+  "paper_v2_implementation_commit": "4c64f0f197ecd750d085383221c42a4b169142a7",
+  "model_package": 18,
+  "universe": [
+    "SPY",
+    "QQQ",
+    "IWM",
+    "EFA",
+    "EEM",
+    "GLD",
+    "TLT",
+    "IEF"
+  ],
+  "cost_bps": 5,
+  "initial_cash_per_portfolio": 100000,
+  "weekly_timing": "current complete week close -> signal -> next valid XNYS session open",
+  "matched_monthly_timing": "month-end decision -> sample latest completed Weekly signal available as of month-end -> next month first valid XNYS open",
+  "calendar_identity": "XNYS",
+  "prospective_target_sessions": 504,
+  "prospective_target_months": 24,
+  "activation_timestamp": "PENDING",
+  "activation_session": "PENDING"
+}

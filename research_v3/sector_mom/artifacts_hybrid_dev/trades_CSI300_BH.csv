@@ -1,0 +1,2 @@
+date,ticker,side,shares,price,notional,fee,reason,signal_date
+2020-08-03,510300,BUY,184639.5317492191,5.416854609456343,1000165.4986436183,1250.2068733045228,weekly_rebalance,2020-07-31

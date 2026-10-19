@@ -1,0 +1,142 @@
+{
+  "candidate": null,
+  "qualifiers": [],
+  "detail": {
+    "S1_WEEKLY_MOM": {
+      "primary": {
+        "xs_DEV": -0.47411269758877894,
+        "xs_DEV_EW": -0.2689058805129135,
+        "xs_DEV_CSI": -0.10064500677336978,
+        "mdd_DEV": 0.6002373549323452,
+        "mdd_DEV_CSI": 0.43095915844092203,
+        "xs_A": -0.47674604921674396,
+        "xs_A_EW": -0.19116056012867452,
+        "xs_B": -0.4712738326114279,
+        "xs_B_EW": -0.35123721966872595,
+        "C1_xs_gt_EW_and_CSI": false,
+        "C2_mdd_lt_CSI": false,
+        "C3_xs_gt_EW_in_A_and_B": false,
+        "all": false
+      },
+      "sens": {
+        "xs_DEV": -0.6680469829503606,
+        "xs_DEV_EW": -0.27901935859435145,
+        "xs_DEV_CSI": -0.10195368785874191,
+        "mdd_DEV": 0.6758581405323887,
+        "mdd_DEV_CSI": 0.43095915844092203,
+        "xs_A": -0.6560785920328515,
+        "xs_A_EW": -0.2043883976867432,
+        "xs_B": -0.6808195494383035,
+        "xs_B_EW": -0.3579900945500663,
+        "C1_xs_gt_EW_and_CSI": false,
+        "C2_mdd_lt_CSI": false,
+        "C3_xs_gt_EW_in_A_and_B": false,
+        "all": false
+      },
+      "qualifies": false,
+      "min_xs_A_B_primary": -0.47674604921674396
+    },
+    "S2_MA10_EXIT_WEEKLY_REENTRY": {
+      "primary": {
+        "xs_DEV": -0.9587392311167708,
+        "xs_DEV_EW": -0.2689058805129135,
+        "xs_DEV_CSI": -0.10064500677336978,
+        "mdd_DEV": 0.6851530929089459,
+        "mdd_DEV_CSI": 0.43095915844092203,
+        "xs_A": -1.3807994689122889,
+        "xs_A_EW": -0.19116056012867452,
+        "xs_B": -0.5109923485941095,
+        "xs_B_EW": -0.35123721966872595,
+        "C1_xs_gt_EW_and_CSI": false,
+        "C2_mdd_lt_CSI": false,
+        "C3_xs_gt_EW_in_A_and_B": false,
+        "all": false
+      },
+      "sens": {
+        "xs_DEV": -1.262562612306979,
+        "xs_DEV_EW": -0.27901935859435145,
+        "xs_DEV_CSI": -0.10195368785874191,
+        "mdd_DEV": 0.7561441565031846,
+        "mdd_DEV_CSI": 0.43095915844092203,
+        "xs_A": -1.6706438018526044,
+        "xs_A_EW": -0.2043883976867432,
+        "xs_B": -0.8301935125510488,
+        "xs_B_EW": -0.3579900945500663,
+        "C1_xs_gt_EW_and_CSI": false,
+        "C2_mdd_lt_CSI": false,
+        "C3_xs_gt_EW_in_A_and_B": false,
+        "all": false
+      },
+      "qualifies": false,
+      "min_xs_A_B_primary": -1.3807994689122889
+    },
+    "S3_MA5_EXIT_WEEKLY_REENTRY": {
+      "primary": {
+        "xs_DEV": -1.232324261168668,
+        "xs_DEV_EW": -0.2689058805129135,
+        "xs_DEV_CSI": -0.10064500677336978,
+        "mdd_DEV": 0.7010588715857569,
+        "mdd_DEV_CSI": 0.43095915844092203,
+        "xs_A": -1.969626532056809,
+        "xs_A_EW": -0.19116056012867452,
+        "xs_B": -0.5303406089545946,
+        "xs_B_EW": -0.35123721966872595,
+        "C1_xs_gt_EW_and_CSI": false,
+        "C2_mdd_lt_CSI": false,
+        "C3_xs_gt_EW_in_A_and_B": false,
+        "all": false
+      },
+      "sens": {
+        "xs_DEV": -1.6280453148801963,
+        "xs_DEV_EW": -0.27901935859435145,
+        "xs_DEV_CSI": -0.10195368785874191,
+        "mdd_DEV": 0.775656837009907,
+        "mdd_DEV_CSI": 0.43095915844092203,
+        "xs_A": -2.378709164703086,
+        "xs_A_EW": -0.2043883976867432,
+        "xs_B": -0.9160393604692514,
+        "xs_B_EW": -0.3579900945500663,
+        "C1_xs_gt_EW_and_CSI": false,
+        "C2_mdd_lt_CSI": false,
+        "C3_xs_gt_EW_in_A_and_B": false,
+        "all": false
+      },
+      "qualifies": false,
+      "min_xs_A_B_primary": -1.969626532056809
+    },
+    "S4_MA10_EXIT_DAILY_REENTRY": {
+      "primary": {
+        "xs_DEV": -1.1734483136148757,
+        "xs_DEV_EW": -0.2689058805129135,
+        "xs_DEV_CSI": -0.10064500677336978,
+        "mdd_DEV": 0.7526152256810312,
+        "mdd_DEV_CSI": 0.43095915844092203,
+        "xs_A": -1.4479487301663512,
+        "xs_A_EW": -0.19116056012867452,
+        "xs_B": -0.8854703783817535,
+        "xs_B_EW": -0.35123721966872595,
+        "C1_xs_gt_EW_and_CSI": false,
+        "C2_mdd_lt_CSI": false,
+        "C3_xs_gt_EW_in_A_and_B": false,
+        "all": false
+      },
+      "sens": {
+        "xs_DEV": -1.5279504044563788,
+        "xs_DEV_EW": -0.27901935859435145,
+        "xs_DEV_CSI": -0.10195368785874191,
+        "mdd_DEV": 0.8189558799126823,
+        "mdd_DEV_CSI": 0.43095915844092203,
+        "xs_A": -1.78458461902434,
+        "xs_A_EW": -0.2043883976867432,
+        "xs_B": -1.258909237795794,
+        "xs_B_EW": -0.3579900945500663,
+        "C1_xs_gt_EW_and_CSI": false,
+        "C2_mdd_lt_CSI": false,
+        "C3_xs_gt_EW_in_A_and_B": false,
+        "all": false
+      },
+      "qualifies": false,
+      "min_xs_A_B_primary": -1.4479487301663512
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "execution_implementation_commit": "a77592c2e67d37ec02bc25cd3c5aeb3b340147f7",
+  "files": {
+    "research_v2/stage9_runner.py": {
+      "path": "research_v2/stage9_runner.py",
+      "git_blob_sha": "7d157b5ee8069b7e227ce97352c3f2528484e5ee",
+      "sha256": "4ad90a8fabd30b80f82347174f78c7ca0497deceb2d1ed7660d4a582b8d88fca"
+    },
+    "research_v2/data.py": {
+      "path": "research_v2/data.py",
+      "git_blob_sha": "a3940e666825d5005dd390def901df21feebcec2",
+      "sha256": "9104ca026ae4a4356b9161fa146d84868ce9cbe116e9f2d729e5f2ec009e9d32"
+    },
+    "research_v2/contracts.py": {
+      "path": "research_v2/contracts.py",
+      "git_blob_sha": "690b74ea868077eb45b0d6a987bf90efc34950d9",
+      "sha256": "2ad55e32819ce295404ef7b46ed8e1aa91395c0fc9f2aad6a993b02c724bdaf6"
+    }
+  },
+  "manifest_sha256": "5a8868db689964786b05e6460e2dc80065d063b83166eccb5b7146ad3891543d"
+}

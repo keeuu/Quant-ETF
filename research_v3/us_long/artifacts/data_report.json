@@ -1,0 +1,49 @@
+{
+  "sessions": [
+    "1971-01-04",
+    "2005-12-30",
+    8836
+  ],
+  "score_start": "1972-03-01",
+  "score_end": "2005-12-30",
+  "first_warm_signal": "1972-02-29",
+  "first_date": {
+    "SPY": "1971-01-04",
+    "QQQ": "1971-02-05",
+    "IWM": "1971-01-04",
+    "EFA": "1990-07-02",
+    "EEM": null,
+    "GLD": "1971-01-04",
+    "TLT": "1977-02-15",
+    "IEF": "1971-01-04"
+  },
+  "fills_valuation_sessions": {
+    "SPY": 0,
+    "QQQ": 0,
+    "IWM": 0,
+    "EFA": 0,
+    "EEM": 0,
+    "GLD": 204,
+    "TLT": 83,
+    "IEF": 105
+  },
+  "weekly_signal_dates_with_no_observation": {
+    "SPY": 0,
+    "QQQ": 0,
+    "IWM": 0,
+    "EFA": 0,
+    "EEM": null,
+    "GLD": 33,
+    "TLT": 6,
+    "IEF": 6
+  },
+  "frozen_exec_on_filled_price_count": 4,
+  "n_weekly_events": 1826,
+  "n_monthly_events": 420,
+  "n_weekly_exit_events": 48,
+  "n_assets_exited": 49,
+  "protocol_sha256": {
+    "main": "e7d63499c385d24f25d8cd2ad9751d4a85b6e9c6e7498edaaca705aaf442f9b5",
+    "crash": "eacd745b37c0170d573b3e6fe1c6481ecaca224c5d51c02e65a632c396ee94ae"
+  }
+}

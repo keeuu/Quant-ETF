@@ -1,0 +1,9 @@
+.venv/
+data/
+artifacts/**
+!artifacts/
+!artifacts/*/
+!artifacts/*/phase_receipt.json
+__pycache__/
+*.py[cod]
+*.tmp

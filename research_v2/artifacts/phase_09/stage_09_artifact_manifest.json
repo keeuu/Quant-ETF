@@ -1,0 +1,265 @@
+{
+  "CORE_EXECUTION_ARTIFACTS": {
+    "M_M9_T44_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M9_T44_trades.csv",
+      "size": 33415,
+      "sha256": "582d6a2ee9e46a274c8be9a1d3bc17a19146ad399bd3851e406607a182d78741",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M6_T36_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M6_T36_nav.csv",
+      "size": 102727,
+      "sha256": "64eeb55a87757613b3342ecbf71ccee045911f5bd8c94e084cabcfcd847785e1",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M6_T44_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M6_T44_nav.csv",
+      "size": 102688,
+      "sha256": "7a1d8931c0a625c3531841487423c53c5dbab5c380c4917711281c73d5773596",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M6_T40_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M6_T40_nav.csv",
+      "size": 99572,
+      "sha256": "2a6716ba390afd968ad184a6615b42c6272ee104348433e56c1251b92ed23bb7",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M6_T44_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M6_T44_trades.csv",
+      "size": 33507,
+      "sha256": "2cbb0cd018d532bbdf8da6af3a06c5ec34e1653235c854a4ff35b4f1dd5d6ccc",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M6_T44_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M6_T44_trades.csv",
+      "size": 134433,
+      "sha256": "2705451198ac8a5c0fb72afc6601d2b2d0b639b57f6016115e069ca6b2a60f98",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M9_T44_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M9_T44_trades.csv",
+      "size": 133608,
+      "sha256": "8c6e017dc6c059a6f2ccdf16431da46b1ab0f1be9d163fb66c7ca4639b41e5bf",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M12_T40_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M12_T40_trades.csv",
+      "size": 33168,
+      "sha256": "4503d40317c2f14fb279f9905da7dc60a2d22d885d3e449964936ee0f83cd2a1",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "holdout_trial_ledger.csv": {
+      "path": "research_v2/artifacts/phase_09/holdout_trial_ledger.csv",
+      "size": 6044,
+      "sha256": "a1a51ee6226140436a751dde0f0ef7663637ecfb911aefef33cb3f8f773cd731",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M12_T40_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M12_T40_trades.csv",
+      "size": 132935,
+      "sha256": "1c4abf4723bd1683a4676a14c2b95d134d8f939720fc3444ed4c1d37978da9a1",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M9_T40_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M9_T40_nav.csv",
+      "size": 99778,
+      "sha256": "7fa05c395b81c8a2d7d2873b79f7c5fd58e2ba0e1fa58fdea2adbb29f1686768",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M12_T40_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M12_T40_nav.csv",
+      "size": 102746,
+      "sha256": "c20ba1de19deb56c15e3f64899594e40b14ea73cf3891f1af7af0113236fc82f",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M9_T36_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M9_T36_nav.csv",
+      "size": 102556,
+      "sha256": "d99c003a27c6ea1c8c75073b17f438cb67d5fe9986c4960cf6e1e34f1a9073fa",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M9_T44_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M9_T44_nav.csv",
+      "size": 102669,
+      "sha256": "57d4c3c4e48477857484579a12e5e2e8e82a331e84f7cd0611a49b6503dc14c7",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M12_T40_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M12_T40_nav.csv",
+      "size": 99762,
+      "sha256": "a532f573be1aaa28fca6f509fbe79980dfebe975e5b3ca687f68360ee5bf0334",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M12_T36_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M12_T36_trades.csv",
+      "size": 32903,
+      "sha256": "cd1300867656a38055bd53785ee75f508f5dea35985454c04b2e483e7330d7fa",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M12_T36_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M12_T36_trades.csv",
+      "size": 133277,
+      "sha256": "2b6d27a3a4a482254f1c4771f53c85531ecb14a316593562a9479effb56761a3",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M12_T44_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M12_T44_nav.csv",
+      "size": 102790,
+      "sha256": "bd8de09e585a72d410e404c93f9c08720b45f9bfc0a59b3bd2de037d19304c56",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M9_T44_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M9_T44_nav.csv",
+      "size": 99734,
+      "sha256": "572a7978f79ad17e459178d832eefe000d750c9f6b7742d138e65da09e61292d",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M6_T40_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M6_T40_trades.csv",
+      "size": 33862,
+      "sha256": "52905e6e217c16fd3d5eaaa337b570b803bec7cdaaf3c8e91833e5e854a50d33",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M9_T36_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M9_T36_nav.csv",
+      "size": 99692,
+      "sha256": "02e27c96b95a933c3cf939a1a688623dc845f69c8adfd42e4e45e475b6af2ad0",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M12_T36_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M12_T36_nav.csv",
+      "size": 102585,
+      "sha256": "dcd903df66e0b2849a3517349fb3b4aa5afbccef3961ff6271f0f38726b336f5",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M9_T36_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M9_T36_trades.csv",
+      "size": 134599,
+      "sha256": "5f40c6bd2c06a71b89546d21c2976985f6b437ac6d2b7b19d8ed026053f70357",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M12_T36_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M12_T36_nav.csv",
+      "size": 99872,
+      "sha256": "b4b91383be5b30e72cf7063aa0c8fa6700c0c5864e0148ec6be6732d3aaf4c3b",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M6_T36_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M6_T36_trades.csv",
+      "size": 134837,
+      "sha256": "31592254afdc53ddb9d877a5e370a2de1dd9f67839b5c964ede9e16b088f3ef9",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M12_T44_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M12_T44_nav.csv",
+      "size": 99757,
+      "sha256": "b5a3a283395fa5babe33d3a86e3ac0d37e5ccf9693f0c230cf85dcd6e70b6b8d",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M9_T40_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M9_T40_trades.csv",
+      "size": 33557,
+      "sha256": "a5061c4b15ac6e5944266337f2c52015c3894d163d6ef98458fe452a13a0d548",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M9_T40_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M9_T40_nav.csv",
+      "size": 102585,
+      "sha256": "72828a8a1843bce3be426fcb22b1c128d3201349eacaa9b31835244ef0aa4029",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M9_T40_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M9_T40_trades.csv",
+      "size": 134427,
+      "sha256": "398badc3c1b2cec6e1d13bf25596726c21e32dbb2867d63b72aebdc3c73b217e",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M6_T36_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M6_T36_trades.csv",
+      "size": 33399,
+      "sha256": "66e83546356b2401c5031dc8d90ab2b16cb9449e6760f620ce2dbac0b1467175",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M9_T36_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M9_T36_trades.csv",
+      "size": 33334,
+      "sha256": "32fb1acbdc76f12a0759e7026f1bfaf97406ef1bf8b80db4265566cfe535d1b1",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M6_T40_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M6_T40_trades.csv",
+      "size": 135323,
+      "sha256": "11b4630a0961f301db0aa1c0c0edecc0a7f66ce4feabc2732fdea271600e3df7",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M6_T40_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M6_T40_nav.csv",
+      "size": 102603,
+      "sha256": "521c9ad3e21dec3f19528bc74ac6daf60cd7df87123f7e1fcf0712c81c87d593",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M12_T44_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M12_T44_trades.csv",
+      "size": 33076,
+      "sha256": "2a5847135dea0edf54a0bae43d03d00f3c952553590872e86c8176116c05221e",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "W_M12_T44_trades.csv": {
+      "path": "research_v2/artifacts/phase_09/W_M12_T44_trades.csv",
+      "size": 132399,
+      "sha256": "9d9dc3e3022fc80a29592cef72a9777fab5c8db89f8e99dee3550eaab12d807e",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M6_T44_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M6_T44_nav.csv",
+      "size": 99585,
+      "sha256": "8feaa2be4d062bd4e28864cc1b9c63191894f06d5c4bff911f9ace077692cfc8",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    },
+    "M_M6_T36_nav.csv": {
+      "path": "research_v2/artifacts/phase_09/M_M6_T36_nav.csv",
+      "size": 99780,
+      "sha256": "7f8cd986d0fe7c6efe3c5be5fcbfe7207ba93d8736b89e1f1f38d0abb3f8bdbb",
+      "classification": "CORE_EXECUTION_ARTIFACT"
+    }
+  },
+  "DERIVED_POST_EXPOSURE_REPORTS": {
+    "parameter_surfaces.json": {
+      "path": "research_v2/artifacts/phase_09/parameter_surfaces.json",
+      "size": 1423,
+      "sha256": "9d6addf212f14854b4363fb98d832db370e56c4a80a071ecc39d27cf26aa8337",
+      "classification": "DERIVED_POST_EXPOSURE_REPORT"
+    },
+    "stage_09_receipt.json": {
+      "path": "research_v2/artifacts/phase_09/stage_09_receipt.json",
+      "size": 974,
+      "sha256": "825598d71249a36fa381ac2695ad0fc3025a2422a19d3ce1ddc656ec0a8f61be",
+      "classification": "DERIVED_POST_EXPOSURE_REPORT"
+    },
+    "cross_period_comparison.csv": {
+      "path": "research_v2/artifacts/phase_09/cross_period_comparison.csv",
+      "size": 2288,
+      "sha256": "db01f5c4380d0505ed02d4e389df16963e57716f6d8a1b4b0ea3660ca2ebb536",
+      "classification": "DERIVED_POST_EXPOSURE_REPORT"
+    },
+    "final_metrics.csv": {
+      "path": "research_v2/artifacts/phase_09/final_metrics.csv",
+      "size": 5924,
+      "sha256": "de3d5223f1f57d05881227dd69aaf5c62919fe79ac2cf6b696b631eb483631b5",
+      "classification": "DERIVED_POST_EXPOSURE_REPORT"
+    },
+    "paired_cadence_deltas.csv": {
+      "path": "research_v2/artifacts/phase_09/paired_cadence_deltas.csv",
+      "size": 1375,
+      "sha256": "50f04228120cafafd2a854bcdfe2325c1d2224b5888bf6d34f7a0630ffd711ca",
+      "classification": "DERIVED_POST_EXPOSURE_REPORT"
+    },
+    "rank_preservation.json": {
+      "path": "research_v2/artifacts/phase_09/rank_preservation.json",
+      "size": 508,
+      "sha256": "05d69ef0c8c0dce59dce299d44b923e9f275077ca6c342b33e34ef9bf4477de4",
+      "classification": "DERIVED_POST_EXPOSURE_REPORT"
+    }
+  },
+  "manifest_sha256": "b2e3833f0b96cd873f314865b289bfbdc6486778681cb431dbdaf5c1ac89dafc"
+}

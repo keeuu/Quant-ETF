@@ -1,0 +1,16 @@
+{
+  "amendment": 1,
+  "amends": "research_v3/sector_mom/protocol_sector_mom.json (sha256 d4e6eb305ec7b8cd878772b2ed58368b0d69a30a5c33be0f84a55bc70b91e887)",
+  "written_at": "2026-10-19",
+  "context": "Written AFTER the development results for S1-S4 were seen (all lost money; no candidate). Adds the standard academic momentum specifications as new strategies. The holdout (2024-10-01..2026-09-30) remains unopened. Trial count for PSR/DSR becomes N = 7.",
+  "unchanged": "Universe, classification, eligibility (except the listing-age requirement below), dedup, data, periods, holdout guard, execution model (T+1, limits, costs 2.5+10 bp primary and 2.5+20 bp sensitivity, SHIBOR cash), benchmarks, metrics, and the candidate selection conditions.",
+  "new_strategies": {
+    "S5_IND_MOM_12_1": "Monthly. Signal at the close of the last session of each month; trades at the next session open. Score = adjusted close 21 sessions before the signal / adjusted close 252 sessions before the signal - 1 (12-1 month momentum, skipping the most recent month). Select top 5 eligible ETFs by score, equal weight 1/5 each (unfilled slots stay cash). No trend filter, no stop-loss.",
+    "S6_IND_MOM_6_1": "Same as S5 with 126 instead of 252 sessions (6-1 month momentum).",
+    "S7_DUAL_MOM_12_1": "S5 plus an absolute-momentum filter: a selected ETF is held only if its 12-1 return exceeds the SHIBOR cash return over the same window (product of daily SHIBOR accrual from 252 to 21 sessions before the signal, previous-session rates only); otherwise its 1/5 slot stays cash."
+  },
+  "eligibility_change_for_S5_S7": "Listing age requirement is at least 253 sessions of bars (needed for the 12-1 score); S6 uses the same 253 so that S5-S7 share one eligible set. All other eligibility and dedup rules unchanged.",
+  "scoring_window": "S5-S7 are scored on the same DEV, DEV_A, DEV_B windows as S1-S4 (first execution 2020-07-13 or later if the first monthly signal falls later; report the exact start).",
+  "selection": "Candidate pool becomes S1-S7; same conditions (DEV xSharpe > EW_SECTOR and CSI300_BH; DEV MDD < CSI300_BH; xSharpe > EW_SECTOR in DEV_A and DEV_B; all also under the sensitivity cost). At most 1 candidate, highest min(DEV_A, DEV_B) xSharpe. DSR uses N = 7.",
+  "holdout": "Unchanged: only after selection, only for a qualifying candidate, only with the user's explicit go-ahead."
+}

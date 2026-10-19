@@ -183,7 +183,7 @@ def execute_rebalance_plan(
 
         if not all_sells_filled:
             logger.critical(f"【SELL 熔断激活】{failed_sell_reason}！严格禁止进入 BUY Phase，立即转入对账。")
-            reconcile_report = reconcile_with_broker(client, state)
+            reconcile_report = reconcile_with_broker(client, state, state_file=state_file)
             return {
                 "success": False,
                 "buy_phase_blocked": True,
@@ -208,7 +208,7 @@ def execute_rebalance_plan(
             logger.critical(reason)
             state["status"] = RebalanceStatus.FAILED
             save_rebalance_state(state, file_path=state_file)
-            reconcile_report = reconcile_with_broker(client, state)
+            reconcile_report = reconcile_with_broker(client, state, state_file=state_file)
             return {
                 "success": False,
                 "buy_phase_blocked": True,
@@ -270,7 +270,7 @@ def execute_rebalance_plan(
         # ----------------------------------------------------------------------
         state["status"] = RebalanceStatus.RECONCILING
         save_rebalance_state(state, file_path=state_file)
-        reconcile_report = reconcile_with_broker(client, state)
+        reconcile_report = reconcile_with_broker(client, state, state_file=state_file)
 
         return {
             "success": reconcile_report["reconciled"],

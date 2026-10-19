@@ -1,0 +1,30 @@
+{
+  "protocol": "research_v3 challenger CRASH_WEEKLY_EXIT: frozen CAP_DEF_M plus a weekly trend exit for equity holdings",
+  "written_at": "2026-10-19",
+  "written_before_any_pre_2006_data_was_downloaded_or_inspected": true,
+  "status": "Challenger only. It never replaces the frozen CAP_DEF_M; if supported it may run as a second forward shadow next to it.",
+  "motivation": "Known weakness: the monthly rule reacts late to fast crashes (CN 2015 drawdown 33.8%, exit executed after the trough). That observation comes from data already seen and is NOT used to set any parameter.",
+
+  "rule": {
+    "base": "Frozen CAP_DEF_M unchanged (same signals, schedule, groups, DEF test, costs).",
+    "weekly_check": "At every weekly signal close (research_v2 weekly schedule) that is not also a monthly signal, for each currently held asset in an equity group (US: US_EQ, INTL_EQ; CN: CN_LARGE, CN_MIDSMALL_GROWTH), evaluate the frozen 40-week trend test (compute_weekly_trend, same window as the frozen rule). If it fails, sell that holding at the next execution and move its weight to the DEF choice evaluated at that weekly signal (IEF proxy / 511010 vs cash, frozen DEF test).",
+    "re_entry": "None between monthly signals. At the next monthly signal the frozen rule recomputes the full target as usual.",
+    "non_equity": "Gold and bond holdings are never touched by the weekly check.",
+    "new_parameters": "None (reuses the frozen 40-week trend and DEF test)."
+  },
+
+  "primary_evaluation": {
+    "data": "research_v3/us_long proxies, 1973..2005, exactly as in protocol_us_long.json (same engine, costs, cash, execution lag, partitions)",
+    "comparator": "frozen CAP_DEF_M on the same data",
+    "SUPPORTED_if_all": [
+      "FULL max drawdown lower than the frozen rule's by at least 3.0 pp",
+      "FULL excess Sharpe not lower than the frozen rule's by more than 0.05",
+      "max drawdown not higher than the frozen rule's in SUB_A and in SUB_B"
+    ],
+    "NOT_SUPPORTED": "otherwise",
+    "also_report": "turnover increase, number of weekly exits, calendar-year differences, bootstrap 90% CI (block 21, 2000 resamples, seed 20261019) of the excess Sharpe difference vs the frozen rule"
+  },
+
+  "secondary_information_only": "Also run on research_v3 US 2006-2020 and research_v3/cn_transfer CN 2014-09..2026-09. These periods were seen before this challenger was designed (including the CN 2015 drawdown), so they are reported but cannot support it.",
+  "freeze_rule": "Frozen at commit time; any change is a separately labelled amendment written before the affected run."
+}

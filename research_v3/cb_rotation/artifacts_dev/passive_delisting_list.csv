@@ -1,0 +1,5 @@
+code,name,stock,listing,last_bar,delist_date,notice,maturity,rating,reason_sh,reason_hs,rule_type,rule,type,override,held_by_SMALL_DEC,held_by_LARGE
+128114,正邦转债,002157,2020-07-15,2023-08-04,2024-01-31,2022-06-08,2023-06-17,CC,,3,redemption,stale_notice,passive,"cninfo window shows no redemption or maturity-payment announcement; 2023-08 bondholder meetings, 2023-11-30 rating terminated, conversion suspended; Eastmoney notice 2022-06-08 is 14 months before the last bar (stale) -> treated as default/unexplained",False,False
+113578,全筑转债,603030,2020-05-19,2023-11-28,2024-01-30,,2023-04-20,B-,,,passive,unexplained,passive,,False,False
+128100,搜特转债,002503,2020-04-09,2023-05-22,2023-08-11,,2026-03-12,CC,,,passive,404_arrangement,passive,,True,True
+123015,蓝盾转退,300297,2018-09-13,2023-07-28,2023-07-31,,2024-08-13,CC,,,passive,404_arrangement,passive,,True,True

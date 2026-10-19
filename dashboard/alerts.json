@@ -1,0 +1,11 @@
+{
+  "_comment": "macOS notification alerts. No secrets. Read-only: alerts never touch signals, NAV or orders. Per-market overrides go under \"markets\" (e.g. {\"CN\": {\"A1\": {\"threshold_pct\": 1.0}}}).",
+  "enabled": true,
+  "A1": {"enabled": true, "threshold_pct": 2.0},
+  "A2": {"enabled": true},
+  "A3": {"enabled": true, "sessions": 2},
+  "A4": {"enabled": true},
+  "A5": {"enabled": true, "consecutive_runs": 2},
+  "A6": {"enabled": true, "threshold_pct": 15.0},
+  "markets": {}
+}

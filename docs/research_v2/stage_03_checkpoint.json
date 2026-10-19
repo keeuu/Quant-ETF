@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "stage": "3.4",
+  "name": "Stage 3.4 Git Checkpoint & Provenance Finalization",
+  "timestamp": "2026-09-23T05:39:57.917426+00:00",
+  "commits": {
+    "implementation_base_commit": "3f708f888277a6564ea6db204dafde95c2a548c7",
+    "stage_03_integrity_fix_commit": "ca8943080d48328cb8bc524baaa37c9fd7322c2d"
+  },
+  "tags": {
+    "research-v1": {
+      "tag_object": "d35840148354105cb4d719ba828e0ff7b4a44782",
+      "peeled_commit": "d35840148354105cb4d719ba828e0ff7b4a44782"
+    },
+    "paper-v1-ready": {
+      "tag_object": "34039df69c16b2c63439556b5762c06b50785384",
+      "peeled_commit": "3f708f888277a6564ea6db204dafde95c2a548c7"
+    }
+  },
+  "hashes": {
+    "protocol_sha256": "a35fe1e50f90b537bd543e9d41a78eff3d9ae9991c362adc603f42432a23e9fb",
+    "dataset_sha256": "65aa99046a92ae9b5fd80155cea26065d80ebcc78a740883452d2106e4000aa3",
+    "baseline_manifest_v2_sha256": "bc305dfaec67d40efae75d7fd1299ef0f2775023ff35fbf7a196073b4fe85833"
+  },
+  "pytest_result": {
+    "total": 150,
+    "passed": 150,
+    "failed": 0,
+    "warnings": 1,
+    "status": "PASS"
+  },
+  "production_state_invariance": {
+    "app_log": {
+      "path": "logs/app.log",
+      "sha256": "015a85822e8d7951034d86aad70188f76d463e7665524964c042a87a126c3393",
+      "size": 235196,
+      "mtime_ns": 1789981503109788558,
+      "status": "IDENTICAL"
+    },
+    "rebalance_state_json": {
+      "path": "logs/rebalance_state.json",
+      "sha256": "59a9e800d56c6bbb8d486033d33aa5a10bc868115643982501154b0c79caacd4",
+      "size": 431,
+      "mtime_ns": 1789981503057542820,
+      "status": "IDENTICAL"
+    },
+    "status": "PASS"
+  },
+  "integrity_verdict": {
+    "H1_state_path_isolation": "FIXED",
+    "H2_logger_import_side_effect": "FIXED",
+    "H3_baseline_semantics": "ADDRESSED",
+    "test_isolation": "VERIFIED_150_PASS",
+    "stage4_prerequisite": "SATISFIED"
+  },
+  "checkpoint_sha256": "6caca4c34e9fc6bfeaabdbe85d4b34937b93752f6864c6f700d460ba8365577c"
+}
