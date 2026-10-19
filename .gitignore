@@ -36,3 +36,7 @@ research_v3/sector_mom/data/bars/
 research_v3/sector_mom/data/sina_raw/
 research_v3/sector_mom/data/shibor_3m.csv
 research_v3/sector_mom/universe/raw_*
+
+# Dashboard: downloaded snapshots and generated pages stay local
+dashboard/data/
+dashboard/output/
