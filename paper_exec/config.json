@@ -1,6 +1,6 @@
 {
   "_comment": "paper_exec 独立开关。只有 enabled=true 且命令行带 --submit 才会真正向模拟账户下单；此处与 V1 的 ORDER_SUBMISSION_ENABLED 无关。",
-  "enabled": false,
+  "enabled": true,
   "min_order_usd": 1.0,
   "max_minutes_after_open": 90,
   "poll_seconds": 60,
