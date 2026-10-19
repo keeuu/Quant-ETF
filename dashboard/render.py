@@ -242,7 +242,13 @@ def _alerts_card(info: dict | None, key: str) -> str:
 def _section_ok(v: dict, alerts_html: str = "") -> str:
     out = []
     src = v["sources"]
-    src_txt = "、".join(sorted(set(src.values()))) if src else "—"
+    kinds = sorted(set(src.values()))
+    if not src:
+        src_txt = "—"
+    elif len(kinds) == 1:
+        src_txt = kinds[0]
+    else:                                   # mixed: list which symbols came from which source
+        src_txt = "；".join(f'{k}：{" ".join(sorted(s for s, x in src.items() if x == k))}' for k in kinds)
     badge = '<span class="badge b-warn">使用备用数据源</span>' if v["fallback_used"] else '<span class="badge b-good">主数据源</span>'
     out.append(f'<div class="mhead"><h2>{e(v["title"])}</h2><span class="sub">数据截至 {e(v["as_of"])} 收盘 · '
                f'数据源 {e(src_txt)}{badge} · 现金收益 {e(v["rate_source"])}</span></div>')

@@ -7,6 +7,8 @@ import re
 from pathlib import Path
 
 KEY_ENV = "FUYAO_API_KEY"
+ALPACA_KEY_ENV = "ALPACA_API_KEY"
+ALPACA_SECRET_ENV = "ALPACA_SECRET_KEY"
 _GENERIC_KEY = re.compile(r"sk-[A-Za-z0-9_\-]{8,}")
 
 
@@ -24,12 +26,20 @@ def api_key() -> str | None:
     return k.strip() if k and k.strip() else None
 
 
+def alpaca_keys() -> tuple:
+    """(key id, secret) from the environment; either may be None."""
+    def _g(n):
+        v = os.environ.get(n)
+        return v.strip() if v and v.strip() else None
+    return _g(ALPACA_KEY_ENV), _g(ALPACA_SECRET_ENV)
+
+
 def sanitize(text) -> str:
-    """Replace the configured API key (and anything shaped like an sk- key) with ***."""
+    """Replace the configured API keys (FUYAO + both Alpaca keys; anything shaped like an sk- key) with ***."""
     s = str(text)
-    k = api_key()
-    if k:
-        s = s.replace(k, "***")
+    for k in (api_key(), *alpaca_keys()):
+        if k:
+            s = s.replace(k, "***")
     return _GENERIC_KEY.sub("***", s)
 
 

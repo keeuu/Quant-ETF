@@ -64,7 +64,8 @@ def run(*, now_utc: datetime | None = None, output_dir: Path | None = None, data
                 fr = fetch.load_snapshot(snapshot_dir, key)
                 run_now = datetime.fromisoformat(fr.fetched_at_utc)
             else:
-                fr, run_now = fetch_f(spec, now_utc), now_utc
+                kw = {"data_root": data_root} if fetch_f is fetch.fetch_us else {}   # cached snapshots for the fallback
+                fr, run_now = fetch_f(spec, now_utc, **kw), now_utc
                 if write_snapshots:
                     fetch.write_snapshot(data_root, run_date, fr)
             meta = {"sources": fr.sources, "rate_source": fr.rate_source, "notes": fr.notes,
