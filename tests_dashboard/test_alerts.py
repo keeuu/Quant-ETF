@@ -308,7 +308,7 @@ def test_alert_crash_does_not_break_rendering(cn, tmp_path, monkeypatch):
     rc = run(now_utc=utc(2026, 10, 19, 2), output_dir=out, data_root=tmp_path / "d", markets=_markets(cn),
              freeze_date="2026-10-19", notify=True)
     html = (out / "index.html").read_text()
-    assert rc == 0 and "当前持仓" in html and "<!--alerts-->" not in html
+    assert rc == 0 and "按规则当前应持有" in html and "<!--alerts-->" not in html
 
 
 def test_enabling_alerts_leaves_shadow_unchanged(cn, tmp_path):

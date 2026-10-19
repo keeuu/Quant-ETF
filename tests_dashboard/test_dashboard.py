@@ -266,16 +266,97 @@ def _no_external(html: str):
     assert "src=" not in low and "href=" not in low and "http://" not in low and "https://" not in low
 
 
+def _top(html: str) -> str:
+    """Visible text outside every <details> (style removed)."""
+    import re
+    h = re.sub(r"<style>.*?</style>|<details.*?</details>", "", html, flags=re.S)
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", h))
+
+
+def _vw(**kw):
+    base = {"key": "CN", "title": "A股", "status": "ok", "as_of": "2026-10-16", "freeze_date": "2026-10-19",
+            "initial_nav": 1e6, "bench_hold_label": "持有基准", "bench_mix_label": "等权基准", "def_symbol": "D",
+            "sources": {}, "rate_source": "x", "fallback_used": False, "fetch_notes": [], "quality_notes": [],
+            "universe": ["A", "D"], "names": {"A": "资产甲", "D": "国债"}, "first_execution": None,
+            "first_execution_signal": None, "window": {"start": None, "end": None, "n_sessions": 0, "empty": True},
+            "series": None, "holdings": None, "orders": None,
+            "reference_target": {"signal_session": "2026-09-30", "execution_session": "2026-10-09", "status": "COMPLETE",
+                                 "pre_freeze": True, "weights": {"A": 0.5, "D": 0.5}, "selected": ["A"]},
+            "what_if": {"signal_session": "2026-10-16", "execution_session_if": "2026-10-19", "weights": {"A": 0.5, "D": 0.5},
+                        "changes": [], "changed": False, "basis_label": "x", "defensive_info": None},
+            "trend": [{"symbol": "A", "name": "资产甲", "close": 1.0, "sma": 1.0, "dist": 0.2, "passes": True,
+                       "passes_official": True}],
+            "next_rebalance": {"signal_session": "2026-10-30", "execution_session": "2026-11-02", "estimated": False,
+                               "sessions_left": 10, "days_left": 14}}
+    base.update(kw)
+    return base
+
+
+def _sentence(v) -> str:
+    import re
+    return re.search(r'<div class="status[^"]*">(.*?)</div>', render_page({"CN": v}, utc(2026, 10, 19, 2))).group(1)
+
+
+def test_status_sentence_for_each_state():
+    assert _sentence(_vw()) == "本月无需操作，下次调仓 11月2日（还有 10 个交易日）"
+    soon = _vw(next_rebalance={"signal_session": "2026-10-30", "execution_session": "2026-11-02", "estimated": False,
+                               "sessions_left": 2, "days_left": 3})
+    assert _sentence(soon) == "2 个交易日后调仓，届时看清单"
+    pend = _vw(reference_target={"signal_session": "2026-10-30", "execution_session": "2026-11-02", "status": "PENDING",
+                                 "pre_freeze": False, "weights": {"A": 1.0}, "selected": ["A"]})
+    assert _sentence(pend) == "有新的调仓：请在 11月2日 开盘前按下方清单操作"
+    err = {"key": "CN", "title": "A股", "status": "error", "message": "boom", "last_success": "2026-10-15"}
+    assert _sentence(err) == "数据未更新，最后成功日期 10月15日"
+
+
+def _order_view(pending: bool):
+    o = {"capital": 1e5, "currency": "CNY", "fractional": False, "lot": 100, "price_date": "2026-10-16",
+         "cash_proxy": "P", "proxy_note": "n", "proxy_price": 100.0, "min_fee": 5, "commission_bp": 1,
+         "disclaimer": "参考", "sections": [{
+             "kind": "official" if pending else "preview", "title": "t", "basis_label": "b", "target_label": "t",
+             "rows": [{"symbol": "A", "name": "甲", "side": "买入", "delta": 100, "cur_shares": 0, "tgt_shares": 100,
+                       "price": 1.0, "amount": 100, "fee": 5, "is_proxy": False}],
+             "cash_after": 0, "fees": 5, "turnover_amount": 100, "notes": [], "proxy_lot_cost": 1}]}
+    kw = {"orders": o}
+    if pending:
+        kw["reference_target"] = {"signal_session": "2026-10-30", "execution_session": "2026-11-02", "status": "PENDING",
+                                  "pre_freeze": False, "weights": {"A": 1.0}, "selected": ["A"]}
+    return _vw(**kw)
+
+
+def test_details_closed_unless_signal_pending():
+    import re
+    quiet = render_page({"CN": _order_view(False)}, utc(2026, 10, 19, 2))
+    pend = render_page({"CN": _order_view(True)}, utc(2026, 10, 19, 2))
+    titles = ["调仓清单（1 笔）", "各资产离趋势线多远", "月末预览与防守仓位说明", "数据来源与说明"]
+    for t in titles:
+        assert f"<summary>{t}</summary>" in quiet and f"<summary>{t}</summary>" in pend
+    assert "<details open" not in quiet
+    assert len(re.findall(r"<details open", pend)) == 1
+    assert re.search(r"<details open><summary>调仓清单（1 笔）", pend)
+
+
+def test_top_level_has_no_jargon():
+    for v in (_vw(), _order_view(True)):
+        top = _top(render_page({"CN": v}, utc(2026, 10, 19, 2), alerts={"markets": {"CN": {
+            "alerts": [{"code": "A1", "text": "x", "new": True}], "last_notified": None}}, "enabled": True}))
+        for bad in ("A1", "A2", "xSharpe", "what-if", "DEF"):
+            assert bad not in top, bad
+    pend = render_page({"CN": _order_view(True)}, utc(2026, 10, 19, 2))
+    _no_external(pend)
+
+
 def test_render_empty_window(cn):
     spec, bars, shibor, cal = cn
     v = compute_market_view(spec, bars, shibor, utc(2026, 10, 19, 2), base_cal=cal, freeze_date="2026-10-19",
                             meta={"sources": {s: "THS" for s in spec.universe}, "rate_source": "SHIBOR 3月"})
     html = render_page({"CN": v}, utc(2026, 10, 19, 2))
-    assert "前瞻期刚开始，尚无足够数据" in html and NOTE in html and "Asia/Shanghai" in html
-    assert "2026-10-19 10:00" in html and "数据截至 2026-10-16" in html
-    assert "距 40 周趋势线" in html and "月末预览" in html and "下次调仓" in html and "2026-11-02" in html
+    assert "前瞻期刚开始，11月2日后开始显示收益" in html and NOTE in html and "量化看板" in html
+    assert "2026-10-19 10:00" in html and "数据截至 10月16日" in html
+    assert "各资产离趋势线多远" in html and "月末预览与防守仓位说明" in html and "下次调仓" in html and "2026-11-02" in html
     assert "prefers-color-scheme:dark" in html and "viewport" in html
     assert "<svg" in html          # trend bar chart is present even with an empty window
+    assert "累计收益" not in _top(html)       # no empty KPI cards before the first execution
     _no_external(html)
 
 
@@ -285,7 +366,7 @@ def test_render_populated_and_failed_market(cn, us):
     err = {"key": "US", "title": "美股", "status": "error", "message": "RuntimeError: 下载失败", "last_success": None}
     html = render_page({"US": err, "CN": v}, utc(2026, 10, 19, 2), {"US": "2026-10-15"})
     assert "该市场数据获取或计算失败" in html and "下载失败" in html and "最后一次成功：2026-10-15" in html
-    assert "净值对比" in html and "polyline" in html and "当前持仓" in html
+    assert "冻结以来的表现" in html and "polyline" in html and "当前持仓" in html
     _no_external(html)
     html2 = render_page({"US": err, "CN": dict(err, key="CN", title="A股")}, utc(2026, 10, 19, 2))
     assert html2.count("该市场数据获取或计算失败") == 2 and "无记录" in html2
